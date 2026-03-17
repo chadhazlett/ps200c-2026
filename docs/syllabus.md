@@ -28,7 +28,7 @@ This year's course reflects a deliberate shift in how we think about graduate me
 
 Rather than assigning traditional problem sets, we are investing that time where it matters most: *applying causal reasoning to real research problems*. Starting early in the quarter, you will develop a final project in which you formulate a causal question, identify an appropriate strategy, and carry out an empirical analysis. The course is structured around milestones that build toward this project, with regular feedback from the instructor, TA, and peers.
 
-In lecture, the emphasis is on building intuition for the core ideas and assumptions behind each identification strategy—not on derivations or code. You are expected and encouraged to use AI tools (Claude, ChatGPT, etc.) as tutors to fill in details, clarify concepts, and work through implementation. We want you to learn to *think* about causal inference; the tools can help you *do* it.
+In lecture, the emphasis is on building intuition for the core ideas and assumptions behind each identification strategy. Truly understanding the (heroic) assumptions required by these approaches—and what it means to do credible science given them—is the most important aspect of the course. You are expected and encouraged to use AI tools (Claude, ChatGPT, etc.) as tutors to fill in details, clarify concepts, and work through implementation. We want you to learn to *think* about causal inference; the tools can help you *do* it.
 
 To keep everyone engaged and to create an honest signal of understanding, most class sessions will end with a short, pen-and-paper in-class activity reviewing the material covered that day. These replace exams as the primary individual assessment and also serve as the attendance mechanism.
 
