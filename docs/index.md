@@ -13,6 +13,8 @@ This course covers the core methods of causal inference used in the social scien
 
 ## Course Materials
 
-- [Syllabus (PDF)](../pdf/syllabus/syllabus_2026.pdf)
-- [Schedule & Slides](schedule.html)
+- [Syllabus](syllabus.html)
+- [Slides](slides.html)
 - [Resources](resources.html)
+- [Final Project](projects.html)
+- [Section](section.html)

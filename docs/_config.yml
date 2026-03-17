@@ -1,3 +1,10 @@
 title: "PS200C: Causal Inference for the Social Sciences"
 description: "UCLA Political Science — Spring 2026 — Chad Hazlett"
 theme: minima
+
+header_pages:
+  - syllabus.md
+  - slides.md
+  - resources.md
+  - projects.md
+  - section.md
