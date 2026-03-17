@@ -5,4 +5,4 @@ title: Resources
 
 # Resources
 
-*Links to textbooks, software guides, and supplementary readings will be posted here.*
+*Annotated reading lists and supplementary materials will be posted here.*
