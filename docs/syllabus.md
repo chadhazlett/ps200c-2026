@@ -146,9 +146,17 @@ The following is an approximate schedule of topics. They do not correspond exact
 
 ### 10. Special topics (time permitting)
 
-- **Panel methods beyond parallel trends.** Synthetic control; when parallel trends is hard to defend; the Blackwell–Hazlett (BH) / Causal ANOVA approach
-- **TRACE (Treatment Reactive Average Causal Effect).** The temptation to condition on post-treatment variables — implementation checks, attention screens, mediators — and why it fails. TRACE as bounded inference about effects within subgroups defined by post-treatment response, without the untenable assumptions of mediation or per-protocol analysis.
-- **SCQE (Stability-Controlled Quasi-Experiment).** When treatment prevalence shifts sharply over time, what can we learn? Rather than assuming no confounding or parallel trends, SCQE asks you to reason about the baseline trend — how much could outcomes have changed absent the treatment shift? Partial identification via a quantity investigators can actually assess.
+**(i) Panel data without parallel trends.**
+- Synthetic control methods: constructing a counterfactual from weighted donors
+- A new approach: when parallel trends is too strong, what can we assume instead?
+
+**(ii) Safe inference, partial identification, and new opportunities.**
+- Moving from making claims we can't support to describing what we can believe
+- The SCQE (Stability-Controlled Quasi-Experiment): when treatment prevalence shifts sharply, partial identification by reasoning about how much outcomes could have changed absent the treatment shift — a quantity investigators can actually assess
+
+**(iii) Mediation (or not) and the TRACE.**
+- The temptation to condition on post-treatment variables — implementation checks, attention screens, mediators — and why it fails
+- The TRACE (Treatment Reactive Average Causal Effect): bounded inference about effects within subgroups defined by post-treatment response, without the untenable assumptions of traditional mediation analysis
 
 ## Course website
 
