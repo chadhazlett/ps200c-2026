@@ -5,6 +5,11 @@ title: Home
 
 # PS200C: Causal Inference for the Social Sciences
 
+<div style="display: flex; gap: 2em; justify-content: center; margin: 1.5em 0;">
+  <img src="assets/dag-hero.svg" alt="Causal DAG with confounding" style="width: 48%; max-width: 340px;">
+  <img src="assets/counterfactual-paths.svg" alt="Counterfactual paths" style="width: 48%; max-width: 340px;">
+</div>
+
 **Instructor:** Chad Hazlett ([chazlett@ucla.edu](mailto:chazlett@ucla.edu))
 **Quarter:** Spring 2026
 **Department:** Political Science, UCLA
