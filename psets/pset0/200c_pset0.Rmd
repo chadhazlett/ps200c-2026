@@ -1,0 +1,143 @@
+---
+title: 'Pol Sci 200C - Problem Set 0'
+author: 'Chad Hazlett'
+header-includes:
+   - \usepackage{framed}
+output: pdf_document
+---
+
+\newcommand{\X}{\mathbf{X}}
+\newcommand{\Y}{\mathbf{Y}}
+\renewcommand{\r}{\right}
+\renewcommand{\l}{\left}
+\newcommand{\dist}{\buildrel\rm d\over\sim}
+\newcommand{\ind}{\stackrel{\rm indep.}{\sim}}
+\newcommand{\ud}{\mathrm{d}}
+\newcommand{\iid}{\stackrel{\rm i.i.d.}{\sim}}
+\newcommand{\logit}{{\rm logit}}
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\V}{\mathbb{V}}
+\newcommand{\cJ}{\mathcal{J}}
+\newcommand{\bone}{\mathbf{1}}
+\newcommand{\var}{{\rm Var}}
+\newcommand{\cov}{{\rm Cov}}
+\newcommand{\tomega}{\tilde\omega}
+
+\newcommand{\spacingset}[1]{\renewcommand{\baselinestretch}%
+{#1}\small\normalsize}
+
+\textbf{Due April 8, 11:59pm}
+
+\textit{This problem set is designed to (a) help remind you of some essential material which you are expected to know; (b) help you to clarify whether you have the necessary background for the course; and (c) help me see what you know and don't know.} Do what you can and get help as needed, but don't be worried about your grade; we will score this on evidence of effort. If you are entirely unclear on something even after seeking help or having it explained, I'd rather know that than see a copied answer...so try to learn what you need but if you just don't have the requisite background, please say so in your write-up.
+
+\smallskip
+\begin{framed}
+\textbf{Instructions:}
+\begin{itemize}
+\item Responses should be typeset in something nice, like TeX or Rmarkdown. 
+\item Submit your completed problem set as a single PDF via the course website.  If you are not using RMarkdown or similar, please include a copy of your code in your write-up (e.g. using the \texttt{verbatim} environment). If in doubt about formatting issues, please check with the TA.
+\end{itemize}
+\end{framed}
+
+\section*{1. Probability Theory I: Events}
+The 1982 (original) movie \textit{Blade Runner} (starring Harrison Ford) is set in a future world where there are robots that are designed to look and behave exactly like human beings. The only way to tell if a randomly selected individual (who appears to be human) is in fact a human being or a robot is to administer a test. In our version of the test, suppose that if an individual taking the test is in fact a robot, the test will report that the individual is a robot 95\% of the time. If an individual taking the test \textit{is not} a robot, the test will report that the individual \textit{is} a robot 3\% of the time.  Based on the number of robots manufactured, we can estimate that about 2\% of all individuals we would test are actually robots.
+\begin{enumerate}
+\medskip
+\item[a)](4pts) What is the probability that a randomly selected individual given the test will be classified as a robot?
+\medskip
+\item[b)](4pts) Given that an individual is classified as a robot by the test, what is the probability that individual is actually a robot?
+\medskip
+\item[c)](4pts) Given that an individual is classified as a human by the test, what is the probability that individual is actually a robot?
+\end{enumerate}
+
+
+\section*{2. Probability Theory II: Random Variables}
+\begin{enumerate}
+\item[a)](2pt) Consider continuous random variable $X$ with probability distribution $p(X)$.\footnote{In problem sets we will maintain the notation used in class, in which $p(Z)$ is a density function for random variable $Z$. Note that we use $p$ instead of $f$, and that we use this for both probability density functions and probability mass functions. Further, we drop the subscript and assume that the density is for the random variable referenced in the parentheses (i.e. $f_X(X)$ is simply $p(X)$)} How is $\E[X]$ defined? (Give the definition, not an estimator you'd use given a sample).
+
+\item[b)](2pt) How is $\operatorname{Var}(X)$ defined?
+
+\item[c)](2pt) Further suppose $X$ and $Y$ have joint density $p(X,Y)$. How is $\E[Y|X]$ defined? (Write it out in terms of an integral and density function). 
+
+\item[d)](2pt) If $X$ and $Y$ were independent, what does $\E[X|Y]$ reduce to? (Show why this is, writing out the definition of $\E[X|Y]$ first).
+ 
+\end{enumerate}
+
+\textit{For the following questions, draw random variables $X_1$, $X_2$,..., $X_N$, all independently from the common density, $p(X)$.}
+
+\begin{enumerate}
+\item[e)](2pt) Suppose you have scalars, $a,\,b,\,c$.  What is $\E[aX_1+bX_2+cX_3]$? What is $\operatorname{Var}[aX_1+bX_2+cX_3]$?
+
+\item[f)](4pt) Let $\overline{X} = \displaystyle{\frac{1}{N} \sum_i^{N}} X_i$. Is $\overline{X}$ unbiased for $\E[X]$? Prove it. (Do not just cite a theorem!)
+
+\item[g)](4pt) Derive the variance of $\overline{X}$. What happens to it as $N \rightarrow \infty$?
+\end{enumerate}
+
+\section*{3. Matrix algebra and OLS}
+Some of this question involves linear/matrix algebra. You should work through this question, getting however much help you need. But we note that linear algebra is now classified as ``very useful'' rather than required for the class. Still it is a good chance to learn/practice these things and that is worthwhile in its own right. That said, if something makes no sense to you at after getting help, I'd rather you let me know that so we have a sense of where people are.
+
+Consider random variables $Y\in \mathbb{R}$ and $X \in \mathbb{R^{P}}$, drawn from joint density $p(X,Y)$. You collect a sample of draws from this distribution, $\{(Y_1,X_i),...,(Y_N,X_N)\}$.
+
+Let $\X$ be a $N \times (1+P)$ matrix, with row $i$ equal to $[1\,\, X_i^{\top}]$ (i.e., there is an intercept and then a column for each ``covariate''). Consider a model, $Y=\X\beta +\epsilon$, where we assume $\E[\epsilon|X]=0$. 
+
+\begin{enumerate}
+\setcounter{enumi}{7}
+\item[a)](5pt)  Using matrix notation at each step, derive the ordinary least squares estimator for $\beta$:
+$$\beta_{OLS} = \underset{\beta \in \mathbb{R}^{P+1}}{argmin} (\Y-\X\beta)^{\top}(\Y-\X\beta)$$
+\item[b)](5pt)  Show \texttt{R} code that would achieve the following (there is no need to submit this code in a separate file; just include it in your problem set write-up using an environment such as $\texttt{verbatim}$ or a non-evaluated code chunk in Rmd, etc.):
+\begin{itemize}
+\item[i.] Construct a matrix $X$ to represent $\X$ in the above, with $N=100$, one column of ones, and two columns of randomly drawn numbers (from any distribution you like). 
+\item[ii.]  Using $\beta=[1\,\,2\,\,3]^{\top}$, compute vector $Y$ equal to $X\beta + \epsilon$, where $\epsilon$ is drawn from a standard normal distribution.
+\item[iii.] Compute $(X^{\top}X)^{-1}(X^{\top}Y)$. Use the \texttt{solve} function in \texttt{R}.  
+\item[iv.] Compare the result to the coefficients obtained using \texttt{lm} with the data you have constructed. 
+\end{itemize}
+
+\item[c)](5pt) Show the unbiasedness of $\hat{\beta}_{OLS}$ for $\beta$. (Hint: compute $\hat{\beta}_{OLS}$, but replacing $Y$ with $\X\beta+\epsilon$). 
+
+\item[d)](5pt) Compute the variance, with $X$ taken as given, i.e. $\V[\hat{\beta}_{OLS}|\X]$, again sticking with matrix notation. You may assume $\E[\epsilon \epsilon^{\top}|\X]=\sigma^2 I_N$, where $I_N$ is the $N \times N$ identity matrix.   
+
+\item[e)](2pt) What meaning would you give to the matrix $\E[\epsilon \epsilon^{\top}|\X]$? Give an intuitive explanation of what the assumption that this matrix equals $\sigma^2 I$ implies.
+\end{enumerate}
+
+\section*{4. Some Statistics Review}
+True or false? For credit, explain your choice \textbf{briefly}.
+\begin{enumerate}
+\item[a)](3pt) If there is perfect collinearity, the OLS estimator will give biased and inconsistent estimates.  %
+\bigskip
+\item[b)](3pt) A very large p-value for the estimated coefficient for an explanatory variable provides strong evidence that the variable has zero effect on the outcome.
+\bigskip
+\item[c)](3pt) If an estimator is unbiased it is also consistent.  
+\bigskip
+\item[d)](3pt) You have a model $Y_i=X_i^{\top}\beta + \epsilon$, and you fit it by OLS. If the OLS residuals are uncorrelated with $X$, our estimate of $\beta$ are unbiased.
+\end{enumerate}
+
+\section*{5. Simulations of Key Properties of the Mean}
+
+Suppose $X_1 \sim N(5,2)$ and $X_2 \sim exp(\lambda=1)$ (where $exp$ indicates the exponential distribution). In \texttt{R}, construct two vectors, \texttt{X1} with  10000 draws from the same distribution as $X_1$, and \texttt{X2} with 10000 draws from the same distribution as $X_2$.
+
+We will take sub-samples from these two variables to evaluate the coverage probability of 95\% confidence intervals using different types of data and different sample sizes.  
+
+\bigskip
+
+\textbf{(a)}(3pt) Describe the distribution of \texttt{X1} and \texttt{X2} using your favorite graphical approach for looking at continuous distributions. Mark the true expectation on your plot using a line. 
+
+\bigskip
+
+\textbf{(b)}(4pts) Consider for a moment the random variables $\overline{X}_1$ and  $\overline{X}_2$, representing sample means you could get from taking the average of 8 randomly sampled values of $X_1$ or $X_2$ respectively.  Using math (not \texttt{R}), give solutions for:
+\begin{itemize}
+\item  $\E[\overline{X}_1]$?
+\item $\E[\overline{X}_2]$?
+\item $Var(\overline{X}_1)$?
+\item $Var(\overline{X}_2)$?
+\end{itemize}
+
+\bigskip
+
+\textbf{(c)}(5pts). Now, for $X_1$, draw 5000 samples of size $N$=6. Get the mean and compute the 95\% confidence interval each time.  What portion of the confidence intervals you computed include the true expectation? Repeat this for $X_2$.
+
+\smallskip
+
+\textbf{(d)}(5pt) Repeat (c) for samples of size 6, 20, 50, and 500. Report the coverage probability for each of your eight simulations in a table.  How do your results change?  What differences do you see between \texttt{X1} and \texttt{X2}?
+
+\textbf{(e)}(2pt) Explain your findings in parts (c) and (d).

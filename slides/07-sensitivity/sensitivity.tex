@@ -1,0 +1,925 @@
+\documentclass[xcolor=dvipsnames]{beamer}
+%\documentclass[handout,xcolor=dvipsnames,pdftex,hyperref={colorlinks=false}]{beamer}
+
+%\usetheme{Boadilla}
+\usepackage{appendixnumberbeamer}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{subfigure}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage[english]{babel}
+\usepackage{natbib}
+\newtheorem{assumption}{Assumption}
+\usepackage{helvet}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{tikz}
+\usepackage{booktabs}
+\newcommand{\indep}{{\bot\negthickspace\negthickspace\bot}}
+
+\usepackage{bm}
+\newcommand\X{{\bm X}}
+%\useoutertheme{infolines}
+
+
+\usetheme{Warsaw}  % Jens' previous
+\usepackage{helvet}
+\definecolor{someblue}{rgb}{0,.1,0.8}
+
+% == New Commands
+% = For general typesetting
+\newcommand\spacingset[1]{\renewcommand{\baselinestretch}{#1}\small\normalsize}
+\renewcommand\r{\right}
+\renewcommand\l{\left}
+
+\newcommand\makegaps{\addtolength{\itemsep}{.25\baselineskip}}
+\newcommand\makebiggaps{\addtolength{\itemsep}{.5\baselineskip}}
+\newcommand\smallunskip{\vspace{-.25\baselineskip}}
+\newcommand\medunskip{\vspace{-.5\baselineskip}}
+\newcommand\bigunskip{\vspace{-\baselineskip}}
+
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+% Add ',fontsize=\small' for more characters per line
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+\newcommand{\RegionMarkerTok}[1]{{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+\newcommand{\NormalTok}[1]{{#1}}
+
+\DeclareMathOperator*\plim{plim}
+\DeclareMathOperator\rank{rank}
+\DeclareMathOperator{\sgn}{sgn}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\title[]{Sensitivity via Omitted Variable Bias}
+\subtitle[ ]{PS200C, Spring 2025}
+\author[Hazlett]{Chad Hazlett }
+\institute[UCLA]{UCLA\\[1ex]
+  \texttt{chazlett@ucla.edu}
+}
+\date{}
+
+\definecolor{dgreen}{rgb}{0,.6,0.8}
+\useoutertheme{infolines}
+
+\begin{document}
+
+\subject{Talks}
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>
+    \frametitle{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+
+\section{Background}
+
+\begin{frame}{Learning sensitivity analysis}
+ Sensitivity analysis is vital to practical causal inference: \\
+ \small
+\begin{itemize}
+\item<2-> emphasizes the role of assumptions and encourages careful thought about them
+\smallskip
+\item<3-> gives you a practical way to work under imperfect identification
+\smallskip
+\item<4-> gives you a lens through which to view existing work beyond just complaining about non-zero confounding
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Your job}
+These slides would give you a starting point, but on the course website you will find materials \textbf{you should read}, including:
+\begin{itemize}
+\item<2-> \textit{From ``Is it unconfounded?'' to ``How much confounding would it take?''  The sensitivity-based approach to observational studies}
+\item<3-> \textit{Making Sense of Sensitivity: Extending omitted variable bias}
+\item<4->  \textit{sensemakr: Sensitivity Analysis Tools for OLS in R and Stata}
+\item<5-> \textit{Wildfire Exposure Increases Pro-Climate Political Behaviors}
+\item<6-> Demos at \href{http://carloscinelli.com/sensemakr/articles/}{http://carloscinelli.com/sensemakr/articles/}
+\end{itemize}
+\end{frame}
+% Liu et al 2014, 
+% The origin of sensitivity analysis to unobserved confounding has been attributed to a study by Cornfield, Haenszel, Hammon, Lilienfeld, Shimkin, and Wynder (1959), which quantified the role of unobserved confounding in the observed relationship between smoking and lung cancer (Cornfield et al., 1959). Specifically, Cornfield et al. (1959) showed that an unobserved confounder, such as a genetic factor, would need to lead to a nine-fold increase in the odds of smoking in order to explain away the association between smoking and lung cancer, and it was asserted that such a strong unobserved confounder was very unlikely to exist. 
+
+\clearpage
+
+\section{Example and Motivation: Darfur}
+%{\setbeamertemplate{background canvas}{\tikz[remember picture,overlay]\node[opacity=1] at (current page.center) {\includegraphics[width=1.2\paperwidth,height=1.2\paperheight,keepaspectratio]{2004_Darfur_Sudan.jpg}};}
+%\begin{frame}[plain]
+%\end{frame}}
+
+\begin{frame}{Effects of Violence on Attitudes: Angry or Weary?}
+\begin{columns}
+\begin{column}{.5\textwidth}
+\onslide<2->
+\footnotesize
+\begin{quote}
+If you have seen what we went through you will understand.
+They came around 6pm on a Sunday...they started looting and burning everything.
+I am so angry...The only solution is to fight. There is no other way.
+\end{quote}
+\end{column}
+\begin{column}{.5\textwidth}
+\onslide<3->
+\begin{quote}
+\footnotesize
+If I built a school in Darfur I will call it the ``School of Peace'',  I love peace, and I love to see development, stability, and peace. The peace I long for is not just peace for various tribes, it is a peace for all Sudan... % for every Sudanese in particular the people of Darfur.
+\end{quote}
+\end{column}
+\end{columns}
+\bigskip
+\onslide<4-> What is the average effect of exposure to violence on attitudes toward peace (more ``angry'' or more 	``weary''), among Darfurian refugees in eastern Chad?
+\end{frame}
+
+\begin{frame}{Effects of Violence on Attitudes: Angry or Weary?}
+\bigskip
+
+\bigskip
+\onslide<1->  \textcolor{Blue}{Central ID claim}: Targeting of violence in 2003-2004 was based only on village and gender but otherwise so indiscriminate as to be independent of (potential) attitudes within village-gender strata''.  
+\bigskip
+\small
+\begin{itemize}
+\item<3-> Purpose of violence was generally to remove the population rather than kill those likely to be rebels
+\item<4-> Bombing from the air: extremely crude, difficult to target, and no information 
+\item<5-> Attacks by \textit{Janjaweed} militia: also highly indiscriminate, had only visual characteristics on which to target (notably, $female$)
+\end{itemize}
+%\onslide<6-> \begin{quote}
+%\scriptsize{``The government came with \textit{Antonovs}, and targeted everything that moved.  They made no distinction between the civilians and rebel groups.  If it moved, it was bombed. It is the same thing, whether there are rebel groups (present) or not...The government bombs from the sky and the \textit{Janjaweed} sweeps through and burns everything and loots the animals and spoils everything that they cannot take.''}
+%\end{quote}
+\end{frame}
+
+\begin{frame}{What to estimate}
+\onslide<1-> \textcolor{Blue}{Strategy}:  SOO, conditioning on village and gender  \\
+\bigskip
+\onslide<2-> \textcolor{Blue}{Setup}:
+\begin{itemize}
+\item Outcome: \textit{PeaceIndex}, a 0-to-1 scale of pro-peace attitudes
+\item Treatment: \textit{DirectHarm}, binary measure of being directly injured
+\end{itemize}
+\smallskip
+\onslide<3-> \textcolor{Blue}{Estimation}: simple parametric model \\
+\vspace{-.1in}
+\[
+PeaceIndex_i = \alpha DirectHarm_i +  \beta^{\top} {Village}_i  + \phi female_i + \epsilon_i
+\]
+\onslide<4-> Finds that those directly harmed are on average \textcolor{Blue}{9.7 percentage points} more pro-peace (SE=2.3) \\
+
+\medskip
+%\onslide<5-> \begin{center} But consider a possible confounder: whether you live in center/periphery of village.  How could this change your answer?\end{center}
+\onslide<5-> \begin{center} But what if the ID strategy is imperfect? \end{center}
+\end{frame}
+
+\begin{frame}{Sensitivity analysis}
+\onslide<1-> Numerous sensitivity analyses can be found, but not yet widely used. \\
+\medskip
+\onslide<2-> In economics, 
+\small
+\begin{itemize}
+\item Oster (2014) reports that most non-experimental empirical papers utilized only informal robustness tests based on coefficient stability in the face of adding or dropping covariates.
+\end{itemize}
+\normalsize
+\onslide<3-> In political science,
+\small
+\begin{itemize}
+\item Only 6\% of papers involving a causal ID strategy other than experiments conducted a formal analysis of sensitivity to unobserved confounders (covering APSR, AJPS, JOP in 2017 and in 2019). 
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Questions we'd like sensitivity analysis to help with:}
+\begin{enumerate}
+\item<1-> What if somebody names a potential confounder I don't have in my data? How ``bad'' would it have to be to undo my answer? 
+\smallskip
+\item<2-> What about multiple confounders -- perhaps those I can't name -- acting together, even non-linearly? %Or mis-specification based confounding?
+\smallskip
+\item<3-> How can we easily communicate overall robustness of a regression results to unobserved confounding? 
+\smallskip
+\item<4-> How can we assess whether the sorts of confounders that would alter our conclusions might exist in our case? 
+\smallskip
+\item<5-> What if we have a weak identification strategy -- can we say anything about what effect might survive a conservative assumption about the amount of confounding? 
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Tools we will look at:}
+We will derive and illustrate a number of tools: 
+
+\begin{enumerate}
+\item<1-> Two simple statistics for regression tables, conveying sensitivity of a result
+\smallskip
+\item<2-> Contour plots exploring how point estimate, t-statistic, CI would change depending on hypothesized degree of confounding
+\smallskip
+\item<3-> An approach that transforms assumptions about the strength of observables vs. confounders into bounds on the allowable amount of confounding. 
+\smallskip
+\item<4-> Analysis of ``extreme scenarios'' when investigators are in a weak position to argue for limited confounding. 
+\end{enumerate}
+\end{frame}
+
+\section{Sensitivity analysis with omitted variable bias}
+
+\begin{frame}{Omitted Variable Bias}
+\small
+The (old) idea of ``omitted variable bias'' (OVB): \\
+\medskip
+\onslide<2->  Suppose an investigator wishes to run:\\
+
+\begin{align}
+Y &= \hat{\tau} D + \X \hat{\beta} +  \hat{\gamma}Z + \hat{\epsilon}_{\text{full}}  \label{eq:fulleq}
+\end{align}
+
+\onslide<3-> But, $Z$ is unobserved, so they run:\\
+ 
+\begin{align}
+Y  &= \hat{\tau}_{\text{res}} D + \X \hat{\beta}_{\text{res}} + \hat{\epsilon}_{\text{res}}\label{eq:restrictedeq}
+\end{align}
+
+\medskip
+
+\onslide<4->  We can ask how $\hat{\tau}$ would change if you could add $Z$. \\
+\medskip
+\onslide<5-> Whether that full model is a wise one to run or corresponds to the quantity of interest up to you!
+\end{frame}
+
+\begin{frame}{Omitted Variable Bias}
+\onslide<1-> By ``partialling out'', we can use the traditional OVB formulation on multivariate data:
+\begin{align}
+\hat{\tau}_{\text{\text{res}}} &= \frac{\text{cov}(D^{\perp \X}, ~Y^{\perp \X})}{\text{var}(D^{\perp \X})} \notag\\
+			&= \frac{\text{cov}(D^{\perp \X},~\hat{\tau} D^{\perp \X} + \hat{\gamma}Z^{\perp \X} )}{\text{var}(D^{\perp \X})} \notag\\
+			% &= \hat{\tau} +  \hat{\gamma}\left(\frac{\text{cov}(D^{\perp \X},~Z^{\perp \X})}{\text{var}(D^{\perp \X})} \right) \notag\\
+				&= \hat{\tau} + \hat{\gamma}\hat{\delta}  \label{eq:biasdef}
+\end{align}
+\footnotesize
+\noindent where $Y^{\perp \X}$, $D^{\perp \X}$ and $Z^{\perp \X}$ are the variables $Y$, $D$ and $Z$ after removing the components linearly explained by $\X$ and we define $\hat{\delta} := \frac{\text{cov}(D^{\perp \X}, Z^{\perp \X})}{\text{var}(D^{\perp \X})}$.  \\
+\smallskip
+\normalsize
+\onslide<2-> Note that $\hat{\delta}$ is the coefficient you would get if you could run:
+\begin{align} 
+ Z &= \hat{\delta}D + \X \hat{\psi} + \hat{\epsilon}_{Z} 
+\end{align}
+ \end{frame}
+
+\begin{frame}{OVB continued}
+\onslide<1-> This leaves us with:
+ $$\widehat{\text{bias}} =  \hat{\gamma}\hat{\delta} $$
+ \small
+\begin{itemize}
+\item<2-> ``Bias equals impact times imbalance'' (both conditional and non-causal).
+\smallskip
+\item<3-> Key lesson: computing the consequence of omitting $Z$ on the estimate of $\tau$ requires knowing \textit{only} two things:
+\begin{itemize}
+\item how $Z$ relates to $Y$ (``impact'', $\gamma$) 
+\item how $Z$ relates to $D$ (``imbalance'', $\delta$)
+\end{itemize}
+\item<4-> This gives basis for a simple sensitivity analysis without assumptions about distribution of $\tau$, treatment assignment, etc. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Darfur example: sensitivity with OVB}
+\small
+\onslide<1-> Suppose a colleague argues:
+\begin{quote} Those in the center of the village were more likely to get hit than those on the edges, and have different attitudes. 
+\end{quote} \\
+\medskip
+
+\begin{itemize}
+\item<2-> How bad would this $Center$ confounder have to be to be problematic?
+\medskip
+\item<3-> Consider a contour plot where, at each pair of hypothesized ``impact'' and ``imbalance'' compute adjusted effect estimate, i.e $\hat{\tau} = \hat{\tau}_{\text{res}} - \hat{\gamma}\hat{\delta}$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{figure}[!h]
+{\centering
+\includegraphics[scale=.45]{natural_plot_new.pdf} 
+\label{fig:naturalplot}
+}
+%{\footnotesize
+%\textit{Note}: Sensitivity analysis with the traditional omitted variable bias formulation. The horizontal axis shows hypothetical values for the imbalance of the confounder \emph{Center/Periphery} between treated and control units. The vertical axis shows hypothetical values for the impact of the confounder on the outcome.  The ``heights'' shown by the contour lines give the adjusted effect size of the treatment on the outcome --- more specifically to our running example, the adjusted effect of \emph{Direct Harm} on \emph{Peace Index}, given hypothetical values for the imbalance and impact of \emph{Center/Periphery}.  Notice there are four possible quadrants for the sensitivity plot, here we consider only the worst case, in which the bias acts to move effects toward (or even through) zero.}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Reparameterization}
+\onslide<1-> Some problems with this approach:
+\small
+\begin{itemize}
+\item<2-> \emph{Center} was binary variable, so units of measure attached to ``impact'' and ``imbalance'' are natural; but often scaling is more arbitrary. Consider abstract confounders like ``Political Attitudes''. 
+\bigskip
+\item<3-> More generally, the ``name a possible confounder'' approach is too narrow: need to generalize to confounders of arbitrary scale, multiple confounders. 
+\end{itemize}
+\normalsize
+\onslide<4-> We reparameterize ``impact'' and ``imbalance'' using partial $R^2$ (of $Z$ with $D$ and of $Z$ with $Y$) 
+\small
+\begin{itemize}
+\item gives scale-free yet intuitive measure of association
+\item turns out to make a number of other tasks possible or easier: multiple $Z$, non-linear action, bounding, variance
+%allow us to consider many/all confounders acting together and non-linearly
+%\item will enable sensitivity analysis of variance (and thus t-values, p-values, etc.) as well
+%\item will lead to a useful bounding approach and extreme-scenario analyses
+\end{itemize}
+\end{frame}
+%
+%\begin{frame}{Reparameterization}
+%\onslide<1-> Reparameterizing as partial $R^2$ (of $Z$ with $D$ and of $Z$ with $Y$) gives scale-free yet intuitive measure of association. Moreover, we discovered some useful things that are easier once you do this:
+%\small
+%\begin{enumerate}
+%\item<2->  assessing the sensitivity of an estimate to any number or even \emph{all} confounders acting together, possibly non-linearly
+%\item<3-> using the same framework to assess the sensitivity of point estimates as well as t-values and confidence intervals 
+%\item<4->  assessing the sensitivity to extreme-scenarios in which all or a big portion of the unexplained variance of the outcome is due to confounding;
+%\item<5-> applying contextual information about the research design to bound the strength of the confounders
+%\item<6-> some simple statistics for easy, routine reporting.
+%\end{enumerate}
+%\end{frame}
+
+\begin{frame}{Bias formulas}
+\begin{align}
+|\widehat{\text{bias}}| &= \text{se}(\hat{\tau}_{\text{res}}) \sqrt{\frac{ R^2_{Y\sim Z|\X, D}~ R^2_{D\sim Z | \X}}{1 - R^2_{D\sim Z | \X}} (\text{df})} \label{eq:r2bias2}
+\end{align}
+
+
+\begin{align}
+\text{se}(\hat{\tau})  = \text{se}(\hat{\tau}_{\text{res}}) \sqrt{\frac{1 - R^2_{Y\sim Z|\X, D}}{1 - R^2_{D\sim Z | \X}} \left(\frac{\text{df}}{\text{df}-1}\right)}  \label{eq:r2se} 
+\end{align}
+
+\bigskip
+%\onslide<2-> Computationally convenient---the only data dependent parts are $SE(\hat{\tau}_{\text{res}})$ and  df  \\
+\bigskip
+%\onslide<3-> Note that $R^2_{D\sim Z| \X} = R^2_{Z \sim D |X}$, so we avoid the ``reverse regression'' problem we have with $\delta$.
+\end{frame}
+
+\begin{frame}{Backup: what is the partial $R^2$}
+First, the partial correlation, is the correlation after partialing out, e.g. $R_{Y \sim D|X} = cor(Y^{\perp X}, D^{\perp X})$. Square that to get the partial $R^2$. \\
+
+\bigskip
+
+\onslide<2->  $R^2_{D \sim Z|X}$, for example can be thought of as the ``proportion of variance explained in $D$ by $Z$, after accounting for $X$.  Specifically, we mean:
+
+\begin{align}
+    R^2_{D\sim Z | \X}~=~\frac{R^2_{D\sim \X + Z } - R^2_{D\sim \X}}{1 - R^2_{D\sim \X}}        
+\end{align}
+
+\onslide<3-> Similarly you could say:\\
+
+\begin{align}
+    R^2_{Y\sim Z|D, \X}=\frac{ R^2_{Y\sim D + \X + Z} - R^2_{Y\sim D + \X}}{1 -  R^2_{Y\sim D + \X}}, 
+\end{align}
+
+Note that the direction does not matter: $R^2_{Z \sim D} = \text{cor}(Z, D)^2 =  \text{cor}(D, Z)^2 = R^2_{D \sim Z}$. 
+\end{frame}
+%
+%Let $R^2_{Z \sim D}$ denote the (sample) $R^2$ of regressing $Z$ on $D$. Recall that for OLS the following holds, $R^2_{Z\sim D}  
+%= \frac{\text{var}(\hat{Z})}{\text{var}(Z)} 
+%= 1 - \frac{\text{var}(Z^{\perp D})}{\text{var}(Z)} 
+%= \text{cor}(Z, \hat{Z})^2
+%= \text{cor}(Z, D)^2 
+%$, 
+%where $\hat{Z}$ are the fitted values given by regressing $Z$ on $D$.
+%
+
+\begin{frame}{Deriving the bias formula in the $R^2$ parameterization}
+By FWL,
+\footnotesize
+\begin{align}
+\widehat{\text{bias}} &=  \hat{\delta}\hat{\gamma}\notag\\
+ &= \left(\frac{\text{cov}(D^{\perp \X}, ~ Z^{\perp \X})}{\text{var}(D^{\perp \X})}\right) \left(\frac{\text{cov}(Y^{\perp \X,D}, ~Z^{\perp \X,D})}{\text{var}(Z^{\perp \X,D})}\right) \notag\\
+&= \left(\frac{\text{cor}(D^{\perp \X}, ~ Z^{\perp \X})\text{sd}(Z^{\perp X})}{\text{sd}(D^{\perp X})}\right) \left(\frac{\text{cor}(Y^{\perp X,D}, ~Z^{\perp X,D})\text{sd}(Y^{\perp \X, D})}{\text{sd}(Z^{\perp \X,D})}\right) \notag\\
+&=  \left(\frac{\text{cor}(Y^{\perp \X, D}, ~Z^{\perp \X,D}) \text{cor}(D^{\perp \X}, ~ Z^{\perp \X})}{\frac{\text{sd}(Z^{\perp \X, D})}{\text{sd}(Z^{\perp \X})}} \right)  \left(\frac{\text{sd}(Y^{\perp \X,D})}{ \text{sd}(D^{\perp \X}) } \right) \label{eq:biascor}
+\end{align}
+
+\onslide<2->
+Noting that $\text{cor}(Y^{\perp \X,D},Z^{\perp \X,D}) ^ 2 = R^2_{Y\sim Z|\X,D}$,  that $\text{cor}(Z^{\perp \X}, ~D^{\perp \X})^2 = R^2_{D\sim Z | \X}$, and that $\frac{\text{var}(Z^{\perp \X, D})}{\text{var}(Z^{\perp \X})} = 1-R^2_{Z \sim D | \X} = 1-R^2_{D \sim Z | \X}$, we can write \ref{eq:biascor} as simply,\\
+\onslide<3-> 
+\begin{align}
+|\widehat{\text{bias}}| &= \sqrt{\frac{ R^2_{Y\sim Z|D, \X}~ R^2_{D\sim Z | \X}}{1 - R^2_{D\sim Z | \X}}} \left(\frac{\text{sd}(Y^{\perp \X, D})}{ \text{sd}(D^{\perp \X}) }\right) \label{eq:r2bias}
+\end{align}
+\end{frame}
+
+\begin{frame}{Bias anatomy}
+\begin{align}
+\text{relative bias}  =
+\frac{\overbrace{|R_{Y\sim Z|\X, D} \times f_{D\sim Z|\X}|}^\text{bias factor}}{\underbrace{|f_{Y\sim D|\X}|}_\text{partial f of D with Y}} =\frac{BF}{|f_{Y\sim D|\X}|} \label{eq:bf}
+\end{align}
+\small
+\begin{itemize}
+\item<1->   $f$ is from the (partial) Cohen's $f^2$,  which is $R^2/(1-R^2)$. 
+%\item<2-> ``Bias Factor'' (BF): partial Cohen's $f$  of the confounder with  treatment %, adjusted by partial correlation of that confounder with the outcome. 
+\item<2-> Size of relative bias is the  BF compared to  $f_{Y\sim D|\X}$.
+\begin{itemize}
+\item  $f_{Y\sim D|\X}$ is just a transformation of $R_{Y \sim D|X}$.  (Also simply $t_D/\sqrt{df}$)
+\item $f_{Y\sim D|\X}$ is the \textit{only} property of the data that enters.
+\end{itemize}
+%\item<4-> This formula alone allows assessment of sensitivity to any hypothesized confounder
+\item<3-> This form reminds us that sensitivity is an identification problem, unrelated to sample size.
+%Equation \ref{eq:bf} also reveals that, given a particular confounder (which will fix $BF$), the only property needed to determine the robustness of a regresson estimate against that confounder is the partial $R^2$ of the treatment with the outcome (via $f_{Y\sim D|\X}$). Serves to reinforce the fact that robustness to confounding is an identification problem, impervious to sample size considerations. While t-values and  p-values might be informative with respect to the statistical uncertainty (in a correctly specified model), robustness to mispecification is determined by the share of variation of the outcome the treatment uniquely explains.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Variance anatomy}
+
+\begin{align}
+\text{relative variance}   &=  
+\overbrace{\left(1 - R^2_{Y\sim Z|\X, D}\right)}^\text{VRF} 
+\underbrace{\left(\frac{ 1}{ 1 - R^2_{D\sim Z | \X}}\right)}_\text{VIF}
+\overbrace{\left(\frac{\text{df}}{\text{df}-1}\right)}^\text{change in df} \notag\\
+&= \text{VRF} \times \text{VIF} \times \text{change in df}
+\end{align}
+
+\small
+%\begin{itemize}
+%\item confounder (had it been included) reduces variance of estimate by reducing the residual variance of $Y$ (variance reduction factor---VRF)
+%\item at the same time, including the confounder would inflate the variance through its correlation with treatment (the traditional variance inflation factor---VIF).
+%\end{itemize}
+\end{frame}
+
+\section{Tools}
+
+\begin{frame}{Tools}
+\begin{enumerate}
+\item Two simple statistics for routine reporting:  $RV$ and  $R^2_{Y\sim D|\X}$ 
+\bigskip
+\item Contour plots of various confounding-adjusted quantitites, with bounds
+\bigskip
+\item Extreme-scenario plots when large proportion of residual may be due to confounder.
+\bigskip
+\end{enumerate}
+%\footnotesize
+%\begin{itemize}
+%\item proportion of variance in the outcome uniquely explained by the treatment  -- $R^2_{Y\sim D|\X}$.  If confounder explained \textit{all} residual variance of the outcome, to bring the estimated effect down to zero, this would equal the partial $R^2$ of the confounder with the treatment.
+%\item \textit{Robustness Value} (RV): what confouner, with equal association with the treatment and the outcome, would bring down your estimate by some proportion $q$? 
+%\end{itemize}
+%\small
+%\footnotesize
+%\begin{itemize}
+%\item ``Benchmarking'' using other covariates is problematic.  If you can instead assume some $X$ is ``$k$ times worse'' than the confounder,  you can bound how bad the confounder is.
+%\item Can do contour plots of other statistics, such as t-stat, to determine when significance of inference changes
+%\end{itemize}
+%\small
+%\footnotesize
+%\begin{itemize}
+%\item suppose your confounder(s) explain some proportion of residual outcome, perhaps all of it. As you vary how strongly it is related to treatment, how does your point estimate change?
+%\end{itemize}
+\end{frame}
+
+\begin{frame}{First, good to have this in your head: }
+
+\begin{figure}
+\caption{Contour plot with partial $R^2$}
+\includegraphics[scale=.4]{contour_nobounds.pdf} 
+%\caption{Sensitivity contours of point estimate --- informal benchmarking \emph{versus} proper bounds}}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Simple statistics for reporting sensitivity}
+\begin{itemize}
+\item<1-> \textit{Robustness Value} (RV):  what is the point with equal association to treatment and outcome that would eliminate the effect?
+\begin{itemize}
+\item<2-> $RV_q$: What confounder, with equal association...would bring down your estimate by some proportion $q$? 
+\item<3-> $RV_{\alpha}$: What confounder, with equal association...would bring down your estimate so that t-statistic corresponds to some $\alpha$ level?
+\end{itemize}
+\medskip
+\item<4-> $R^2_{Y\sim D|\X}$: partial variance explained by treatment
+\begin{itemize}
+\item<5-> if confounder explained \textit{all} residual variance of the outcome, to bring the estimated effect down to zero, this would equal the partial $R^2$ of the confounder with the treatment.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Augmented Regression Table: Darfur example}
+\footnotesize
+\begin{table}[!h] \centering 
+\begin{tabular}{lrrrrrr}
+%\multicolumn{7}{c}{Sensitivity to unobserved confounding}                                   \\
+\multicolumn{7}{c}{Outcome: \textit{Peace Index}}                                         \\
+\hline \hline
+Treatment:       & Est.  & SE    & t-value &  $R^2_{Y\sim D|\X}$  & RV & $\text{RV}_{\alpha=0.05}$ \\
+\hline
+\textit{Directly Harmed} & 0.097 & 0.023 & 4.18    & 2.2\%  & 13.9\%   &  7.6\%               \\
+\hline
+df = 783 &       &   \multicolumn{5}{r}{ \small  \textit{Bound (1 $\times$ female):}  $R^2_y$ = 12\%, $R^2_d$ = 1\%} \\
+\end{tabular}
+\end{table}
+%\footnotesize
+%\begin{itemize}
+%\item  \textbf{RV:} unobserved confounders would need to explain at least 13.9\% of the residual variance of both treatment and outcome to explain away the effect entirely.  Would need to explain 7.6\% of both to reduce estimated effect to have $\alpha=0.05$. 
+%\item \textbf{$R^2_{Y\sim D|\X}$}:  central quantity in determining robustness. Concretely, if confounders explained 100\% of the residual variance of the outcome, they would need to explain this much  ($2.2\%$) of the residual variance of the treatment to bring down the estimated effect to zero.
+%\item Bounds:  bounds on confounding under assumption that $female$ is ``worse'' than the confounding.
+%\end{itemize}
+
+\onslide<2-> Somebody tell us: 
+\begin{itemize}
+\item what does this RV mean? 
+\item what does thie $RV_{\alpha=0.05}$ mean?
+\item what does this $R^2_{Y \sim D |X}$ mean?
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Adding bounds}
+How can our substantive knowledge of situation and research design enable plausibility judgements about what confounders might exist?
+\small
+\bigskip
+\begin{itemize}
+\item<2-> A common existing approach we'll refer to as ``informal benchmarking'' considers a given covariate $X_j$ and  its observed relationship (e.g. partial $R^2$) with $D$ and with $Y$ as benchmarks. 
+\medskip
+\item<3-> They are intended to help ``calibrate our intuition'' or tell us how a confounder ``not unlike $X_j$'' would  change our  answer.
+\medskip
+\item<4-> But, the bias caused by the confounder changes these observed statistics in problematic ways (even when $\X \perp Z$).
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Confounding of informal benchmarks}
+Consider how the coefficient on $\X$ is altered by omissions of $Z$, using the same OVB approach:
+
+\begin{align}
+\hat{\beta}_{\text{res}} - \hat{\beta} = \hat{\gamma}\hat{\psi}
+\end{align}
+
+\noindent where $\hat{\psi}$ is obtained from the regression $Z = \hat{\delta}D + \X \hat{\psi} + \hat{\epsilon}_{Z}$. 
+\medskip
+\begin{itemize}
+\item<1-> Note that $\hat{\psi}$ can be non-zero even if $\X \perp Z$,  because $D$ is a collider
+\smallskip
+\item<2-> Thus, claims comparing  $\hat{\beta}_{\text{res}}$  with a hypothesized confounder, as if $\hat{\beta}_{\text{res}} \approx \hat{\beta}$ can be very misleading. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Illustrating the benchmark problem}
+Suppose: 
+\begin{align}
+X &= \epsilon_x\\
+Z &= \epsilon_z\\
+D &=  X + Z + \epsilon_d\\
+Y &=  X + Z + \epsilon_y
+\end{align}
+
+\bigskip
+\small
+\begin{itemize}
+\item<2->  No true effect of $D$ on $Y$
+\item<2-> $Z$ and $X$ exactly alike in terms of relationship to $D$ and to $Y$
+\end{itemize}
+\bigskip
+\onslide<3-> We would thus like a benchmarking analysis to tell us that an omitted confounder ``not unlike $X$'' would indeed eliminate our estimated effect of $D$.
+%\begin{itemize}
+%\item Regressing $Y$ on $[D \; X]$, you get $\hat{\tau}_{\text{res}} = 0.5$ due to confounding. %, $\text{se}(\hat{\tau}_{\text{res}}) = 0.0027$. 
+%\item Using $X$ as a benchmark would give  $\{\hat{R^2}_{Y \sim X | D}=0.10,  \hat{R^2}_{D \sim X}=0.34\}$, suggesting a confounder exactly like $X$ generates bias of $0.19$, for an adjusted effect estimate of $0.31$. 
+%\item This must be wrong, since confounder is exactly like the covariate, and including it would adjust our estimate to zero. 
+%\end{itemize}
+\end{frame}
+
+\begin{frame}{Illustrating the benchmark problem}
+
+\begin{figure}
+\includegraphics[scale=.48]{informal_vs_bound.pdf} 
+%\caption{Sensitivity contours of point estimate --- informal benchmarking \emph{versus} proper bounds}}
+\end{figure}
+%\scriptsize Investigator would incorrectly conclude that a confounder ``not unlike $X$'' would not be sufficient to bring down the estimated effect to zero. 
+\end{frame}
+
+\begin{frame}{Bounding Approach}
+\small
+More important is what we can actually do: Transform \textcolor{Blue}{formal claims about how observables compare to confounders} in explaining $D$ and $Y$  into \textcolor{Blue}{bounds on the confounders}. \\
+
+\begin{itemize} 
+\item<2-> \textcolor{Blue}{Motivation}: suppose you have an observed covariate you can argue explains more of the (residual variance of) treatment assignment than confounding possibly could.  Likewise for outcome variance. 
+\item<3-> \textcolor{Blue}{More generically}:  there is always some $k_D$, $k_Y$ s.t.:
+\begin{align}
+k_D := \frac{R^2_{D\sim Z|\X_{-j}}}{R^2_{D\sim X_{j}|\X_{-j}} },  \qquad k_Y := \frac{R^2_{Y \sim Z |\X_{-j},D}}{R^2_{Y \sim X_{j} |\X_{-j},D}}
+\end{align}
+%\item<5-> Can be done with quantities (e.g. leaving $D$ out of outcome regression, or leaving out everything to get total correlation). 
+\item<4-> Can be done with any sub-group or with all covariates jointly
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Result: bounding the confounding subject to assumption}
+\small
+\onslide<1-> Given some $\{ X_j,  k_D, k_Y\}$,  the strength of the confounders is bounded at:\\
+\begin{align}
+R^2_{D\sim Z|\X} = k_D f^2_{D\sim X_{j}|\X{-j}}, \qquad R^2_{Y\sim Z|\X, D} \leq \eta^2 f^2_{Y \sim X_j|\X_{-j},D} 
+\end{align}
+\onslide<2-> \noindent where $\eta =  \frac{\sqrt{k_Y}+  \left|f_{D\sim \sqrt{k_D} X_{j}|\X{-j}} \times f_{D\sim X_{j}|\X{-j}}\right| }{ \sqrt{1 - f^2_{D\sim \sqrt{k_D} X_{j}|\X{-j}} \times f^2_{D\sim X_{j}|\X{-j}} }}$.  \\
+\bigskip
+\onslide<3-> Allows us to investigate the maximum effect a confounder at most ``k times'' as strong as a particular covariate $X_j$ would have on the coefficient estimate. \\
+
+\begin{itemize}
+\item  Certain values for $k_D$ and $k_Y$ may be ruled out by the data (for instance, if $R^2_{D\sim X_{j}|\X_{-j}}~=~50\%$ then $k_D$ must be less than 1).
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Confounder bounding continued}
+\onslide<2->  \begin{center} \textcolor{Red}{This shows the bounds implied by an assumption -- you must judge/argue if its a believable assumption.} \end{center}
+\bigskip
+\begin{itemize}
+\item<3-> In a poorly controlled regression, you may not be able to defend any values of $k_D$ and $k_Y$ for any covariate or even all covariates. 
+\smallskip
+\item<4-> In a natural experiment where you know about treatment assignment or the outcome, you may have more traction.
+\smallskip
+\item<5-> Example: in the Darfur case, within village it is hard to imagine any basis for targeting of violence that could approach the importance of \textit{female} indicator, so let's use it for this assumption.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Contour plots with bounds}
+\begin{figure}
+\includegraphics[scale=.45]{r2contour_female.pdf} 
+\end{figure}
+\footnotesize
+\vspace{-.2in}
+\onslide<2-> Point estimate robust to a confounder 1, 2, or 3 times as strong as female. (Conservative in case of multiple, non-linear  confounders)
+\end{frame}
+
+%Moving to inferential concerns, Figure \ref{fig:r2tplot} now shows the sensitivity of the \emph{t-value} of the treatment effect. As expected, the sensitivity of the treatment effect changes when considering the t-value --- as we move along the horizontal axis, not only the adjusted effect reduces, but we also get larger standard-errors due to the variance inflation factor of the confounder. If we take the t-value of 2 as our reference (the usual value for an approximately 95\%  confidence interval), the plot reveals the statistical significance of \emph{Directly Harmed} is robust to a confounder as strong, or twice strong as \emph{female}. However,  whereas a confounder \emph{three times} as strong as \emph{female} would not bring down the point estimate to zero, we cannot guarantee the estimate would remain ``statistically significant'' at the 5\% level. This naturally leads to the question: is such a confounder plausible? If so, what could this confounder  \emph{three times} as strong as \emph{female} be?  Note how this moves the discussion from a qualitative argument about whether confounding is possible to a more disciplined, quantitative argument that entices researchers to think about possible threats to their study design.
+
+\begin{frame}{Contour plot of t-statistics}
+\begin{figure}
+\includegraphics[scale=.45]{tcontour.pdf} 
+\end{figure}
+\vspace{-.2in}
+\footnotesize
+\onslide<2-> T-stat robust to a confounder as strong or twice as strong as $female$
+\end{frame}
+
+
+%\subsection{Extreme scenario plots}
+\begin{frame}{Extreme Scenario Plots}
+\onslide<1->  Suppose we have cannot convincingly argue about limits to how much confounding explains of the outcome.  \\
+\small
+\begin{itemize}
+\item<2-> Suppose all residual variation of outcome is due to $Z$ (i.e. $R^2_{Y \sim Z|\X, D} = 1$) or similar conservative assumption: then \textit{how strongly would confounding have to be associated with treatment to be problematic?}
+\smallskip
+\item<3-> Often gives bad news: you pay a price for not being able to rule out moderate confounders by design or special knowledge!
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Extreme Scenario Plots: Example}
+\vspace{-.7in}
+\begin{figure}
+\includegraphics[scale=.7]{extreme_darfur.pdf} 
+\end{figure}
+\vspace{-.3in}
+\footnotesize
+\onslide<2->  In the most extreme scenario, confounder(s) have to explain 2.2\% of the treatment to bring effect to zero (which is exactly $R^2_{Y\sim D|\X}$).  Compare to bound obtained from ``1 x female''. (red marker)
+\end{frame}
+
+
+\begin{frame}{Anticipating Abuses}
+\begin{itemize}
+\item<1-> There cannot exist a suitable guideline for what a ``good enough'' RV or anything else should be.   Why?
+\begin{itemize}
+\item<2-> This is not a ``test'' for confounding; we are revealing what confounding would be problematic. 
+\item<3-> The idea is to refine debate about confounding in your situation, not to hide behind a rule. 
+\end{itemize}
+\normalsize
+\bigskip
+\item<4-> Readers should demand good stories for bounding exercise
+\begin{itemize}
+\item point is not to show ``it survives a bound'', but rather to convince us that confounding is not likely to be $k$-times worse than a given covariate.
+\end{itemize}
+\item<5-> Extreme scenario analysis does not excuse poor design -- you pay a cost for inability to rule out confounders.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Arguing (from conclusion of the software paper)}
+\scriptsize
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item<1->
+  A causal interpretation of the research conclusion may be defended by
+  claiming that, given the way injuries (the ``treatment'') occurred, 
+  the scope for targeting particular types of
+  individuals was quite limited... \textcolor{Gray}{aircraft dropped makeshift and unguided
+  bombs and other objects over villages, and militia raided without
+  concern for who they would attack---the only known major exception to
+  this, due to sexual assaults, was targeting gender, which is also one
+  of the most visually apparent characteristics of an individual.} Thus,
+  a confounder twice as strong as female would be surprising.
+  \medskip
+\item<2->
+  Similarly, for the causal conclusion to be persuasively dismissed, 
+  it does not suffice to argue that \textit{some} confounding might exist. Helpful skepticism must articulate why a confounder that explains more than twice of the variation of the treatment assignment than the
+  covariate female is plausible. Otherwise, the putative
+  confounder cannot logically account for all the observed association,
+  even if it explains all or some large portion of the residual outcome variation.
+\end{enumerate}
+\medskip
+\onslide<3-> \centering{\small This is the kind of argumentation I expect when using benchmarks.}
+
+\end{frame}
+
+
+\begin{frame}{Good practice:}
+\small
+\begin{enumerate}
+\item<1-> For any regression, provide a table with RV, $\text{RV}_{\alpha=0.05}$, and $R^2_{Y \sim  D|\X}$ 
+\smallskip
+\item<2-> Say what you can about whether confounders that would alter conclusions are likely, given design and knowledge
+\begin{itemize}
+\item If informative, show bounds and explain why that covariate is likely stronger than confounder
+\smallskip
+\item Show contour plots to examine more elaborate arguments 
+\smallskip
+\end{itemize}
+\item<3-> Show extreme scenario plots, particularly if we have few arguments with which to limit $R^2_{Y \sim Z | D, \X}$.
+\smallskip
+\item<4-> These tools also empower you as a reader or reviewers:  if researchers do not reveal sensitivity of their estimates, you can do much of this with just $t$ and $df$.
+\smallskip
+\end{enumerate}
+
+\onslide<5->
+\begin{center} 
+\textcolor{Blue}{Bigger picture}: Moving away from ``is it identified'', towards more informative debate over ``how much confounding would change the conclusion''.
+\end{center}
+\end{frame}
+
+
+
+%\section{Extra Slides}
+
+
+
+%\begin{frame}{Summarizing Sensitivity Analyses}
+%\begin{itemize}
+%\item<1-> There are many different sensitivity approaches, under different estimation procedures and different assumptions.
+%\smallskip
+%\item<2-> None are a silver bullet! They can only add specificity and discipline to a discussion about ``could my result be due to confounding?''
+%\smallskip
+%\item<3-> Specifically, they can reveal the type of confounders that would be trouble -- but the investigator still needs a basis for arguing whether such a confounder is likely to exist.
+%\smallskip
+%\item<4-> Still, moves us from ``our result is unbiased under this ID strategy'' to ``our result may be wrong, but will hold unless confounder is worse than ... ''.
+%\smallskip
+%\item<5-> Use with caution -- moral hazards abound, particularly if you have weak covariates and use them for benchmarking/bounding.
+%\end{itemize}
+%\end{frame}
+
+% If one can argue to have measured the most important covariates, it is possible to bound the strength of the confounder (Section \ref{sec:bounding} and Appendix \ref{app:bounding}) and judge where it falls relative to these quantities. The right corner of Table \ref{fig:rv} shows the \emph{maximum strength of association that a confounder as strong as $female$ could have}: $R^2_y$ = 12\%, $R^2_d$ = 1\%. As the robustness value is higher than either quantity, such a confounder could not fully eliminate the point estimate.  In addition, since 1\% is less than $R^2_{Y\sim D|\X} = 2.2\%$, a ``worst case confounder'' explaining all of the left-out variance of the outcome and as strongly associated with the treatment as $female$ would not eliminate the estimated effect either. Expert knowledge and a sound research design are required to make such comparisons meaningful: in our running example, a reasonable  argument can be made that gender is one of the most visually apparent characteristics of an individual during the attacks, and that if violence was targeted, this was likely the most important basis for it -- in particular, many women were sexually assalted during \textit{Janjaweed} attacks.  If one can argue that total confounding as strong as $female$ is implausible, the results show it cannot completely account for the observed effect. 
+
+%As previously discussed, these sensitivity exercises are exact when considering a single linear unobserved confounder and are conservative for multiple unobserved confounders, possibly acting non-linearly --- this includes the explanatory power of \emph{all left out factors}, even misspecification of the functional form of observed covariates. It's worth pointing out that sensitivity to any arbitrary confounder with a given pair of partial $R^2$ can also be easily computed with the information on the table, see example in Appendix \ref{app:tables}.  
+
+%Finally, adjusting for confounding may bring the estimate into a range where it is no longer ``statistically significant''. As shown in Equation \ref{eq:rvt}, we can compute the robustness value for the t-value as well. Accounting for sample uncertainty can considerably change the robustness of the treatment effect: in our running example, for a significance level of 5\%, the robustness value goes down from 13.9\% to 7.6\% --- that is, confounders would need to be only about half as strong to make the estimate not ``statistically significant''. But to better discuss the sensitivity of t-values in the context of our running example we need the aid of visual tools, which are shown next. 
+
+%\section{Further Details}
+%\begin{frame}{Partial R2 reparameterization of OVB}
+%\small
+%Let $R^2_{Z \sim D}$ denote the (sample) $R^2$ of regressing $Z$ on $D$. Recall that for OLS the following holds:
+%
+%\begin{align}
+%R^2_{Z\sim D}  
+%= \frac{\text{var}(\hat{Z})}{\text{var}(Z)} 
+%= 1 - \frac{\text{var}(Z^{\perp D})}{\text{var}(Z)} 
+%= \text{cor}(Z, \hat{Z})^2
+%= \text{cor}(Z, D)^2 
+%\end{align}
+%
+%\noindent where $\hat{Z}$ are the fitted values given by regressing $Z$ on $D$. Notice that both the $R^2$ and the correlation are symmetric, that is, they are invariant to whether one uses the ``forward'' or the ``reverse'' regression because $R^2_{Z \sim D} = \text{cor}(Z, D)^2 =  \text{cor}(D, Z)^2 = R^2_{D \sim Z}$. We extend this to the case with covariates $\X$, denoting the partial $R^2$ from regressing $Z$ on $D$ after controlling for $\X$ as $R^2_{Z \sim D|\X}$. This has the same useful symmetry, with $R^2_{Z \sim D | \X} =  1 - \frac{\text{var}(Z^{\perp \X, D})}{\text{var}(Z^{\perp X})} =  \text{cor}(Z^{\perp \X},D^{\perp \X})  = \text{cor}(D^{\perp \X}, Z^{\perp \X}) = R^2_{D \sim Z | \X}$. 
+%\end{frame}
+%
+%\begin{frame}{}
+%\small
+%We now express the bias in terms of partial $R^2$. First, by the FWL theorem,
+%\begin{align}
+%\widehat{\text{bias}} &=  \hat{\delta}\hat{\gamma}\notag\\
+% &= \left(\frac{\text{cov}(D^{\perp \X}, ~ Z^{\perp \X})}{\text{var}(D^{\perp \X})}\right) \left(\frac{\text{cov}(Y^{\perp \X,D}, ~Z^{\perp \X,D})}{\text{var}(Z^{\perp \X,D})}\right) \notag\\
+%&= \left(\frac{\text{cor}(D^{\perp \X}, ~ Z^{\perp \X})\text{sd}(Z^{\perp X})}{\text{sd}(D^{\perp X})}\right) \left(\frac{\text{cor}(Y^{\perp X,D}, ~Z^{\perp X,D})\text{sd}(Y^{\perp \X, D})}{\text{sd}(Z^{\perp \X,D})}\right) \notag\\
+%&=  \left(\frac{\text{cor}(Y^{\perp \X, D}, ~Z^{\perp \X,D}) \text{cor}(D^{\perp \X}, ~ Z^{\perp \X})}{\frac{\text{sd}(Z^{\perp \X, D})}{\text{sd}(Z^{\perp \X})}} \right)  \left(\frac{\text{sd}(Y^{\perp \X,D})}{ \text{sd}(D^{\perp \X}) } \right) \label{eq:biascor}
+%\end{align}
+%
+%Noting that $\text{cor}(Y^{\perp \X,D},Z^{\perp \X,D}) ^ 2 = R^2_{Y\sim Z|\X,D}$,  that $\text{cor}(Z^{\perp \X}, ~D^{\perp \X})^2 = R^2_{D\sim Z | \X}$, and that $\frac{\text{var}(Z^{\perp \X, D})}{\text{var}(Z^{\perp \X})} = 1-R^2_{Z \sim D | \X} = 1-R^2_{D \sim Z | \X}$, we can write \ref{eq:biascor} as:
+%
+%
+%\begin{align}
+%|\widehat{\text{bias}}| &= \sqrt{\frac{ R^2_{Y\sim Z|\X, D}~ R^2_{D\sim Z | \X}}{1 - R^2_{D\sim Z | \X}}} \left(\frac{\text{sd}(Y^{\perp \X, D})}{ \text{sd}(D^{\perp \X}) }\right) \label{eq:r2bias}
+%\end{align}
+%
+%Equation~\ref{eq:r2bias} rewrites the OVB formula in terms that more conveniently rely on partial $R^2$ measures of association rather than raw regression coefficients.  Investigators may be interested in how confounders alter inference as well, so we also examine the standard error. Let $\text{df}$ denote the regression's degrees of freedom (for the restricted regression actually run). Noting that
+%
+%\begin{align}
+%\text{se}(\hat{\tau}_{\text{res}}) &= \frac{\text{sd}(Y^{\perp \X,D})}{\text{sd}(D^{\perp \X})} \sqrt{\frac{1}{\text{df}}} \label{eq:seres} \\  
+%\text{se}(\hat{\tau}) &= \frac{\text{sd}(Y^{\perp \X,D, Z})}{\text{sd}(D^{\perp \X, Z})} \sqrt{\frac{1}{\text{df} - 1}} \label{eq:sefull}
+%\end{align}
+%
+%\noindent  whose ratio is
+%\begin{align}
+%\frac{\text{se}(\hat{\tau})}{\text{se}(\hat{\tau}_{\text{res}})} &= \left(\frac{\text{sd}(Y^{\perp \X, D, Z})}{\text{sd}(Y^{\perp \X,D})}  \right) 
+%                                                                 \left(\frac{\text{sd}(D^{\perp \X})}{\text{sd}(D^{\perp \X, Z})}  \right) 
+%                                                                 \sqrt{\frac{\text{df}}{\text{df}-1}}
+%\end{align}
+%
+%\noindent  We obtain the expression for the standard error of $\hat{\tau}$
+%
+%\begin{align}
+%\text{se}(\hat{\tau})  = \text{se}(\hat{\tau}_{\text{res}}) \sqrt{\frac{1 - R^2_{Y\sim Z|\X, D}}{1 - R^2_{D\sim Z | \X}} \left(\frac{\text{df}}{\text{df}-1}\right)}  \label{eq:r2se} 
+%\end{align}
+%
+%\noindent  Moreover, with this we can further see the bias as:
+%
+%\begin{align}
+%|\widehat{\text{bias}}| &= \text{se}(\hat{\tau}_{\text{res}}) \sqrt{\frac{ R^2_{Y\sim Z|\X, D}~ R^2_{D\sim Z | \X}}{1 - R^2_{D\sim Z | \X}} (\text{df})} \label{eq:r2bias2}
+%\end{align}
+%
+%\noindent Equations \ref{eq:r2bias2} and \ref{eq:r2se} form the basis of the sensitivity exercises regarding both the point estimate and the standard error, with sensitivity parameters in terms of $R^2_{Y\sim Z|\X, D}$ (``how much of the variance of the outcome can be explained uniquely by the confounder?'') and $R^2_{D\sim Z | \X}$ (``how much of the variance of the treatment can be explained uniquely by the confounder?''). These formulae are computationally convenient --- the only data dependent parts are the standard error of $\hat{\tau}_{\text{res}}$ and the regression's degrees of freedom, which are already reported by most regression software. A more intuitive formulation is presented on Section \ref{sec:r2sense}.
+%
+%\end{frame}
+%
+%\section{Further Background}
+%\subsection{Matching}
+%
+%\begin{frame}
+% \frametitle{For matched pairs}
+%\begin{itemize}
+%  \item<1-> One well-known approach developed by Rosenbaum (2002),  has a single tuning parameter $\Gamma\geq1$ that measures departure from zero hidden bias.\medskip
+%  \item<2-> Consider two units $i$ and $j$ with identical covariate values $X_i= X_j$. Under selection on observables, both units must have the same probability of assignment to the treatment, $\pi(X_i) = \pi(X_j)$.\medskip
+%  \item<3-> But, suppose that due to a binary unobserved confounder, $U$, matched units $i$ and $j$ have varying odds  ($\pi/(1-\pi)$) of getting treatment, and the ratio of their odds being:
+%       \[
+%\frac{1}{\Gamma} \leq \frac{\pi_i (1-\pi_j)}{(1-\pi_i)\pi_j} \leq \Gamma
+%      \]\medskip
+%\item<4-> Implies that probability of treatment for the unit with higher $U$ is given by $\frac{\Gamma}{\Gamma+1}$
+%\end{itemize}
+%\end{frame}
+%
+%\begin{frame}
+% \frametitle{Formal Sensitivity Tests}
+% \begin{itemize}
+% \item<1-> $\Gamma=1$ no hidden bias, but if $\Gamma=2$ unit $i$ has twice the odds of being treated as unit $j$ (despite identical X)
+% \smallskip
+% \item<2-> In best-known version (called the ``primal''), only odds of treatment assignment is varied; effect of $U$ on the outcome is assumed to be infinite (unit with higher odds of treatment will \textit{always} be assumed to have the higher outcome value). 
+% \smallskip
+%\item<3-> At any chosen value of $\Gamma$ you can do a version of a permutation test where the odds of treatment assignment respect $\Gamma$. 
+%\item<4-> We can try different values of $\Gamma$, and see where effect losses significance or switched sign.  \medskip
+%%\item Various versions of this test exist for unmatched data, matched data, binary and continuous outcomes
+%\item<5-> In R: \texttt{psens(rbounds)} and \texttt{hlsens(rbounds)}\\
+%\end{itemize}
+%\end{frame}
+%
+%\begin{frame}
+%  \frametitle{Sensitivity Analysis: example}
+%%\framesubtitle{An Example}
+%  \begin{figure}
+%  \includegraphics[scale=.6]{smoking_sensitivity.png}
+%\end{figure}
+%\onslide<2-> Read:  if among matched smokers and non-smokers, a hidden confounder actually made the person with the worse outcome have 6 times higher odds of smoking, adjusted estimate would lose significance.
+%\end{frame}
+%
+%
+%%\frame{
+%%\frametitle{Naturalizations in Switzerland}
+%%  \vspace{-.2in}
+%%  \begin{center}
+%%  \includegraphics[height=3in,keepaspectratio=1]{ciplotmainreg2.pdf}\\
+%%  \end{center}
+%%}
+%
+%
+%\subsection{Imbens Approach}
+%
+%\begin{frame}
+% \frametitle{Thinking about a regression part 1: The Imbens Approach (2003, AER)}
+%\begin{itemize}
+%\item Highly parametric: 
+%\begin{itemize}
+%  \item Assume $Y_1,Y_0 \indep D | X,U$ where $U\sim Bernoulli(\pi=.5)$ so $P(U=1)=P(U=0)=.5$ and $U$ and $X$ are independent.\smallskip \pause
+%  \item Assume propensity score is logistic: $P(D=1|X,U)=\frac{exp(X\theta + \gamma U)}{1+exp(X\theta + \gamma U)}$ so $\gamma$ indicates strength of relationship between $U$ and $D$ conditional on $X$ \smallskip \pause
+%  \item Assume $Y$ is conditionally normal with constant treatment effect $\alpha$ so $Y|X,U \sim N(\alpha D + X \b + \delta U,\sigma^2)$ and $\delta$ indicates strength of relationship between $U$ and $Y|X$ \smallskip \pause
+%  \item Choose hypothetical values for $(\gamma, \delta)$ and calculate the MLE for $\widehat{\alpha}(\gamma, \delta)$ by maximizing the Likelihood function  $\ell(\alpha,\b,\sigma^2,\theta,\gamma, \delta)$ for fixed $(\gamma, \delta)$. 
+%\end{itemize}
+%\end{itemize}
+%\end{frame}
+%
+%\begin{frame}
+% \frametitle{Formal Sensitivity Tests}
+%\begin{itemize}
+%    \item $\gamma$ and  $\delta$ are difficult to interpret, we instead use:
+%    \begin{itemize}\smallskip
+%      \item $R^2_{Y,par}(\delta)$: \% residual variation in outcome explained by unobserved covariate $U$ (above variation explained by $X$)  \smallskip
+%      \item $R^2_{D,par}(\gamma)$: \% residual variation in treatment assignment explained by unobserved covariate $U$ (above variation explained by $X$) \smallskip
+%      \item Try a range of values. Magnitudes typically compared to explanatory power of $X$ for $Y$ and $D$ respectively...though this is ad hoc and ultimately problematic.
+%    \end{itemize}\medskip
+%\end{itemize}
+%\end{frame}
+%
+%\frame{
+%\frametitle{Effect of Abduction on Education}
+%  \vspace{-.2in}
+%  \begin{center}
+%  \includegraphics[height=2.8in,keepaspectratio=1]{blat1.pdf}\\
+%Blattman and Annan (2010, ReStat)
+%  \end{center}
+%}
+
+
+
+\end{document}

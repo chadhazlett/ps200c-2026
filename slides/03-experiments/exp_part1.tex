@@ -1,0 +1,1259 @@
+\documentclass[xcolor=dvipsnames]{beamer}
+%\documentclass[pdftex,hyperref={colorlinks=false}]{beamer}
+%\documentclass[handout,xcolor=dvipsnames,pdftex,hyperref={colorlinks=false}]{beamer}
+
+% == Packages for beamer
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{fancybox}
+\usepackage{hyperref}
+\usepackage{amsmath,amssymb,amsfonts,bm}
+\usepackage{wasysym}
+\usepackage{colortbl}
+\usepackage[english]{babel}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+
+% == Other Packages
+\usepackage{rotating}
+\usepackage{latexsym}
+\usepackage{ulem}
+
+
+% == theme & colors
+\usetheme{Warsaw}  % Jens' previous
+\usepackage{helvet}
+\definecolor{someblue}{rgb}{0,.1,0.8}
+
+% == New Commands
+% = For general typesetting
+\newcommand\spacingset[1]{\renewcommand{\baselinestretch}{#1}\small\normalsize}
+\renewcommand\r{\right}
+\renewcommand\l{\left}
+
+\newcommand\makegaps{\addtolength{\itemsep}{.25\baselineskip}}
+\newcommand\makebiggaps{\addtolength{\itemsep}{.5\baselineskip}}
+
+% = For stats & econometrics
+\renewcommand{\epsilon}{\varepsilon}
+\newcommand\ud{\mathrm{d}}
+\newcommand\dist{\buildrel\rm d\over\sim}
+\newcommand\ind{\stackrel{\rm indep.}{\sim}}
+\newcommand\iid{\stackrel{\rm i.i.d.}{\sim}}
+\newcommand\logit{{\rm logit}}
+\newcommand\cA{\mathcal{A}}
+\newcommand\cN{\mathcal{N}}
+\newcommand\E{\mathbb{E}}
+\newcommand\V{\mathbb{V}}
+\newcommand\cJ{\mathcal{J}}
+\newcommand\y{{\bm y}}
+\newcommand\Y{{\bm Y}}
+\newcommand\X{{\bm X}}
+\newcommand\x{{\bm x}}
+\newcommand\eps{{\bm\varepsilon}}
+\newcommand\zero{{\bm 0}}
+\newcommand\be{{\bm\beta}}
+\renewcommand\b{{\bm b}}
+\newcommand\C{{\bm C}}
+\newcommand\D{{\bm D}}
+\newcommand\I{{\bm I}}
+\newcommand\Z{{\bm Z}}
+\newcommand\eeta{{\bm \eta}}
+\newcommand{\Var}{\mathrm{Var}}
+
+\DeclareMathOperator*\plim{plim}
+\DeclareMathOperator\rank{rank}
+\newcommand\indep{\protect\mathpalette{\protect\independenT}{\perp}}
+\DeclareMathOperator{\sgn}{sgn}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+%\documentclass[xcolor=dvipsnames]{beamer}
+%%\usecolortheme[named=OliveGreen]{structure}
+%\usecolortheme[named=Blue]{structure}
+%%\usetheme{Rochester}
+%\setbeamertemplate{items}[ball]
+%\setbeamertemplate{blocks}[rounded][shadow=true]
+%\usepackage{xcolor}
+%\usepackage{colortbl}
+%\setbeamertemplate{navigation symbols}{}
+%\usepackage{amssymb}
+%\usepackage{amsmath}
+%\usepackage[english]{babel}
+%% or whatever
+%
+%%\usepackage[latin1]{inputenc}
+%% or whatever
+%
+%%\mode<presentation>
+%%{
+%\usetheme{Warsaw}
+%  % or ...
+%  %\usecolorheme{albatross}
+%%  \setbeamercovered{transparent}
+%  % or whatever (possibly just delete it)
+%%}
+
+%\usepackage{helvet}
+%%\usepackage[T1]{fontenc}
+%% Or whatever. Note that the encoding and the font should match. If T1
+%% does not look nice, try deleting the line with the fontenc.
+
+\newtheorem{assumption}{Assumption}
+\newtheorem{iass}{Identification Assumption}
+\newtheorem{ires}{Identfication Result}
+\newtheorem{estm}{Estimand}
+\newtheorem{esti}{Estimator}
+
+%\newcommand{\indep}{{\bot\negthickspace\negthickspace\bot}}
+\newcommand{\notindep}{{\bot\negthickspace\negthickspace\bot}{\negthinspace
+  \negmedspace \negthickspace \negthickspace \diagup
+  \;}}
+
+\newcommand{\bs}{\boldsymbol}
+\newcommand{\mb}{\mathbf}
+\newcommand{\real}{\mathbb{R}}
+\renewcommand{\u}{\ensuremath{\mb{u}}}
+\renewcommand{\v}{\ensuremath{\mb{v}}}
+\newcommand{\U}{\ensuremath{\mb{U}}}
+\newcommand{\M}{\ensuremath{\mb{M}}}
+\renewcommand{\b}{\ensuremath{\bs{\beta}}}
+\newcommand{\e}{\ensuremath{\bs{\epsilon}}}
+\newcommand{\bhat}{\ensuremath{\hat{\bs{\beta}}}}
+\newcommand{\XX}{\ensuremath{\X'\X}}
+\newcommand{\XXinv}{\ensuremath{\left(\XX\right)^{-1}}}
+\newcommand{\hatsig}{\ensuremath{\hat{\sigma}^2}}
+\newcommand{\sig}{\ensuremath{\sigma^2}}
+\newcommand{\hatmat}{\ensuremath{\X \XXinv \X'}}
+\newcommand{\ehat}{\ensuremath{\hat{\e}}}
+\newcommand{\tr}{\text{tr}}
+\newcommand{\Sig}{\ensuremath{\bs{\Sigma}}}
+\newcommand{\SigInv}{\ensuremath{\bs{\Sigma^{-1}}}}
+\newcommand{\W}{\ensuremath{\mb{W}}}
+
+%\usepackage{fixltx2e} % provides \textsubscript
+%\ifxetex
+%%  \usepackage{fontspec,xltxtra,xunicode}
+%  \usepackage{mathspec,xltxtra,xunicode}
+%  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+%  \setmainfont[Ligatures={Common,TeX}]{Gill Sans}
+% % \setmathfont[Digits, Latin]{Gill Sans}
+% \setmathfont{LucidaBrightMathOT.otf}
+%
+%\else
+%  \ifluatex
+%    \usepackage{fontspec}
+%    \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+%  \else
+%    \usepackage[utf8]{inputenc}
+%  \fi
+%\fi
+
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>
+    \frametitle{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+%\AtBeginSubsection[]
+%{
+%  \begin{frame}<beamer>
+%    \frametitle{Outline}
+%    \tableofcontents[currentsection,currentsubsection]
+%  \end{frame}
+%}
+
+\title[]{Experiments}
+\subtitle[ ]{PS200C Quant Methods in Politics, Spring 2025}
+\author[Hazlett]{Chad Hazlett }
+\institute[UCLA]{UCLA\\[1ex]
+  \texttt{chazlett@ucla.edu}
+}
+\date{}
+
+\definecolor{dgreen}{rgb}{0,.6,0.8}
+\useoutertheme{infolines}
+
+\begin{document}
+
+\subject{Talks}
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>
+    \frametitle{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+%\AtBeginSubsection[]
+%{
+%  \begin{frame}<beamer>
+%    \frametitle{Outline}
+%    \tableofcontents[currentsection,currentsubsection]
+%  \end{frame}
+%}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}
+  \frametitle{Randomization Solves the Selection Problem}
+  \small
+Recall this formula for the bias of the DIM ($\tilde{\tau}$) relative to ATT: 
+\begin{eqnarray*}
+\tilde{\tau} & = & \E[Y_i|D_i=1]-\E[Y_i|D_i=0] \quad \text{(obs. diff. in means)} \\
+ & = & \E[Y_{1i} | D_i=1]-\E[Y_{0i} | D_i=0] \\
+ & = & \underbrace{\E[Y_{1i} - Y_{0i} | D_i=1]}_{\tau_{ATT}}
+                 +\underbrace{\E[Y_{0i} | D_i=1]-\E[Y_{0i} | D_i=0]}_{\mbox{Bias}}
+\end{eqnarray*}
+\pause
+Stare at the bias term and ask: What could ensure it is zero?
+\pause
+\medskip
+
+\alert{Random assignment} of $D_i$ will make the treated and untreated units identical on average, such that
+$$ \E[Y_{0i}\mid D_i=1] \ = \ \E[Y_{0i}\mid D_i=0] $$
+
+\end{frame}
+
+\begin{frame}{Prelude}
+\small
+From ``Experimentation and social interventions: a forgotten but important history'' (Ann Oakley, 1998, \textit{BMJ}). From the summary points:
+
+\footnotesize
+\begin{itemize}
+
+\item<1-> Many social scientists argue that randomised controlled trials are inappropriate for evaluating social interventions, but they ignore a considerable history, mainly in the United States, of the use of randomised controlled trials to assess different approaches to public policy and health promotion
+
+\item<2-> A tradition of experimental sociology was well established by the 1930s, built on the early use of controlled experiments in psychology and education
+
+\item<3-> From the early 1960s to early 1980s randomised experiments were considered the optimal design for evaluating public policy interventions in the United States, and major evaluations using this design were carried out.\footnote{Me: Also note Cambpbell \& Stanley published ``Experimental and Quasi-experimental designs for research'' in 1966)}
+
+\item<4-> This approach became less popular as policy makers reacted negatively to evidence of ``near zero'' effects
+
+\item<5-> Lessons to be learnt about implementing randomised controlled trials in real life settings include the difficulty of assessing complex multi-level interventions and the challenge of integrating qualitative data
+
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Re-rise of experiments}
+\small
+\onslide<1->  Though much of the history forgotten, renewed enthusiasm and ``rediscovery'' of experiments for social sciences early this century
+\begin{itemize}
+  \item {\it Abbreviated} list of examples (from Green 2008):
+  \begin{itemize}
+  \addtolength{\itemsep}{.25\baselineskip}
+  \smallskip
+  \footnotesize
+    \item \alert{Program evaluation}: development programs, education programs, SAT prep classes, weight loss programs,  diversity training, deliberative polls, advertising campaigns, website designs...
+    \item \alert{Public policy evaluation}: teacher pay, student incentives, class size,
+      speed traps, vouchers, alternative sentencing, job training,
+      health insurance subsidies, tax compliance, public housing
+    \item \alert{Behavioral research}: persuasion, mobilization, education, income, interpersonal influence, conscientious health behaviors, media exposure, deliberation, discrimination
+    \item \alert{Research on institutions}: transparency, corruption, electoral systems, information
+  \end{itemize}
+  \item Also 2019 Nobel prize in economics.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{An aside}
+\small
+\onslide<1-> The Oakley paper above is full of historical gems, and accounts of experiments especially in psychology predating even Fisher and agriculture. Check it out!\\
+
+\bigskip
+\onslide<2-> A semi-relevant fun fact:
+\footnotesize
+\begin{quote} The original meaning of “control” is “check”—the word comes from “counter-roll,” a duplicate register or account made to verify an official account. The term “control” entered scientific language in the 1870s in the sense of a standard of comparison used to check inferences deduced from an experiment. The main use of the term was in experimental psychology. \end{quote}
+
+\end{frame}
+
+
+%
+%\begin{frame}
+%  \frametitle{Example: Social Pressure Experiment}
+%
+%\begin{itemize}
+%\item Voter turnout theories based on rational self-interested behavior generally fail to predict significant
+%turnout unless they account for the utility that citizens receive from performing their civic duty.\bigskip
+%\item Two aspects of this type of utility, intrinsic satisfaction from behaving
+%in accordance with a norm and extrinsic incentives to comply \bigskip
+%\item Gerber, Green, and Larimer (2008) test intrinsic motives in a large scale field experiment by applying varying degrees of extrinsic pressure on voters using to series of mailings to 180,002 households before the August 2006 primary election in Michigan.
+%\begin{itemize}
+%\item $Y_i$: voted in primary (yes/no)
+%\item $D_i$: type of mailing
+%\end{itemize}
+%\end{itemize}
+%\end{frame}
+%
+%
+%\begin{frame}
+%  \frametitle{Example: Social Pressure Experiment}
+%
+%\begin{itemize}
+%\addtolength{\itemsep}{.25\baselineskip}
+%\item \alert{Civic Duty}:
+%\begin{itemize}
+%  \item Encouraged to vote
+%\end{itemize}
+%\item \alert{Hawthorne}:
+%\begin{itemize}
+%  \item Encouraged to vote
+%  \item Told that researchers would be checking on whether they voted
+%\end{itemize}
+%\item \alert{Self}:
+%\begin{itemize}
+%  \item Encouraged to vote
+%  \item Told that whether one
+%votes is a matter of public record
+%\item Shown whether
+%members of their own household voted in the last two
+%elections
+%\end{itemize}
+%\item \alert{Neighbors}:
+%\begin{itemize}
+%  \item Like \alert{Self} but in addition recipients are shown whether the neighbors on the block voted in the last two elections
+%elections
+%\end{itemize}
+%\end{itemize}
+%
+%\end{frame}
+%
+%\begin{frame}
+%  \frametitle{Example: Social Pressure Experiment}
+% \centering
+%  \includegraphics[scale=.8 ]{images/gerber1.pdf}
+%\end{frame}
+%
+%\begin{frame}
+%  \frametitle{Example: Social Pressure Experiment}
+%  \centering
+%  \includegraphics[scale=.54 ]{images/gerber.pdf}
+%\end{frame}
+
+\section{Identification}
+
+\begin{frame}
+  \frametitle{Recall from last time:  Identification vs. Estimation}
+  \small
+Goal of causal inference: Learn about an \textit{unobservable, counterfactual-dependent} quantity of interest (QoI) using {\it observed} data.\\
+
+\pause
+
+\medskip
+Two inferential hurdles:
+
+\begin{enumerate}
+\item \alert{Identification}: If you can observe data from an entire {\it population}, can you learn about your QoI?
+\item \alert{Estimation}: Given your finite amount of data on a {\it sample}, how well can you learn about your QoI?
+\end{enumerate}
+\pause
+\begin{center}
+Golden rule of inference: \textbf{Identification precedes estimation}
+\end{center}
+%\pause
+%\smallskip
+%Example: $ Y_i \ = \ X_i^\top \beta + \epsilon_i $ (normal linear regression)
+%\smallskip
+%\begin{itemize}
+%\item When is $\beta$ \alert{identified}? \pause No collinearity among $X_i$.
+%\item When is $\beta$ \alert{unbiasedly estimated}? \pause $\E(\epsilon_i\mid X_i)=0$.
+%\item What is an unbiased \alert{estimator} for $\beta$? \pause \footnotesize $\hat\beta = \l(\sum_{i=1}^n X_iX_i^\top\r)^{-1}\l(\sum_{i=1}^nX_iY_i\r)$.
+%\end{itemize}
+\end{frame}
+
+%%%%%%%%% frame %%%%%%%%%
+\begin{frame}
+\frametitle{Classical Randomized Experiment}
+\small
+Setup:
+\begin{itemize}
+\item Units: $i = 1, ..., N$
+\item Treatment: $D_i \in \{0,1\}$, randomly assigned
+\item Potential outcomes: $Y_{0i}$, $Y_{1i}$
+\item Observed outcome: $Y_i = Y_{D_i{i}}$
+\item Number of treated/untreated units: $N_1 = \sum_{i=1}^N D_i$ and $N_0 = N - N_1$
+\end{itemize}
+
+\pause
+Notes:
+\footnotesize
+\begin{itemize}
+\item Random assignment can take one of several forms:
+	\begin{itemize}
+	\scriptsize
+	\makegaps
+	\item \alert{Complete randomization}: Exactly $N_1$ treated units
+	\item \alert{Simple (Bernoulli) randomization}: Each unit independently assigned to treatment with probability $p$	
+	\end{itemize}
+\end{itemize}
+
+%\pause
+%\small
+%Randomization implies: \quad $ \l\{ Y_{1i}, \ Y_{0i}\r\} \ \indep \ D_i $
+
+\end{frame}
+
+
+\begin{frame}{The Template}
+Before we say more about experiments, take note of the general template for talking about an identification strategy; we will repeat it through the remainder of the course. \\
+
+\bigskip
+\onslide<2-> We organize our thinking about how to make causal claims by \textcolor{blue}{identification strategy}.\\
+
+\bigskip
+
+\onslide<3-> For each we discuss:\\
+\small
+\begin{enumerate}
+\item  the \textcolor{blue}{identification assumption} first, which your life will depend upon when using this approach.  
+\item information from outside the data that help support that assumption
+\item the (limited) things you can test in efforts to falsify the assumption
+\item estimators
+\item ideally, sensitivity to violations of assumptions
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[t]
+\frametitle{Identification of Average Treatment Effect Under Experiments}
+\small
+\onslide<1-> \textcolor{Blue}{Identification Assumption}: (guaranteed by random assignment):
+$$ \l\{ Y_{1i}, \ Y_{0i}\r\} \ \indep \ D_i $$ \\
+
+\onslide<2-> \textcolor{Blue}{Quantity of Interest}: \\
+\vspace{-.2in}
+$$ \tau_{ATE} \ \equiv \ \E[Y_{1i} - Y_{0i}]$$
+\onslide<3-> \textcolor{Blue}{How does our ID assumption lead to identification of $\tau_{ATE}$}?\\ 
+\footnotesize
+\onslide<4-> \begin{eqnarray*}
+\E[Y_{1i}] - \E[Y_{0i}] &=& \E[Y_{1i}|D_i=1] - \E[Y_{0i} | D_i=0] \quad (\text{why?}) \\
+&=& \E[Y_{i}|D_i=1] - \E[Y_{i} | D_i=0]  \quad (\text{why?})\\
+&=& \text{DIM Estimand}\\
+&\approx & \overline{Y}_1 - \overline{Y}_0   \quad (\text{the DIM estimator})
+\end{eqnarray*}
+\end{frame}
+%
+%\begin{frame}
+%  \frametitle{Identification in Randomized Experiments}
+%\vspace{-.1in}
+%With $(Y_1,Y_0) \indep D$, we can identify effect at any quantile:\\
+%
+%\begin{ires}\small
+%Let $F_{Y_d}(y)$ be the cumulative distribution function (CDF) of $Y_d$, then
+%\small
+%\begin{eqnarray*}
+%F_{Y_0}(y) &=& \Pr(Y_0\leq y) = \Pr(Y_0\leq y | D=0) \quad (\text{by randomization})\\
+%&=&\Pr(Y\leq y | D=0).
+%\end{eqnarray*}
+%Similarly,
+%\[
+%F_{Y_1}(y)=\Pr(Y\leq y | D=1).
+%\]
+%So the effect of the treatment at any quantile $\theta\in[0,1]$  is identified:\[
+%\alpha_{\theta}=Q_\theta(Y_1)-Q_\theta(Y_0)=Q_\theta(Y|D=1)-Q_\theta(Y|D=0)
+%\] % where $F_{Y_d} (Q_\theta(Y_d)) = \theta$.
+%\end{ires}
+%%\begin{itemize}
+%%\item Randomization identifies the whole marginal distributions of
+%%$Y_0$ and $Y_1$, so $\alpha_{ATE(x)}=\E[Y_1 - Y_0|X=x]$ is identified.
+%%%\item Does not identify the quantiles of the effect: $Q_\theta(Y_1 - Y_0)$ (the difference of quantiles is not the quantile
+%%of the difference)
+%%\end{itemize}
+%\end{frame}
+
+
+\section{Uncertainty for ATE}
+
+%\begin{frame}{What is the Estimand?}
+%\begin{itemize}
+%\item  So far we have emphasized effect estimation, but what about
+%  \emph{uncertainty}?\bigskip
+%\item Two sources of uncertainty to consider:\bigskip
+%  \begin{enumerate}
+%  \def\labelenumi{\arabic{enumi}.}
+%  \itemsep1pt\parskip0pt\parsep0pt
+%  \item
+%    Sampling variation induced by the procedure that selected the units
+%    into our sample. \bigskip 
+%  \item
+%    Variation induced by the particular realization of the treatment
+%    variable.\bigskip
+%  \end{enumerate} 
+%\end{itemize}
+%\end{frame}
+
+%\begin{frame}{What is the Estimand?}
+%\begin{center}
+%  \includegraphics[height=4, width=6]{images/sample_selection_potential_outcomes.pdf} 
+%\end{center}
+%\end{frame}
+
+\begin{frame}{SATE and PATE}
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item<1->
+ Often we focus on estimating the average causal effect in a
+  particular sample: \textbf{S}ample \textbf{A}verage \textbf{T}reatment
+  \textbf{E}ffect (SATE)\medskip
+
+  \begin{itemize}
+   \item uncertainty arises only from hypothetical randomizations.\medskip
+  \item  inferences are limited to the sample in our study. 
+  \end{itemize}\bigskip
+\item<2-> Compare to the \textbf{P}opulation
+  \textbf{A}verage \textbf{T}reatment \textbf{E}ffect (PATE)\medskip
+ \begin{itemize}
+  \item requires knowledge about the sampling process that got you from population to sample\medskip
+\item need to account for two sources of variation:\medskip
+  \begin{itemize}
+  \item variation from the sampling process\medskip
+  \item variation from treatment assignment (randomness of $D_i$) 
+  \end{itemize}
+  \end{itemize}\bigskip
+  
+ 
+\item<3->  \small  If your sampling was random from a given population, then $\E[SATE]=PATE$. For this reason, we're often uninterested in distinguishing the two quantities. 
+
+%Given additional uncertainty in PATE, you might (correctly) expect
+%\footnotesize
+%  $$\Var(\widehat{PATE})>\Var(\widehat{SATE})$$
+%%\item  \textbf{Key Point}: different sampling processes imply different variances
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Uncertainty (SE) Estimates for SATE and PATE}
+\onslide<1-> A natural first attack: pretending
+\footnotesize
+\begin{itemize}
+\item Imagine you have a large enough sample that you can draw partition it and draw the treated from one and the control from the other
+\item Compute $\overline{Y}_1$ and $\overline{Y}_0$ based on these separate samples.
+\item Chance variation in the two then unrelated: $cov(\overline{Y}_1,\overline{Y}_0)= 0$ 
+\end{itemize}
+\bigskip
+\onslide<2-> Get variance of the difference in means:
+\begin{align*}
+\V({\overline{Y}_1 -\overline{Y}_0}) &= \V(\overline{Y}_1)+\V(\overline{Y}_0)-2cov(\overline{Y}_1,\overline{Y}_0)\\
+ &= \frac{\sigma^2_{Y1}}{N_1} + \frac{\sigma^2_{Y0}}{N_0} \\
+SE_{ATE} &= \sqrt{\frac{\sigma^2_{Y1}}{N_1} + \frac{\sigma^2_{Y0}}{N_0}}
+\end{align*}
+\footnotesize
+where $\sigma^2_{Y1}$ and $\sigma^2_{Y0}$ are the variance of the $Y_{1i}$ and $Y_{0i}$ in the population
+\end{frame}
+
+\begin{frame}
+\small 
+We had, 
+\footnotesize
+\begin{align*}
+SE_{ATE} &= \sqrt{\frac{\sigma^2_{Y1}}{N_1} + \frac{\sigma^2_{Y0}}{N_0}}
+\end{align*}
+\small
+\onslide<2-> A suitable analog estimator being,
+	\footnotesize
+\begin{align*}
+\widehat{SE}_{ATE} &= \sqrt{\frac{\hat{\sigma}^2_{Y1}}{N_1} + \frac{\hat{\sigma}^2_{Y0}}{N_0}}
+\end{align*}
+\smallskip \\
+\small
+\onslide<3-> This is what we typically use, known as the Neyman estimator and it is
+\footnotesize
+\begin{itemize}
+\item the correct SE for the PATE 
+\item what you get from t-tests (unequal variance), or regression with robust SE
+\item conservative for the SATE (where the sample is fixed but $D_i$ is random)
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{The painful truth}
+\small
+\onslide<1-> In reality we can only assign treatment within a finite sample so expect $cov(\overline{Y}_1,\overline{Y}_0) \neq 0$.\\
+
+\medskip
+\onslide<2-> Considering this, under complete randomization the true standard error of the sample ATE is actually
+\pause
+\footnotesize
+ \begin{eqnarray*}
+ SE_{\widehat{ATE}}&=&\sqrt{ \left( \frac{N-N_1}{N-1}\right) \frac{\sigma^2_{Y1}}{N_1}+ \left( \frac{N-N_0}{N-1}\right) \frac{\sigma^2_{Y0}}{N_0} + \left(\frac{1}{N-1} \right) 2Cov[Y_{1},Y_{0}]} \\
+% SE_{\widehat{ATE}}&=&\sqrt{ \frac{1}{N-1} \left(\frac{N_1}{N_0}Var[Y_1]+\frac{N_0}{N_1}Var[Y_1]+2Cov[Y_1,Y_0]\right)} 
+\end{eqnarray*}
+\vspace{-.1in}
+\small
+with population variances and covariances $\sigma^2_{Yd}$, $Cov(Y_{1},Y_{0})$.\\
+%\footnotesize
+%\[
+%Var[Y_{di}]\equiv\frac{1}{N}\sum_1^N\left(Y_{di}-\frac{\sum_1^N Y_{di}}{N}\right)^2=\sigma^2_{Y_{d}|D_i=d}
+%\]
+%\[
+%Cov[Y_{1i},Y_{0i}]\equiv\frac{1}{N} \sum_1^N \left(Y_{1i}-\frac{\sum_1^N Y_{1i}}{N}\right) \left(Y_{0i}-\frac{\sum_1^N Y_{0i}}{N}\right)=\sigma^2_{Y_1,Y_0}
+%\]
+\bigskip
+
+\onslide<3-> We don't use this---can you see why?
+%\smallskip
+%\onslide<4-> Standard error decreases if:
+%\begin{itemize}
+%\item $N$ grows
+%\item $\sigma^2_{Y1}$, $\sigma^2_{Y0}$ decrease
+%\item $Cov[Y_1,Y_0]$ decreases
+%\end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{itemize}
+\item<1-> Good news: the simple/Neyman estimator we derived above is conservative for the SATE 
+\bigskip
+\item<2-> It is just right for the PATE, which should make sense given how we arrived at it.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Proof}
+\small
+Two preliminaries:
+\footnotesize
+\begin{itemize}
+\item $Cov(Y_1,Y_0) \leq SD(Y_1)SD(Y_0)$
+\item $Var(Y_1) + Var(Y_0) \geq 2\sqrt{Var(Y_1) Var(Y_0)}$
+\end{itemize}
+\small
+\onslide<2-> With that,
+\scriptsize
+\begin{eqnarray*}
+  SE_{\widehat{ATE}}  & = & \sqrt{ \left( \frac{N-N_1}{N-1}\right) \frac{Var[Y_{1}]}{N_1}+ \left( \frac{N-N_0}{N-1}\right) \frac{Var[Y_{0}]}{N_0} + \left(\frac{1}{N-1} \right) 2Cov[Y_{1},Y_{0}]} \\
+ & = & \sqrt{ \frac{1}{N-1} \left(\frac{N_0}{N_1}Var[Y_1]+\frac{N_1}{N_0}Var[Y_0]+2Cov[Y_1,Y_0]\right)}  \\
+                      & \leq & \sqrt{\frac{1}{N-1}\left( \frac{N_0}{N_1}Var[Y_1]+\frac{N_1}{N_0}Var[Y_0] +2\sqrt{Var[Y_1]Var[Y_0]}\right)} \\
+                     & \leq & \sqrt{\frac{1}{N-1}\left( \frac{N_0}{N_1}Var[Y_1]+\frac{N_1}{N_0}Var[Y_0]  + Var[Y_1]+Var[Y_0]\right)} \\
+\end{eqnarray*}
+\end{frame}
+
+\begin{frame}
+  \frametitle{$SE_{\widehat{ATE}}\leq \widehat{SE}_{\widehat{ATE}}$, continued.}
+\scriptsize
+\begin{eqnarray*}
+\scriptsize
+% \nonumber to remove numbering (before each equation)
+  SE_{\widehat{ATE}} & \leq &\sqrt{\frac{1}{N-1}\left( \frac{N_0}{N_1}Var[Y_1]+\frac{N_1}{N_0}Var[Y_0]  + Var[Y_1]+Var[Y_0]\right)} \\
+  & \leq & \sqrt{ \frac{N_0^2Var[Y_1]+N_1^2 Var[Y_0] + N_1 N_0 (Var[Y_1]+Var[Y_0])}{(N-1)N_1 N_0}} \\
+  & \leq & \sqrt{ \frac{(N_0^2 + N_1 N_0) Var[Y_1]+(N_1^2 + N_1 N_0) Var[Y_0] }{(N-1)N_1 N_0}} \\
+%  & \leq & \sqrt{ \frac{(N-m)^2Var[Y_1]+m^2Var[Y_0] + m(N-m)(Var[Y_1]+Var[Y_0])}{(N-1)m(N-m)}} \\
+    & \leq & \sqrt{ \frac{(N_0 + N_1) N_0 Var[Y_1]}{(N-1) N_1 N_0}+ \frac{ (N_1 + N_0) N_1  Var[Y_0]}{(N-1)N_1 N_0}}  \\
+    & \leq & \sqrt{ \frac{N \,  Var[Y_1]}{(N-1) N_1 }+ \frac{ N \, Var[Y_0]}{(N-1) N_0}}  \\
+%    & = & \sqrt{ \frac{N(N-m) Var[Y_1]}{(N-1)m(N-m)}+ \frac{m N Var[Y_0]}{(N-1)m(N-m)}}  \\
+    & \leq & \sqrt{\frac{N}{N-1} \left(\frac{Var[Y_1]}{N_1}+ \frac{ Var[Y_0]}{(N_0)}\right)}  \\
+    &\leq & \sqrt{ \left(\frac{Var[Y_1]}{N_1}+ \frac{ Var[Y_0]}{(N_0)}\right)}  
+%    & \leq & \sqrt{ \frac{ \widehat{\sigma}^2_{Y|D_i=1}  }{N_1}+ \frac{ \widehat{\sigma}^2_{Y|D_i=0} }{(N_0)}}
+\end{eqnarray*}
+\small
+$\therefore$ our estimator is conservative.
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Seeing the Standard Error for Sample ATE}
+\footnotesize
+\onslide<1-> Want to know how ATE would differ under $J$  randomizations of treatment, same sample: $SE_{\widehat{\theta}}\equiv\sqrt{\frac{1}{J}\sum_1^J (\widehat{\theta}_j -\overline{\widehat{\theta}})^2}$\vspace{-.3in}
+\begin{center}
+\begin{tabular}{cccccc}
+ \multicolumn{1}{p{2cm}}{\center $i$} &   \multicolumn{1}{p{1cm}}{\center $Y_{1i}$} & \multicolumn{1}{p{1cm}}{\center $Y_{0i}$}&    \multicolumn{1}{p{1cm}}{\center $Y_{i}$} &   \multicolumn{1}{p{1cm}}{\center $D_{i}$}   &   \multicolumn{1}{p{2cm}}{\center $P(D_{i}=1)$}   \\
+\hline
+\rowcolor{gray!10}        1 &          3 &        \textcolor{red}{0} &          3 &          1 & 2/4  \\
+\rowcolor{gray!10}         2 &         1 &       \textcolor{red}{1} &          1 &          1  & 2/4 \\
+\rowcolor{gray!30}         3 &          \textcolor{red}{2} &         0 &          0 &          0  & 2/4 \\
+\rowcolor{gray!30}         4 &          \textcolor{red}{2} &         1 &          1 &          0 & 2/4  \\
+\hline
+\end{tabular}
+\end{center}
+\onslide<3->
+ATE estimates given all possible random assignments with two treated units:\\
+\begin{center}
+\begin{tabular}{lcccccc}
+\hline
+\hline
+    Treated Units: & 1 \& 2 & 1 \& 3 & 1 \& 4 & 2 \& 3 & 2 \& 4 & 3 \& 4 \\
+   $\widehat{ATE}$: & 1.5 & 1.5 & 2  & 1  & 1.5 & 1.5 \\
+\hline \hline
+\end{tabular}
+\end{center}
+\vspace{-.1in}
+\onslide<4-> Average $\widehat{ATE}$ is $1.5$ and true standard error is
+\scriptsize{$SE_{\widehat{ATE}}=\sqrt{\frac{1}{6}[(1.5-1.5)^2+(1.5-1.5)^2+(2-1.5)^2+(1-1.5)^2+(1.5-1.5)^2+(1.5-1.5)^2]}\approx.28$}\\
+%Rule of thumb: approx. 95\% of estimated ATEs fall within interval $ATE \pm 2\cdot SE_{\widehat{ATE}}$
+\end{frame}
+
+\begin{frame}
+  \frametitle{Standard Error for Sample ATE}
+  \small
+\onslide<1-> The``true'' (infeasible) formula gets it right: \\
+\scriptsize
+\begin{align*}
+ SE_{\widehat{ATE}} &= \sqrt{ \left( \frac{N-N_1}{N-1}\right) \frac{Var[Y_{1i}]}{N_1}+ \left( \frac{N-N_0}{N-1}\right) \frac{Var[Y_{0i}]}{N_0} + \left(\frac{1}{N-1} \right) 2Cov[Y_{1i},Y_{0i}]} \\
+ \bigskip
+&= \sqrt{ \left( \frac{4-2}{4-1}\right) \frac{.25}{2}+ \left( \frac{4-2}{4-1}\right) \frac{.5}{2} + \left(\frac{1}{4-1} \right) 2 (-.25)} \\
+\bigskip
+& \approx .28
+\end{align*}
+\small
+\onslide<2-> But remember, either formula or the table only work with unobservables. 
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Standard Error for Sample ATE}
+\small
+\onslide<1-> How does this compare to what we'll actually compute, on average? \\
+%\bigskip
+\vspace{-.3in}
+\begin{center}
+\begin{tabular}{cccc}
+\multicolumn{1}{p{2cm}}{\center $i$} &   \multicolumn{1}{p{1cm}}{\center $Y_{1i}$} & \multicolumn{1}{p{1cm}}{\center $Y_{0i}$}&    \multicolumn{1}{p{1cm}}{\center $Y_{i}$}  \\
+\hline
+\rowcolor{gray!10}        1 &          3 &        \textcolor{red}{0} &          3   \\
+\rowcolor{gray!10}         2 &         1 &       \textcolor{red}{1} &          1    \\
+\rowcolor{gray!30}         3 &          \textcolor{red}{2} &         0 &          0   \\
+\rowcolor{gray!30}         4 &          \textcolor{red}{2} &         1 &          1  \\
+\hline
+\end{tabular}
+\end{center}\vspace{.05in}
+$\widehat{ SE}_{\widehat{ATE}}$ estimates given all possible assignments with two treated units:\\
+\begin{center}
+\begin{tabular}{lcccccc}
+\hline
+\hline
+    Treated Units: & 1 \& 2 & 1 \& 3 & 1 \& 4 & 2 \& 3 & 2 \& 4 & 3 \& 4 \\
+    \hline
+   $\widehat{ATE}$: & 1.5 & 1.5 & 2  & 1  & 1.5 & 1.5 \\
+   $\widehat{ SE}_{\widehat{ATE}}$: & 1.11 & .5 & .71  & .71  & .5 & .5 \\
+\hline \hline
+\end{tabular}
+\end{center}\vspace{.05in}
+\footnotesize
+The average $\widehat{ SE}_{\widehat{ATE}}$ is $\approx .67$ compared to true $SE_{\widehat{ATE}}\approx .28$. In fact every one is bigger.
+\end{frame}
+
+\section{Hypothesis Testing}
+
+\begin{frame}
+  \frametitle{Example: Effect of Training on Earnings}
+\small
+\begin{itemize}
+  \item Treatment Group:
+  \begin{itemize}
+  \item $N_1=7,487$
+    \item Estimated Average Earnings $\bar{Y}_1$: \$$16,199$
+    \item Estimated Sample Standard deviation $\widehat{\sigma}_{Y|D_i=1}$: $\$17,038$
+  \end{itemize}\smallskip
+
+  \item Control Group :
+  \begin{itemize}
+  \item $N_0=3,717$
+    \item Estimated Average Earnings $\bar{Y}_0$: \$$15,040$
+    \item Estimated Sample  deviation $\widehat{\sigma}_{Y|D_i=0}$: $\$16,180$
+  \end{itemize}\smallskip
+%  \item Where the sample variances are given by $\widehat{\sigma}_d^2=\sum_{D_i=d} (Y_i-\bar{Y}_d)^2/(N_d-1)$
+  \item Estimated average effect of training: \pause
+  \begin{itemize}
+    \item $\widehat{\tau}_{ATE} = \bar{Y}_1 - \bar{Y}_0 = 16,199 - 15,040 = \$1,159$
+  \end{itemize}\smallskip
+  \item Estimated standard error for effect of training: \pause
+\scriptsize
+$$\widehat{ SE}_{\widehat{ATE}} = \sqrt{ \frac{ \widehat{\sigma}^2_{Y|D_i=1}  }{N_1}+ \frac{ \widehat{\sigma}^2_{Y|D_i=0} }{N_0}} = \sqrt{\frac{17,038^2}{7,487}+ \frac{16,180^2}{3,717} }\approx\$330$$
+\small
+  \item Is this consistent with a zero average treatment effect $\alpha_{ATE}=0$?
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Testing the Null Hypothesis of Zero Average Effect}
+\small
+\onslide<1-> \textcolor{Blue}{Null hypothesis, H$_0$}: $\tau_{ATE}=0$\\
+\bigskip
+\onslide<2-> We observe a difference in mean earnings of $\hat{\tau}_{ATE}=1,159$ \\
+\bigskip
+\onslide<3-> Would it be surprising to see such an estimate had the null been true? \\
+\footnotesize
+\begin{itemize}
+\item<4-> you likely know already:
+\item<5-> 1,159 is more than 2 SEs from 0, so you know $t$-stat/ $z$-score would be over 2 and p-value would be less than 0.05.
+\smallskip
+\item<6-> to recall the formalities,
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Testing the Null Hypothesis of Zero Average Effect}
+\small
+\onslide<1-> Use a two-sample t (or z) test with unequal variances:\[
+t=\frac{\widehat{\tau}}{\sqrt{\displaystyle\frac{\widehat{\sigma}_{Y_i|D_i=1}^2}{N_1} + \displaystyle\frac{\widehat{\sigma}_{Y_i|D_i=0}^2}{N_0}}}=\frac{\$1,159}{\sqrt{\displaystyle\frac{\$17,038^2}{7,487} + \displaystyle\frac{\$16,180^2}{3,717}}}\approx3.5
+\]
+\begin{itemize}
+\footnotesize
+\item For large enough $N$, $t \stackrel{d}{\rightarrow} N(0,1)$, 
+\item Getting a 3.5 or above from a normal distribution would be quite a shock:
+\scriptsize
+\begin{verbatim}
+> 2*(1-pnorm(abs(3.5)))
+[1] 0.000465
+\end{verbatim}
+\footnotesize
+\item Inverting the test statistic we can construct a 95\% confidence interval
+\[
+\widehat{\tau}_{ATE}\pm 1.96 \cdot \widehat{ SE}_{\widehat{ATE}}
+\]
+\item What assumptions did we need along the way?
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Testing the Null Hypothesis of Zero Average Effect}
+{
+\footnotesize
+\begin{Verbatim}[frame=single, label=R Code, commandchars=\\\{\}]
+> d <- read.dta("jtpa.dta")
+> t.test(earnings~assignmt,data=d,var.equal=FALSE)
+
+	Welch Two Sample t-test
+
+data:  earnings by assignmt
+t = -3.5084, df = 7765.599, p-value = 0.0004533
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -1807.2427  -511.6239
+sample estimates:
+mean in group 0 mean in group 1 
+       15040.50        16199.94 
+\end{Verbatim}
+}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Regression to Estimate ATE in Experiments}
+\small
+\begin{esti}[Regression with Experiments]\small
+The ATE can be expressed as a regression coefficient:
+\begin{eqnarray*}
+% \nonumber to remove numbering (before each equation)
+  Y_i &=& D_i\, Y_{1i} + (1-D_i)\, Y_{0i} \\
+   &=& Y_{0i} + (Y_{1i}- Y_{0i})\,D_i \\
+   &=& \underbrace{\bar Y_0}_{\alpha} + \underbrace{(\bar Y_1 - \bar Y_0)}_{\tau_{Reg}} D_i + \underbrace{\{(Y_{i0} - \bar Y_0) + D_i \cdot [(Y_{i1} - \bar Y_1) - (Y_{i0} - \bar Y_0)] \}}_{\epsilon} \\ 
+%   &=&\E[Y_0] + (E[Y_1]-\E[Y_0])\,D_i + u_i \\
+%   &=& \beta + \alpha_{ATE} D_i + u_i
+   &=& \alpha + \tau_{Reg} D_i + \epsilon_i
+\end{eqnarray*}
+%where the disturbance term is $u_i\equiv Y_{0i}-\E[Y_0] +[(Y_{1i}-\E[Y_1])-(Y_{0i}-\E[Y_0])]D_i$\\
+\end{esti}\vspace{-.2in}
+\bigskip
+\begin{itemize}
+%\item  $D_i$ is random in this interpretation, as opposed to classical regression.
+\footnotesize
+\item<2-> Does this assume constant treatment effects? 
+\item<3-> Our SE estimator allows different variance for $D=1$ and $D=0$. 
+  \begin{itemize}
+\scriptsize
+  \item  Implies heteroskedasticity 
+  \item Use ``HC2'' heteroskedasticity-robust variance:
+  $$ \hat\sigma^2_{HC2} \ = \ \frac{S_1^2}{N_1} + \frac{S_0^2}{N_0} \ = \ \tilde{\V}(\tilde\tau) $$
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Regression to Estimate the Average Treatment Effect}
+{
+\footnotesize
+\begin{Verbatim}[frame=single, label=R Code, commandchars=\\\{\}]
+> library(sandwich)
+> library(lmtest)
+> 
+> lout <- lm(earnings~assignmt,data=d)
+> coeftest(lout,vcov = vcovHC(lout, type = "HC2")) 
+
+t test of coefficients:
+
+            Estimate Std. Error t value  Pr(>|t|)    
+(Intercept) 15040.50     265.38 56.6752 < 2.2e-16 ***
+assignmt     1159.43     330.46  3.5085 0.0004524 ***
+---
+\end{Verbatim}
+}
+\end{frame}
+
+
+%%%%%%%%% frame %%%%%%%%%
+%\begin{frame}[fragile]
+%\frametitle{Example: Social Pressure Experiment}
+%\scriptsize
+%\begin{Verbatim}
+%> library(foreign)
+%> d <- read.dta("gerber.dta")
+%>
+%> aa <- lm(voted ~ treatment, data = d)
+%> coef(aa)  # ATE point estimates
+%
+%         (Intercept)  treatment Hawthorne treatment Civic Duty 
+%               1.297                0.026                0.018 
+% treatment Neighbors       treatment Self 
+%               0.081                0.049 
+%               
+%> library(sandwich)
+%> sqrt(diag(vcovHC(aa, type="HC2")))  # ATE conservative standard errors
+%
+%         (Intercept)  treatment Hawthorne treatment Civic Duty 
+%              0.0010               0.0026               0.0026 
+% treatment Neighbors       treatment Self 
+%              0.0027               0.0026 
+%              
+%\end{Verbatim}
+%\end{frame}
+
+\section{Randomization Inference}
+
+%\subsection{Hypothesis Testing in Small Samples}
+
+\begin{frame}\frametitle{Testing in Small Samples: Fisher's Exact Test}
+\begin{itemize}
+\item Test of differences in means with large $N$:
+\small
+\[
+H_0:\E[Y_1] =\E[Y_0],\quad H_1:\E[Y_1] \neq\E[Y_0]  \mbox{  (weak null)}
+\]\pause
+\normalsize
+\item Fisher's Exact Test:
+\small
+\[
+H_0: Y_{1i} = Y_{0i},\pause\quad H_1: Y_1 \neq Y_0\;\; \forall i,\;\;\qquad\mbox{(sharp null of no effect)}
+\]\pause
+\end{itemize}
+\normalsize
+\vspace{-.2in}
+\onslide<4-> \alert{Key idea}: Under the sharp null, we ``observe'' all potential outcomes -- can compute what ATE would be under alternate randomizations \\
+\pause
+\medskip
+...which allows you to see many effect estimates all under this null.
+\end{frame}
+
+\begin{frame}\frametitle{Testing in Small Samples: Fisher's Exact Test}
+\small
+\onslide<1-> Let $\Omega$ be the set of all possible ways to assign treatments. \\
+\bigskip
+\onslide<2-> Fisher's exact test procedure:\\
+\footnotesize
+\begin{enumerate}
+\item<3->  Calculate a statistic $\hat{\theta}_{true}$ (e.g. difference in means) from original treatment assignment data
+\item<4->  Obtain the null distribution of the statistic by calculating the same statistic $\hat{\theta}(\omega)$ under the sharp null for every possible (or many) $\omega$ in $\Omega$ 
+\item<5-> Compare $\hat{\theta}_{true}$ to the null distribution of $\hat{\theta}(\omega)$'s to see how ``extreme'' it is
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\frametitle{Testing in Small Samples: Fisher's Exact Test}
+\begin{overprint}
+\onslide<1>
+\begin{tabular}{cccc}
+\multicolumn{1}{p{1cm}}{\center $i$} &   \multicolumn{1}{p{1cm}}{\center $Y_{1i}$} & \multicolumn{1}{p{1cm}}{\center $Y_{0i}$}&       \multicolumn{1}{p{1cm}}{\center $D_{i}$} \\
+\hline
+\rowcolor{gray!10}        1 &          3 &        \textcolor{red}{?} &                   1  \\
+\rowcolor{gray!10}         2 &         1 &       \textcolor{red}{?} &                    1   \\
+\rowcolor{gray!30}         3 &          \textcolor{red}{?} &         0 &                    0  \\
+\rowcolor{gray!30}         4 &          \textcolor{red}{?} &         1 &                    0  \\
+\hline
+$\widehat{\tau}_{ATE}$    &                                &                       &   1.5      \\
+\end{tabular}\bigskip\\
+What do we know given the sharp null $H_0: Y_1 = Y_0$?
+\onslide<2>
+\begin{tabular}{cccc}
+\multicolumn{1}{p{1cm}}{\center $i$} &   \multicolumn{1}{p{1cm}}{\center $Y_{1i}$} & \multicolumn{1}{p{1cm}}{\center $Y_{0i}$}&      \multicolumn{1}{p{1cm}}{\center $D_{i}$} \\
+\hline
+\rowcolor{gray!10}        1 &          3 &        \textcolor{red}{3} &                   1  \\
+\rowcolor{gray!10}         2 &         1 &       \textcolor{red}{1} &                    1   \\
+\rowcolor{gray!30}         3 &          \textcolor{red}{0} &         0 &                   0  \\
+\rowcolor{gray!30}         4 &          \textcolor{red}{1} &         1 &                   0  \\
+\hline
+$\widehat{\tau}_{ATE}$    &                               &           &               1.5      \\
+$\hat\tau(\omega)$    &                               &                       &  1.5         \\
+\end{tabular}\bigskip\\
+\small
+Given the full schedule of potential outcomes under the sharp null, we can compute the null distribution of $ATE_{H_0}$ across all possible randomization.
+\onslide<3>
+\begin{tabular}{ccccc}
+\multicolumn{1}{p{1cm}}{\center $i$} &   \multicolumn{1}{p{1cm}}{\center $Y_{1i}$} & \multicolumn{1}{p{1cm}}{\center $Y_{0i}$} &   \multicolumn{1}{p{1cm}}{\center $D_{i}$} &\multicolumn{1}{p{.5cm}}{\center $\omega_1$} \\
+\hline
+\rowcolor{gray!10}        1 &          3 &        \textcolor{red}{3} &                  1 & 1  \\
+\rowcolor{gray!30}         2 &         1 &       \textcolor{red}{1} &                    1 & 0  \\
+\rowcolor{gray!10}         3 &          \textcolor{red}{0} &         0 &                    0 & 1 \\
+\rowcolor{gray!30}         4 &          \textcolor{red}{1} &         1 &                    0 & 0  \\
+\hline
+$\widehat{\tau}_{ATE}$    &                               &                       &   1.5   &    \\
+$\hat\tau(\omega)$   &                               &                       & 1.5  &  0.5      \\
+\end{tabular}
+\onslide<4>
+\begin{tabular}{cccccc}
+ \multicolumn{1}{p{1cm}}{\center $i$} &   \multicolumn{1}{p{1cm}}{\center $Y_{1i}$} & \multicolumn{1}{p{1cm}}{\center $Y_{0i}$} &   \multicolumn{1}{p{1cm}}{\center $D_{i}$} &\multicolumn{1}{p{.5cm}}{\center $\omega_1$} &\multicolumn{1}{p{.5cm}}{\center $\omega_2$} \\
+\hline
+\rowcolor{gray!10}        1 &          3 &        \textcolor{red}{3} &                  1 & 1  & 1  \\
+\rowcolor{gray!30}         2 &         1 &       \textcolor{red}{1} &                    1 & 0 & 0 \\
+\rowcolor{gray!30}         3 &          \textcolor{red}{0} &         0 &                    0 & 1 & 0\\
+\rowcolor{gray!10}         4 &          \textcolor{red}{1} &         1 &                    0 & 0 & 1 \\
+\hline
+$\widehat{\tau}_{ATE}$    &                               &                       &   1.5   &  &  \\
+$\hat\tau(\omega)$    &                               &                       &  1.5 &  0.5  &  1.5  \\
+\end{tabular}
+\onslide<5>
+\begin{tabular}{ccccccc}
+\multicolumn{1}{p{1cm}}{\center $i$} &   \multicolumn{1}{p{1cm}}{\center $Y_{1i}$} & \multicolumn{1}{p{1cm}}{\center $Y_{0i}$} &   \multicolumn{1}{p{1cm}}{\center $D_{i}$} &\multicolumn{1}{p{.5cm}}{\center $\omega_1$} &\multicolumn{1}{p{.5cm}}{\center $\omega_2$} & \multicolumn{1}{p{.5cm}}{\center $\omega_3$} \\
+\hline
+\rowcolor{gray!30}        1 &          3 &        \textcolor{red}{3} &                  1 & 1     & 1 & 0 \\
+\rowcolor{gray!10}         2 &         1 &       \textcolor{red}{1} &                    1 & 0    & 0 & 1 \\
+\rowcolor{gray!10}         3 &          \textcolor{red}{0} &         0 &                    0 & 1 & 0 & 1\\
+\rowcolor{gray!30}         4 &          \textcolor{red}{1} &         1 &                    0 & 0 & 1 & 0\\
+\hline
+$\widehat{\tau}_{ATE}$    &                               &                       &   1.5   &  &   & \\
+$\hat\tau(\omega)$    &                               &                       & 1.5  &  0.5       &1.5&-1.5  \\
+\end{tabular}
+\onslide<6>
+\begin{tabular}{cccccccc}
+ \multicolumn{1}{p{1cm}}{\center $i$} &   \multicolumn{1}{p{1cm}}{\center $Y_{1i}$} & \multicolumn{1}{p{1cm}}{\center $Y_{0i}$} &   \multicolumn{1}{p{1cm}}{\center $D_{i}$} &\multicolumn{1}{p{.5cm}}{\center $\omega_1$} &\multicolumn{1}{p{.5cm}}{\center $\omega_2$} & \multicolumn{1}{p{.5cm}}{\center $\omega_3$} & \multicolumn{1}{p{.5cm}}{\center $\omega_4$} \\
+\hline
+\rowcolor{gray!30}        1 &          3 &        \textcolor{red}{3} &                  1 & 1     & 1 & 0 & 0\\
+\rowcolor{gray!10}         2 &         1 &       \textcolor{red}{1} &                    1 & 0    & 0 & 1 & 1\\
+\rowcolor{gray!30}         3 &          \textcolor{red}{0} &         0 &                    0 & 1 & 0 & 1 & 0 \\
+\rowcolor{gray!10}         4 &          \textcolor{red}{1} &         1 &                    0 & 0 & 1 & 0 & 1\\
+\hline
+$\widehat{\tau}_{ATE}$    &                               &                       &   1.5   &  &   & & \\
+$\hat\tau(\omega)$    &                               &                       & 1.5  &  0.5       &1.5&-1.5&-.5  \\
+\end{tabular}
+\onslide<7>
+\begin{tabular}{ccccccccc}
+\multicolumn{1}{p{1cm}}{\center $i$} &   \multicolumn{1}{p{1cm}}{\center $Y_{1i}$} & \multicolumn{1}{p{1cm}}{\center $Y_{0i}$} &   \multicolumn{1}{p{1cm}}{\center $D_{i}$} &\multicolumn{1}{p{.5cm}}{\center $\omega_1$} &\multicolumn{1}{p{.5cm}}{\center $\omega_2$} & \multicolumn{1}{p{.5cm}}{\center $\omega_3$} & \multicolumn{1}{p{.5cm}}{\center $\omega_4$} & \multicolumn{1}{p{.5cm}}{\center $\omega_5$}   \\
+\hline
+\rowcolor{gray!30}        1 &          3 &        \textcolor{red}{3} &                  1 & 1     & 1 & 0 & 0&0\\
+\rowcolor{gray!30}         2 &         1 &       \textcolor{red}{1} &                    1 & 0    & 0 & 1 & 1&0\\
+\rowcolor{gray!10}         3 &          \textcolor{red}{0} &         0 &                    0 & 1 & 0 & 1 & 0&1 \\
+\rowcolor{gray!10}         4 &          \textcolor{red}{1} &         1 &                    0 & 0 & 1 & 0 & 1&1\\
+\hline
+$\widehat{\tau}_{ATE}$    &                               &                       &   1.5   &  &   & & &\\
+$\hat\tau(\omega)$    &                               &                       & 1.5  &  0.5       &1.5&-1.5&-.5&-1.5  \\
+\end{tabular}\vspace{.5in}\\
+So \textit{under null} $\Pr(|\hat\tau(\omega)| \geq |\widehat{\tau}_{ATE}|)=4/6\approx.67$.\medskip\\ Which assumptions are needed?
+\onslide<8>
+\begin{tabular}{ccccccccc}
+ \multicolumn{1}{p{1cm}}{\center $i$} &   \multicolumn{1}{p{1cm}}{\center $Y_{1i}$} & \multicolumn{1}{p{1cm}}{\center $Y_{0i}$} &   \multicolumn{1}{p{1cm}}{\center $D_{i}$} &\multicolumn{1}{p{.5cm}}{\center $\omega_1$} &\multicolumn{1}{p{.5cm}}{\center $\omega_2$} & \multicolumn{1}{p{.5cm}}{\center $\omega_3$} & \multicolumn{1}{p{.5cm}}{\center $\omega_4$} & \multicolumn{1}{p{.5cm}}{\center $\omega_5$}   \\
+\hline
+\rowcolor{gray!30}        1 &          3 &        \textcolor{red}{3} &                  1 & 1     & 1 & 0 & 0&0\\
+\rowcolor{gray!30}         2 &         1 &       \textcolor{red}{1} &                    1 & 0    & 0 & 1 & 1&0\\
+\rowcolor{gray!10}         3 &          \textcolor{red}{0} &         0 &                    0 & 1 & 0 & 1 & 0&1 \\
+\rowcolor{gray!10}         4 &          \textcolor{red}{1} &         1 &                    0 & 0 & 1 & 0 & 1&1\\
+\hline
+$\widehat{\tau}_{ATE}$    &                               &                       &   1.5   &  &   & & &\\
+$\hat\tau(\omega)$    &                               &                       & 1.5  &  0.5       &1.5&-1.5&-.5&-1.5  \\
+\end{tabular}\vspace{.5in}\\
+So \textit{under null} $\Pr(|\hat\tau(\omega)| \geq |\widehat{\tau}_{ATE}|)=4/6\approx.67$.\medskip\\ Which assumptions are needed? Very few... assumes $p(\omega)$ always the same over the $\Omega$ you use, which is a matter of design. Can be violated in non-experiments.
+\end{overprint}
+\end{frame}
+
+%%handout version:
+%\begin{frame}
+%\frametitle{Testing in Small Samples: Fisher's Exact Test}
+%\begin{tabular}{ccccccccc}
+% \multicolumn{1}{p{1cm}}{\center $i$} &   \multicolumn{1}{p{1cm}}{\center $Y_{1i}$} & \multicolumn{1}{p{1cm}}{\center $Y_{0i}$} &   \multicolumn{1}{p{1cm}}{\center $D_{i}$} &\multicolumn{1}{p{.5cm}}{\center $\omega_1$} &\multicolumn{1}{p{.5cm}}{\center $\omega_2$} & \multicolumn{1}{p{.5cm}}{\center $\omega_3$} & \multicolumn{1}{p{.5cm}}{\center $\omega_4$} & \multicolumn{1}{p{.5cm}}{\center $\omega_5$}   \\
+%\hline
+%\rowcolor{gray!30}        1 &          3 &        \textcolor{red}{3} &                  1 & 1     & 1 & 0 & 0&0\\
+%\rowcolor{gray!30}         2 &         1 &       \textcolor{red}{1} &                    1 & 0    & 0 & 1 & 1&0\\
+%\rowcolor{gray!10}         3 &          \textcolor{red}{0} &         0 &                    0 & 1 & 0 & 1 & 0&1 \\
+%\rowcolor{gray!10}         4 &          \textcolor{red}{1} &         1 &                    0 & 0 & 1 & 0 & 1&1\\
+%\hline
+%$\widehat{\tau}_{ATE}$    &                               &                       &   1.5   &  &   & & &\\
+%$\hat\tau(\omega)$    &                               &                       & 1.5  &  0.5       &1.5&-1.5&-.5&-1.5  \\
+%\end{tabular}\vspace{.5in}\\
+%So \textit{under null} $\Pr(|\hat\alpha(\omega)| \geq |\widehat{\tau}_{ATE}|)=4/6\approx.67$.\medskip\\ Which assumptions are needed? None! Randomization as ``reasoned basis for causal inference'' (Fisher 1935)
+%\end{frame}
+
+
+\section{Threats to Validity}
+
+
+\begin{frame}
+  \frametitle{Threats to Internal and External Validity for Experiments}
+\begin{itemize}
+\item<1-> \alert{Internal validity}: can we estimate the treatment effect for our particular sample?
+\begin{itemize}
+\footnotesize
+\item Fails when there are differences between treated and controls (other than the treatment itself) that affect the outcome
+\item In other words, how might the randomization have failed? (See next)
+\end{itemize}\bigskip
+\normalsize
+\item<2-> \alert{External validity}: can we extrapolate our	estimates to other populations?
+\begin{itemize}
+\footnotesize
+\item Might $Y_{1i}$, $Y_{0i}$, and $\tau_i$ have looked different in a different part of the population?
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Most Common Threats to Internal Validity}
+\begin{itemize}
+\item<1-> \textcolor{Blue}{Randomization fails at assignment}
+\footnotesize
+ \begin{itemize}
+   \item e.g. implementing partners assign their favorites to treatment group; imbalance due to small sample size
+%   \item In JTPA: Reasonably good balance
+ \end{itemize}\bigskip
+\normalsize
+ \item<2-> \textcolor{Blue}{Noncompliance with assignment}
+\footnotesize
+ \begin{itemize}
+   \item e.g. failure to treat or ``crossover''. Some members of the control group receive the treatment and some members of the treatment group go untreated
+\item e.g. in JTPA: only 62\% of women and 66\% of men assigned for treatment actually enrolled in JTPA training (on the other side, compliance was almost perfect in the control group).
+ \end{itemize}\bigskip
+\normalsize
+ \item<3-> \textcolor{Blue}{Differential attrition}
+\footnotesize
+ \begin{itemize}
+ \item attrition \textit{can} be okay, even if different rates for treated and contols
+ \item but, if probability of attrition depends on treatment status \textbf{and} potential outcomes, you break the randomization
+ \item Two scenarios: (i) people attrite from treatment-taking, but you still get to measure outcome; (ii) people attrite and you can't measure any outcome for them post-treatment.
+\end{itemize}\bigskip
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Example: Clingingsmith, Khwaja, Kremer}
+
+\centering
+
+\includegraphics[width = .95 \linewidth]{images/hajj_tech_01.jpg}
+
+\end{frame}
+
+\begin{frame}{Example: Natural Experiment in Pakistan}
+
+\begin{itemize}
+\small
+\makegaps
+\item<1->
+  Pakistan allocated about 135,000 visas to Saudi Arabia for the Hajj
+  via a randomized lottery.
+\item<2->
+  Wealthier Pakistanis tend to use private Hajj tour operators rather
+  than the lottery.
+\item<3->
+  ``Parties'' apply to go, and are randomly selected, with stratification on sect, region, and
+  accommodation.
+\item<4->
+  Compliance with the experiment is imperfect:
+
+  \begin{itemize}  \item
+    99\% who win lottery attend the Hajj.
+  \item
+    11\% who lose lottery still attend the Hajj (via private tours). \pause
+  \end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Example: Natural Experiment in Pakistan}
+
+Two kinds of information to bolster the randomization assumption:
+
+\begin{enumerate}
+\makebiggaps
+\item \textcolor{Blue}{Qualitative information}:
+ \begin{itemize}
+ \footnotesize
+  \item The lottery selection algorithm was designed and implemented by an independent and reputable third party, and there were no reports of lottery manipulation. \pause
+  \end{itemize}
+\item \textcolor{Blue}{Quantitative information: Balance tests on \textit{observables}} 
+  \includegraphics[width = .95 \linewidth]{images/balance_hajj.pdf}
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Difference in Means: lottery winner vs. losers}
+\includegraphics[width = .8 \linewidth]{images/effects_hajj.pdf} \\
+\footnotesize
+\onslide<2-> \begin{center} Would you say these are the ``effects of going on the Hajj''? \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Most Common Threats to External Validity}
+\begin{itemize}
+ \item<1-> \textcolor{Blue}{Non-representative sample}
+ \medskip
+  \begin{itemize}
+  \footnotesize
+  \addtolength{\itemsep}{.5\baselineskip}
+   \item e.g. laboratory experiment using a convenience sample
+   \item units are randomly assigned, but not from the population of interest
+ \end{itemize}\bigskip
+\normalsize
+ \item<2-> \textcolor{Blue}{Non-representative treatment}
+ \medskip
+  \begin{itemize}
+  \footnotesize
+  \addtolength{\itemsep}{.5\baselineskip}
+   \item the treatment differs from what you would actual implement
+   \item<3-> e.g. survey experiment about the effect of media priming on voting
+   \item<4-> scale effects
+   \item<5-> actual treatments may be bundled
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Internal vs. External Validity}
+\footnotesize
+Which one is more important?\\\bigskip \pause
+
+``One common view is that internal validity comes first. If you do not know the
+effects of the treatment on the units in your study, you are not well-positioned to
+infer the effects on units you did not study who live in circumstances you did not study.'' (Rosenbaum 2010, p. 56)\\\bigskip \pause
+
+\begin{itemize}
+\item Randomization (sometimes) ensures internal validity
+\item External validity may be partially addressed by comparing the results of several
+internally valid studies conducted in different circumstances and at different times
+\item While experiments can be especially narrow, same external validity issues often apply in observational work
+\end{itemize}
+\onslide<3-> That said,\\
+\begin{itemize}
+\item<4-> Often a studies with lower internal validity give us the theory, inspiration, qualitative knowledge needed for an experiment.
+\item<5-> Our aim is to get away from ``valid'' and ``not valid'' to instead discuss the evidence that a given conclusion would hold.
+\end{itemize}
+\end{frame}
+
+
+
+%%% Section %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusion}
+\small
+\begin{frame}
+  \frametitle{Concluding Remarks}
+  \small
+  \begin{itemize}
+  \small
+\item<1-> Random assignment solves the identification problem for causal inference based on minimal assumptions that the researcher can control \bigskip
+\item<2-> Put differently,  random assignment ``balances observed and unobserved confounders'', or ``makes treated and control units comparable''. \bigskip
+\item<3-> Regression \textit{can} be used for analyzing experiments: simple regression with robust SE yields unbiased estimates with conservative confidence intervals. Will be more useful (but tricky) when we add covariates. \bigskip
+%\item Covariate adjustment via regression can improve efficiency, and estimates are usually (but not always) robust to alternative model specifications \bigskip
+\item<4-> Possible tradeoff between internal validity and external validity \bigskip
+\item<5-> What's Next: more on experimental design and analysis
+\begin{itemize}
+\footnotesize
+\item<5->  covariate adjustment
+\item<5->  block randomization
+\end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\end{document} 

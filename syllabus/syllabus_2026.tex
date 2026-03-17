@@ -1,0 +1,636 @@
+\documentclass[PS]{syllabus}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{url}
+\usepackage{enumitem}
+\usepackage[pdftex, bookmarksopen=true, bookmarksnumbered=true, pdfstartview=FitH, breaklinks=true, urlbordercolor={0 1 1}, citebordercolor={0 1 0}, colorlinks = true]{hyperref}
+
+\setlength{\parskip}{\baselineskip}
+
+\setlist[itemize]{noitemsep, topsep=0pt}
+%\setitemize{noitemsep}
+
+\textheight 9in
+\textwidth 6.5in
+\topmargin -.5in
+\oddsidemargin 0in
+\evensidemargin 0in
+
+\newcommand{\percent}{\ensuremath{\%\;}}
+
+\begin{document}
+\title{PS200C: Causal inference for social scientists \\ Spring 2026}
+
+\begin{syllabus}
+\begin{center}
+\vspace{-.75in}
+
+\textit{Class}:  M 2-315 (Pub Aff 2238); W 2-315 (Bunche 3178) \\
+\textit{Section}: Friday 9:00–9:50 AM; see course website for location.\\
+\bigskip
+\textbf{Professor}: Chad Hazlett\\
+\href{mailto: chazlett@ucla.edu}{ chazlett@ucla.edu}  \\
+\textit{Office Hours}:  Thursday 10am and by appointment, Bunche 3264  \\
+\bigskip
+\textbf{Teaching Assistant}: Barney  \href{matilto: barneychen@ucla.edu}{barneychen@ucla.edu} \\
+\textit{Office Hours}: See course website
+ \\
+\end{center}
+
+
+\section*{Why causal inference?}
+
+Many research questions come down to questions like ``does X cause Y'' or ``was Y caused by X''? These are causal questions, not answered by making statements about observed associations, without further assumption. Much research takes the form of finding an association and being careful not to call it causal even if the author and readers would agree we are only interested in that association because we take it to be ``suggestive of'' or ``consistent with'' a causal claim. As we will see, that is often not good enough, because in many cases a story different from or even opposite to the implied causal one could also be consistent with the evidence, so how suggestive can it be?  Second, even if your question doesn't look like a causal one, it may be that your efforts to answer it are complicated by underlying causal matters that you might not even think of as causal. The way we deal with problems like case selection, measurement error, missing data, and choosing what to control often actually depend on causal structure: if you assume one causal structure your answers mean something different than had you assumed another causal structure. Not being explicit about an assumed causal structure doesn't help, since they are lurking there, affecting what your answer means, whether you'd like to care or not.
+
+%Randomized experiments are vital to the sciences because they solve some of these problems. And a good causal analysis can help you appreciate this, but also help you appreciate what problems randomization cannot solve: what if you want to analyze mechanism and speak of things like mediation and moderation? What if you have imperfect compliance, or some units atrited from the study? These are problems that randomization alone does not solve, and perhaps surprisingly the solutions invoke causal assumptions about how the data came to be. Further, of course we cannot always do experiments anyway for ethical or practical reasons or because we'd like to learn the effect of something that actually happened as it happened in the real world. 
+
+\section*{Course overview}
+
+In this course we will talk first about languages for describing causality. This gives us key machinery and you cannot really proceed without being careful about these languages. You may not fully grasp these languages on a first (second, or third) pass, but it's a start. We will use two approaches or languages, one called ``potential outcomes'', and one called ``structural causal models'' (but better known by the use of the associated graphical representations directed acyclic graphs, DAGs).
+
+With this foundation we will come first to appreciate the difference between estimates you make with observed data and the causal quantities you wish you were estimating, and how connecting these two depends always and everywhere on \textit{causal assumptions} from outside the data.
+
+After that we will talk about the types of causal assumptions that lead to a number of useful strategies for making causal claims.  These include things like experiments, ``selection on observables''/ ``no unobserved confounders''/ ``conditional ignorability'' approaches, instrumental variables approaches, difference-in-difference, and regression discontinuity design. It also includes strategies that recognize our assumptions may sometimes be off, like partial identification and randomized discontinuity approaches. The focus will be generally on the core assumptions of these methods -- how to bring them to life, think about them, and defend or discuss them. Some such assumptions have observable implications in the data and we will talk about looking for those. 
+
+Each approach comports with a host of corresponding \textit{estimation} tools, and so we will discuss those as well. Estimation conerns are, in this class, secondary to the assumptions we have to talk about if you want to give the results of those estimates a causal interpretation. But, there are some important things there we must discuss there. I've found over the years that people expect doing causal inference to be like doing conventional statistics, and people often want to know ``what is the right test'' or ``what is the right estimator''. This is not how it works. Causal inference is about making and understanding and perhaps defending assumptions, most of which cannot be verified on the data, and only then, using appropriate estimation strategies. Sometimes these are very complicated, and other times they are as simple as taking averages and differences. If you come out of the course thinking there are ``causal estimators'' that lead to a causal interpretation because of your choice of estimator (e.g. ``my estimate is causal because I used matching''), rather than because of the assumptions you make, you will have missed the point, and it will make me very sad.
+
+We will have students from many fields in the course, which is great! And it is fitting because the problems we discuss appear all over the place. The ``toy examples'' we use in class will often relate to basic science or life experiences we can all appreciate (e.g. about taking aspirin for headaches or whether rain gets the sidewalk wet). The worked examples we consider will be drawn largely from political science, but also occasionally from other fields. 
+
+The following roadmap is a bit ambitious, but we will see how close we can get:
+
+\begin{table}[ht]
+\renewcommand{\arraystretch}{1.4}
+\centering
+\small
+\begin{tabular}{|c|p{5cm}|p{6cm}|}
+\hline
+\textbf{Week} & \textbf{Topic} & \textbf{Assignment} \\
+\hline
+1 & Introduction; Start on Potential Outcomes & Pset 0: Background Check \\
+\hline
+2 & Potential Outcomes into Experiments & Pset 1: Potential Outcomes and Identification for Randomization \\
+\hline
+3 & Conditional Ignorability (Identification) & A paper to read and discuss \\
+\hline
+4 & Conditional Ignorability (Estimation) & Pset 2: CI in theory and practice; use another paper \\
+\hline
+5 & Directed Acyclic Graphs (DAGs) & Pset 3: DAGs; read and complain about another CI paper \\
+\hline
+6 & Sensitivity Analysis for CI & Readings; Pset 4: Applying sensitivity analysis \\
+\hline
+7 & (i) Difference-in-Differences and TWFE \newline (ii) Synthetic Control and Panel Methods & Read 2 papers and complain about parallel trends assumption \\
+\hline
+8 & (i) Instrumental Variables \newline (ii) Sharp Regression Discontinuity & Pset 5: Read and discuss 3 papers on IV assumptions; one estimation example \\
+\hline
+9 & (i) Fuzzy Regression Discontinuity \newline (ii) Overflow (or choose a topic) & --- \\
+\hline
+10 & Presentations (Part 1) & --- \\
+\hline
+Final Slot & Presentations (Part 2) & --- \\
+\hline
+\end{tabular}
+\label{tab:course_schedule}
+\end{table}
+
+
+\section*{Prerequisites}
+
+This course assumes familiarity with basic probability theory and statistics. We will review the most important concepts from these areas, but without prior experience the course would be very difficult.  If you don't feel you have a full grasp of probability theory at the level of a first graduate course, then you may want to come back next year.
+
+We also assume familiarity with multivariate calculus at the level of conceptually understanding derivatives and integrals, and occasionally being able to take them (perhaps reminding yourself of some of the rules as needed).  Familiarity with basic linear/matrix algebra is strongly recommended as well. Principally, we will use linear algebra as a notational device and for manipulating various quantities which can be cumbersome to handle otherwise. The first set of slides offers further indications you can use to determine your readiness, as will the first problem set.
+
+Finally, we assume familiarity with a statistical computing environment, specifically \texttt{R}. If you are not familiar with \texttt{R}, that will make things more difficult, but with enough time and determination you could use this opportunity to help you learn it.
+
+\textbf{Class Requirements}
+
+\begin{enumerate}
+\item \emph{Materials to read or view outside of lecture.} I will use the course website, not the syllabus, to enumerate essential materials (be they articles, readings, or videos) that you are expected to read/watch closely before lecture. When readings are truly required, I will say so in the lecture or through the course website announcements. 
+
+\item \emph{Attendance}. We will be teaching in-person. There is just no substitute for the questions and discussion we get during class. At the outset I will assume everybody will endeavor to attend class regularly.  If attendance begins to lag, we may need to take attendance in class.
+
+\item \emph{Problem Sets}. Problem sets are the primary way you will meaningfully learn the details of the methods and ideas described in the lectures and the readings. There will be approximately 4 problem sets,  consisting of analytical problems, simulations, and data analyses.
+
+ 
+\begin{itemize}
+\item Unexcused late problem sets will not be accepted. If you need an extension for a legitimate reason, request one in advance and you will usually get it!
+
+\item Students are encouraged to discuss difficulties and sticking points they encounter in solving the problem sets. The course website is good for this. However, every step of every problem must be produced by the individual student, and all work must be written up independently. \textit{Neither code nor written solutions may be copied verbatim}. For analytical questions, you must include your intermediate steps, as well as comments on those steps when appropriate such that we can understand your reasoning. For data analysis questions, include annotated code as part of your answers. \textit{Your problem set must list the names of any students with whom you have worked on the problems.}
+\end{itemize}
+
+\item \emph{Final Project}.
+The idea of the project is to work in small groups (typically 2-3, but exceptions are possible). Each group will present to the class during the last two weeks of the quarter. There are two types of projects you can do (though they sometimes coincide):
+\begin{itemize}
+\item \textbf{Classic project:} focus on a substantive question of interest to you and produce a cutting edge analysis that takes causal inference seriously, using some of the tools you learned in class. 
+\item \textbf{Sensitivity study:} Using tools you will learn in class, apply sensitivity analysis to an important finding from your literature or otherwise of interest to determine ``how much confounding would it take to alter this conclusion?'' 
+\item \textbf{Something else:} With permission, you can do something else, such as develop your own methodology or explore some newly proposed exciting method.
+\end{itemize}
+
+
+The main thing with the project is to start early and check-in often. Here are our tentative milestones,
+\begin{itemize}
+\item April 25: submit teams and a notional topic for your project (we can help with team-finding as needed)
+\smallskip
+\item May 9: submit a two-page progress report, schedule a meeting with us 
+\smallskip
+\item Week 10 and final exam time: class presentations
+\smallskip
+\item By June 13 (end of quarter) submit final project to website
+\end{itemize}
+
+
+%Students are expected to write a short empirical paper that applies methods learned in this class to a research question of their choice. \textit{Co-authored projects are strongly encouraged, and we will facilitate the formation of groups to this end.} The paper should be 7-16 pages in length and focus on the research question, data, empirical strategy, results, and conclusions. You also need to submit a copy of your analysis code. \\
+
+%One option for the final paper will be to conduct a \textbf{sensitivity-based replication paper}. As you may know, a very large number of empirical works every year attempt to produce ``suggestive'' results by doing things like regressing an outcome on a treatment variable and trying to control for observable confounders.  Whatever your field and research question, if your colleagues depend upon observed data to study the effects of real world causes, I'm betting you see this. Sensitivity analyses are tools that illuminate how fragile those results are in the face of unobserved confounding.  (If all this means nothing to you yet, don't worry). This can be a big aid to understanding what level of confidence to place in results or moving towards more definitive answers. Some of my work focuses on developing tools for sensitivity analysis such as this \href{https://www.researchgate.net/publication/322509816_Making_Sense_of_Sensitivity_Extending_Omitted_Variable_Bias}{paper} and this \href{https://carloscinelli.com/sensemakr/articles/index.html}{software}. Using this or other tools, you and your group can use to take research on any question of interest to you, and examine its sensitivity.  There are ample opportunities for such analyses; right now for example I am exploring such applied sensitivity analyses in papers together with students in Political Science, Community Health Sciences, Statistics, and Epidemiology.   \\
+ 
+%Alternatively, choose a substantive research question from your own work, or otherwise a research question that can sustain the interest of you and your groupmates.  \textit{The research question must clearly concern attempts to estimate the causal effect of something---e.g. an institution, intervention, policy, characteristics, or event--- on some outcome.}  As you will learn in the class, one must negotiate between what is ``interesting'' and what can be well-answered.  You will have to grapple with that tension in your work, but the point of the class is to give you the tools to do just that.\\
+
+%Finally, in rare cases, students may instead develop a method related to causal inference, or produce an \texttt{R} package that implements or substantially extends a method related to causal inference. \\
+
+
+%We will construct milestones for progress on these projects. Tentatively,
+
+%\begin{itemize}
+%\item April 16: submit teams and a notional topic for your project
+%\item May 7: submit a two-page progress report, schedule a meeting with us 
+%\item May 31 and June 2: class presentations (size dependent)
+%\item By June 10 (end of quarter) submit final project to website
+%\end{itemize}
+\end{enumerate}
+
+\bigskip
+\textbf{Grading} \\
+Grades will be based on problem sets (50\% of final grade), participation (5\%), intermediate milestones toward the final project (10\%) and the final project itself (35\%).\\
+
+\textbf{Recitation Sections} \\
+Weekly recitation sections will be held by Barney on Zoom on Friday, 930-1030. 
+
+\textbf{Course Website} \\
+The course website is on Bruinlearn/Canvas. We will distribute course materials, including lecture slides and problem sets, on this website. All important announcements and reminders will also be made through the announcements there.\\
+
+\textbf{Causal inference books suitable for this class:}\\
+\emph{The book you should buy is}
+\begin{itemize}
+  \item Angrist, Joshua D. and J\"orn-Steffen Pischke. 2009. \emph{Mostly Harmless Econometrics: An Empiricist's Companion}. Princeton University Press.
+  \end{itemize}
+\smallskip  
+  Another classic on the topic that is nice to have is:
+  \begin{itemize}
+  \item Morgan, Stephen L. and Christopher Winship. 2007. \emph{Counterfactuals and Causal Inference: Methods and Principles for Social Research}. Cambridge University Press.
+\end{itemize}
+\bigskip
+
+We will also make reference to ``Causal Inference: What if'' by Hernan and Robins.  It is freely avaialble at \href{https://www.hsph.harvard.edu/miguel-hernan/wp-content/uploads/sites/1268/2024/01/hernanrobins_WhatIf_2jan24.pdf}. 
+
+\textbf{A Great Review:}\\
+If you want to review statistics up through regression from a perspective that you might not have seen (and that is very consistent with how we will use these concepts), check out chapters 1-3 of:
+\begin{description}
+\item[] Aronow, Peter and Benjamin Miller. \emph{Theory of Agnostic Statistics}.
+\end{description}
+
+An electronic copy is available from the library at \href{https://www.cambridge.org/core/books/foundations-of-agnostic-statistics/684756357E7E9B3DFF0A8157FB2DCECA}{https://www.cambridge.org/core/books/foundations-of-agnostic-statistics/684756357E7E9B3DFF0A8157FB2DCECA}.
+
+\bigskip
+
+\textbf{Other resources}
+We will post a more comprehensive set of resources in the course materials! This list is quite extensive but carefully vetted and annotated. 
+
+
+% 2022 version just ends here!
+\end{syllabus}
+\end{document}
+
+%
+%\begin{itemize}
+%\item Imbens, Guido W. and Donald B. 2015. \emph{Causal Inference for Statistics, Social, and Biomedical Sciences: An Introduction}. Cambridge University Press.
+%\item Rosenbaum, Paul R. 2009. \textit{Design of Observational Studies}. Springer Series in Statistics.
+%\item Pearl, Judea. 2009. \emph{Causality: Models, Reasoning, and Inference.} New York: Cambridge University Press. 2nd edition.
+%\item Pearl, Judea, Madelyn Glymour, and Nicholas P. Jewell. \emph{Causal inference in statistics: A primer}. John Wiley \& Sons, 2016.
+%\end{itemize}
+%\smallskip
+%I draw your attention to the last one, the ``Primer''. One approach to causal inference that differs from (but related intimately too) the primary framework we rely upon in the class is the ``graphical'' or ``Directed Acyclic Graph'' approach coming largely from the work of Judea Pearl. Both of the Pearl books above relate to this, but the ``Primer'' is by far the better one to start with.  For those of you who prefer online lectures to a book I also highly recommend this EdX course called \href{https://www.edx.org/course/causal-diagrams-draw-your-assumptions-before-your}{Causal Diagrams: Draw Your Assumptions Before Your Conclusions} by Miguel Hernan which gives a very accessible introduction to this material.
+%
+
+%\textbf{Useful Summary Articles}
+%\begin{itemize}
+%\item \emph{The following papers summarize the main methods learned in this course. They are dense and detailed and you might not understand all of the details the first time you read through them. However, if you plan to conduct applied empirical work that involves causal inference, you should revisit these again and again as reference.}
+%\begin{itemize}
+%  \item Guido W. Imbens and Jeffrey Wooldridge. 2008.  \href{http://ftp.iza.org/dp3640.pdf}{Recent Developments in the Econometrics of Program Evaluation}. NBER Working Paper No. 14251.
+%  \item Joshua D. Angrist and Alan B. Krueger. 1999. \href{http://www.demog.berkeley.edu/~ebenstei/litreview/Handbooks/Angrist_Krueger_HB.pdf}{Empirical Strategies in Labor Economics}. In Handbook of Labor Economics, ed. O. Ashenfelter and D. Card: Elsevier Science.
+%\end{itemize}
+%\end{itemize}
+
+\section*{Topics}
+
+The following is an approximate schedule of topics. They do not correspond to weeks, and we may change the topics that are included or their order. The list of readings is for your reference, with more highly recommended items marked by a ($\star$).
+
+\section{Introduction}
+\textit{Topics:}
+\begin{itemize}
+ \item Getting oriented and setting expectations for this year
+ \item Introductions
+\end{itemize}
+
+\section{The Potential Outcome Model}
+\textit{Topics:}
+\begin{itemize}
+\item Counterfactual Responses and the Fundamental Identification Problem
+\item Estimands and Assignment Mechanisms
+\item Heterogeneity and Selection
+\end{itemize}
+\medskip
+\emph{Readings}
+\begin{itemize}
+\item Morgan and Winship: Chapter 1-2. ($\star$)
+\item Angrist and Pischke: Chapter 1. ($\star$)
+\item Holland, Paul W. 1986.  \href{http://www.jstor.org/stable/2289064} {Statistics and Causal Inference}. \textit{Journal of the American Statistical Association} 81(396): 945-960. ($\star$)
+\item Sekhon, Jasjeet S. 2004.  \href{http://journals.cambridge.org/abstract_S1537592704040150} {Quality Meets Quantity: Case Studies, Conditional Probability and Counterfactuals}. \textit{Perspectives on Politics} 2 (2): 281-293.
+\item Imbens and Rubin: Chapters 1-2.
+\end{itemize}
+
+
+\section{Randomized Experiments}
+\textit{Topics:}
+\begin{itemize}
+\item Identification of Causal Effects under Randomization
+\item Implementation, Estimation, Diagnostics, Blocking
+\item When do you have a ``natural experiment''?
+\item Threats to Validity
+\item The sharp-null interpretation of randomization  inference, Fisher's exact test
+\end{itemize}
+\medskip
+\emph{Readings: Theory of Experiments}
+\begin{itemize}
+\item  Angrist and Pischke: Chapter 2. ($\star$)
+\item Rosenbaum, Paul R. 2002. \textit{ Observational Studies}. Springer-Verlag. 2nd edition. Chapter 2.
+\item Gerber, Alan S., and Donald P. Green. 2012. \textit{Field Experiments}. W. W. Norton. Chapters 2-4.
+\item Neyman, Jerzy. 1923 [1990]. \href{http://www.ics.uci.edu/~sternh/courses/265/neyman_statsci1990.pdf}{On the Application of Probability Theory to Agricultural Experiments. Essay on Principles. Section 9}. \textit{Statistical Science} 5 (4): 465-472. Translated by Dorota M. Dabrowska and Terence P. Speed.
+%\item Lin, Winston. Forthcoming. \href{http://arxiv.org/pdf/1208.2301.pdf}{Agnostic Notes on Regression Adjustments to Experimental Data: Reexamining Freedman's Critique}. \textit{The Annals of Applied Statistics}.
+\item Imbens and Rubin: Chapters 4-8
+\end{itemize}
+\medskip
+\emph{Readings: Some Famous Social Science Experiments}
+\begin{itemize}
+  \item Olken, Benjamin. 2007. \href{http://www.journals.uchicago.edu/doi/abs/10.1086/517935}{Monitoring corruption: Evidence from a field experiment in Indonesia}. \textit{Journal of Political Economy} 115 (2): 200-249.
+  \item Gerber, Alan S., Donald P. Green and Christopher W. Larimer. 2008. \href{http://journals.cambridge.org/action/displayAbstract?fromPage=online&aid=1720748}{Social Pressure and Voter Turnout: Evidence from a Largescale Field Experiment}. \textit{APSR} 102 (1): 1-48. ($\star$)
+\item Wantchekon, Leonard. 2003. \href{http://www.jstor.org/stable/25054228} {Clientelism and Voting Behavior: Evidence from a Field Experiment in Benin} \textit{World Politics} 55 (3), April: 399-422.
+  \item Chattopadhyay, Raghabendra and Esther Duflo. 2004.  \href{http://www.jstor.org/stable/3598894} {Women as Policy Makers: Evidence from a Randomized Policy Experiment in India}. \textit{Econometrica}, 72 (5): 1409-1443.
+  \end{itemize}
+\medskip
+  \emph{Readings: Natural Experiments}
+\begin{itemize}
+\item Hyde, Susan D. 2007.  \href{http://muse.jhu.edu/journals/world_politics/v060/60.1.hyde.html} {The Observer Effect in International Politics: Evidence
+from a Natural Experiment}. \textit{World Politics} 60(1): 37-63. ($\star$)
+\item Ho, Daniel E., and Kosuke Imai. 2008.  \href{http://poq.oxfordjournals.org/cgi/content/abstract/72/2/216} {Estimating Causal Effects of Ballot
+Order from a Randomized Natural Experiment: The California Alphabet Lottery},
+1978-2002.\textit{ Public Opinion Quarterly} 72(2).
+\end{itemize}
+
+%\emph{Readings: Experiment Review Articles}
+%\begin{itemize}
+%\item Palfrey, Thomas. 2009.
+%  \href{http://arjournals.annualreviews.org/doi/pdf/10.1146/annurev.polisci.12.091007.122139}
+%  {Laboratory Experiments in Political Economy}.\textit{ Annual Review of
+%  Political Science} 12: 379-388.
+%\item Druckman, James N., Donald P. Green, James H. Kuklinski, and
+%  Arthur Lupia. 2006.
+%  \href{http://journals.cambridge.org/abstract_S0003055406062514} {The
+%    Growth and Development of Experimental Research in Political
+%    Science}.\textit{ American Political Science Review} 100(4): 627-635.
+%\item Green, Donald P., Peter M. Aronow, and Mary C. McGrath. 2012. \href{http://www.tandfonline.com/doi/abs/10.1080/17457289.2012.728223}{Field Experiments and the Study of Voter Turnout}. \textit{Journal of Elections, Public Opinion \& Parties}: 1-22.
+%\item Humphreys, Macartan, and Jeremy Weinstein. 2009.
+%  \href{http://www.columbia.edu/~mh2245/papers1/HW_ARPS09.pdf} {Field
+%    Experiments and the Political Economy of Development}. \textit{Annual
+%  Review of Political Science} 12: 367-378.
+%\item Harrison, Glenn and John A. List. 2004.
+%  \href{http://www.atypon-link.com/AEAP/doi/abs/10.1257/0022051043004577}
+%  {Field Experiments}. \textit{Journal of Economic Literature}, XLII:
+%  1013-1059.
+%\item List, John A., and Steven Levitt. 2006. \href{http://expecon.gsu.edu/jccox/Econ9940/levitt\%20and\%20list-experiments\%20and\%20social\%20preferences.pdf}
+%  {What Do Laboratory Experiments Tell Us About the Real World?}
+%  University of Chicago and NBER.
+%\item Gaines, Brian J., and James H. Kuklinski. 2007.
+%  \href{http://pan.oxfordjournals.org/cgi/content/abstract/15/1/1}
+%  {The Logic of the Survey Experiment Reexamined}. \textit{Political Analysis}
+%  15: 1-20.
+%\end{itemize}
+
+%\emph{Readings: Useful Methodological Guides for Experiments}
+%
+%\begin{itemize}
+%
+%\item Duflo, Esther, Abhijit Banerjee, Rachel Glennerster, and Michael Kremer. 2006.  \href{http://papers.ssrn.com/sol3/papers.cfm?abstract_id=951841}{Using Randomization in Development Economics: A Toolkit}. \textit{Handbook of Development Economics}.
+%
+%\item Bloom, Howard S. 2008. ``The Core Analytics of Randomized Experiments for Social Research.'' In The SAGE Handbook of Social Research Methods, eds. Pertti Alasuutar, Leonard Bickman, and Julia Brannen. London: SAGE.
+%
+%\item Bruhn, Miriam, and David McKenzie. 2009. \href{http://papers.ssrn.com/sol3/papers.cfm?abstract_id=1293165}{In Pursuit of Balance: Randomization in Practice in Development Field Experiments}. \textit{American Economic Journal: Applied Economics} 1(4): 200-232.
+%
+%\end{itemize}
+
+\section{Causal Effects under Selection on Observables}
+%``Selection on observables'' is the most common  identification strategy, closely related to tradition approaches of ``controlling for potential confounders''. Most regression and matching studies implicitly or explicitly utilize this strategy.  You should know it and the assumptions it depends on very well.
+
+\subsection{Selection on Observables in Theory}
+\textit{Topics:}
+\begin{itemize}
+\item Identification under Selection on Observables
+\item Subclassification as the easy case
+\end{itemize}
+\medskip
+\emph{Readings}
+\begin{itemize}
+\item Morgan and Winship: Chapter 3. ($\star$)
+\item Rubin, Donald B. 2008.  \href{http://arxiv.org/pdf/0811.1640}
+  {For Objective Causal Inference, Design Trumps Analysis}. \textit{Annals of Applied Statistics} 2(3):808-840.
+\item Rosenbaum, Paul R. 2002. Observational Studies. Springer-Verlag. 2nd edition. Chapter 3.
+\item Rosenbaum, Paul R. 2005.
+  \href{http://stat.wharton.upenn.edu/~rosenbap/heteroReprint.pdf}
+  {Heterogeneity and Causality: Unit Heterogeneity and Design
+    Sensitivity in Observational Studies}. \textit{The American
+    Statistician} 59: 147-152.
+\item Imbens and Rubin: Chapter 12.
+\end{itemize}
+
+\subsection{Conditioning on Obsevables: Matching}
+\textit{Topics:}
+\begin{itemize}
+\item Covariate Matching, Balance Checks, Properties of Matching Estimators
+\end{itemize}
+\medskip
+\emph{Readings: Matching Theory}
+\begin{itemize}
+\item Morgan and Winship: Chapter 4. ($\star$)
+  % \item Morgan and Harding. 2006.
+  %   \href{http://smr.sagepub.com/cgi/content/abstract/35/1/3}
+  %   {Matching Estimators of Causal Effects: Prospects and Pitfalls
+  %   in Theory and Practice}.
+\item Abadie, Alberto, and Guido W.
+  Imbens. 2011 \href{http://www.hks.harvard.edu/fs/aabadie/bcmp.pdf}{``Bias-Corrected Matching Estimators for Average Treatment Effects.''} \textit{Journal of Business \&
+    Economic Statistics} 29(1): 1-11.($\star$)
+\item Imbens, Guido. 2014. \href{http://www.nber.org/papers/w19959}{Matching Methods in Practice: Three Examples}. \textit{NBER Working Paper 19959}.
+\item Sekhon, Jasjeet S. 2009.
+  \href{http://arjournals.annualreviews.org/doi/abs/10.1146/annurev.polisci.11.060606.135444}
+  {Opiates for the Matches: Matching Methods for Causal
+    Inference}.\textit{ Annual Review of Political Science} 12: 487-508.($\star$)
+\item Ho, Daniel E., Kosuke Imai, Gary King, and Elizabeth A. Stuart. 2007 \href{http://pan.oxfordjournals.org/cgi/content/abstract/mpl013v1}{Matching as Nonparametric Preprocessing for Reducing Model Dependence in Parametric Causal Inference}. \textit{Political Analysis}
+%\item Stuart, Elizabeth A. 2009.
+%  \href{http://www.biostat.jhsph.edu/~estuart/Stuart-MatchingMethods-StatSci-Dec09.pdf}
+%  {Matching methods for causal inference: A review and a look forward}
+%\item Rosenbaum, Paul R., 1995. \textit{Observational Studies}. New
+%  York: Springer-Verlag. Chapter 3.
+\item Abadie, Alberto and Guido W. Imbens. 2006.
+  \href{http://www.jstor.org/stable/3598929} {Large Sample Properties of Matching Estimators for Average Treatment Effects}, \textit{Econometrica} 74: 235-267.
+\item Imbens and Rubin: Chapters 15 and 18
+\end{itemize}
+\medskip
+\emph{Readings: Matching Applications}
+\begin{itemize}
+\item Lyall, Jason. 2010.
+  \href{http://journals.cambridge.org/action/displayFulltext?type=1&pdftype=1&fid=7449380&jid=PSR&volumeId=104&issueId=01&aid=7449372}
+  {Are Co-Ethnics More Effective Counter-Insurgents? Evidence from the Second Chechen War}. \textit{American Political Science Review}, 104:1 (February 2010): 1-20.
+\item Gordon, Sanford and Gregory Huber. 2007.
+  \href{http://www.nyu.edu/classes/nbeck/q2/gordon_huber.pdf} {The Effect of Electoral Competitiveness on Incumbent  Behavior}. \textit{Quarterly Journal of Political Science} 2(2): 107-138.
+
+\item Eggers, Andrew and Jens Hainmueller. 2009.
+  \href{http://papers.ssrn.com/sol3/papers.cfm?abstract_id=1788412} {MPs for Sale? Estimating Returns to Office in Post-War British Politics}. \textit{American Political Science Review}. 103 (4): 513-533.
+\item Gilligan, Michael J. and Ernest J. Sergenti. 2008.
+  \href{http://www.qjps.com/getpdf.aspx?doi=100.00007051&product=QJPS}
+  {Do UN Interventions Cause Peace? Using Matching to Improve Causal Inference}. \textit{Quarterly Journal of Political Science} 3 (2): 89-122.
+\item Sekhon, J., and R. Titiunik. 2012. \href{http://www-personal.umich.edu/~titiunik/papers/SekhonTitiunik2012_APSR.pdf}{When Natural Experiments Are Neither Natural nor Experiments}. \textit{American Political Science Review} 106(1): 35-57.
+\item Sen, Maya. 2014. \href{http://scholar.harvard.edu/files/msen/files/sen_ratings.pdf}{How Judicial Qualification Ratings May Disadvantage Minority and Female Candidates}. \textit{Journal of Law and Courts}. 2 (1): 33-65
+\end{itemize}
+
+\subsection{Conditioning on Observables: Weighting}
+\textit{Topics:}
+\begin{itemize}
+\item Identification assumptions; weighting to get balance
+\end{itemize}
+\medskip
+\emph{Readings: Weighting for Balance}
+\begin{itemize}
+\item Hazlett, Chad. \href{https://www.researchgate.net/publication/299013953_Kernel_Balancing_A_flexible_non-parametric_weighting_procedure_for_estimating_causal_effects}{
+Kernel Balancing: A flexible non-parametric weighting
+procedure for estimating causal effects
+}. Statistica Sinica, 30(2020), 1155-1189.
+
+\item Hainmueller,
+  Jens. 2012. \href{http://papers.ssrn.com/sol3/papers.cfm?abstract_id=1904869}{Entropy Balancing for Causal Effects: A Multivariate Reweighting Method to Produce Balanced Samples in Observational Studies}. \textit{Political Analysis} 20 (1): 25-46.
+\end{itemize}
+
+\subsection{Conditioning on Observables: The Propensity Score}
+\textit{Topics:}
+\begin{itemize}
+\item Theory of propensity score
+\item Balancing property of propensity score
+\item How balancing on $X$ can make propensity score constant
+\item Merging balancing with propensity scores
+\end{itemize}
+\medskip
+\emph{Readings: Propensity Score Methods Theory}
+\begin{itemize}
+\item Morgan and Winship: Chapter 3. ($\star$)
+\item Rosenbaum, Paul R., and Donald B. Rubin. ``The central role of the propensity score in observational studies for causal effects.'' Biometrika 70.1 (1983): 41-55.
+\item Imbens, Guido W. 2004 \href{http://www.mitpressjournals.org/doi/abs/10.1162/003465304323023651}{Nonparametric Estimation of Average Treatment Effects under Exogeneity: A Review}. \textit{Review of Economics and Statistics} 86 (1): 4-29.
+\item Glynn, Adam, and Kevin Quinn. 2010. \href{http://pan.oxfordjournals.org/content/18/1/36}{An Introduction to the Augmented Inverse Propensity Weighted Estimator}. \textit{Political Analysis} 18(1): 36-56.
+\item Imai, Kosuke, and Marc Ratkovic. ``Covariate balancing propensity score.'' Journal of the Royal Statistical Society: Series B (Statistical Methodology) 76.1 (2014): 243-263.
+\item Imbens and Rubin: Chapter 13, 14, and 17
+\end{itemize}
+\medskip
+\emph{Readings: Propensity Score Methods Applications}
+\begin{itemize}
+\item Rubin, Donald B. 2001.  \href{http://www.springerlink.com/index/R445GG1778314228.pdf}{Using Propensity Scores to Help Design Observational Studies: Application
+to the Tobacco Litigation}. \textit{Health Services and Outcomes Research Methodology} 2 (3-4): 169-188.
+\item Blattman, Christopher. 2009. \href{http://www.journals.cambridge.org/abstract_S0003055409090212}{From Violence to Voting: War and Political Participation in Uganda.} \textit{American Political Science Review} 103 (2): 231-247.
+\end{itemize}
+
+\subsection{Conditioning on Observables: Regression}
+\textit{Topics:}
+\begin{itemize}
+\item Agnostic Regression framework, Non-parametric Regression, Identification with Regression
+\end{itemize}
+\medskip
+\emph{Readings}
+\begin{itemize}
+\item  Angrist and Pischke: Chapter 3. ($\star$)
+\item Morgan and Winship: Chapter 5. ($\star$)
+\item Chapter in Winship and Morgan on Matching vs Regression.
+\item Lin, Winston. \href{http://arxiv.org/pdf/1208.2301.pdf}{"Agnostic notes on regression adjustments to experimental data: reexamining Freedman’s critique."} Annals of Applied Statistics 7.1 (2013): 295-318.
+%\item H\"ardle, W and Linton, O. 1994.  \href{http://cowles.econ.yale.edu/P/cd/d10b/d1069.pdf} {Applied Nonparametric Methods}, in R. F. Engle and D. L. McFadden eds. \textit{Handbook of Econometrics}, vol. 4. New York: Elsevier Science.
+%\item White, H. 1980.  \href{http://www.jstor.org/stable/2526245} {Using Least Squares to Approximate Unknown Regression Functions}. \textit{International Economic Review} 21: 149-170.
+\item Hainmueller, J. and Hazlett, C. 2014. \href{http://pan.oxfordjournals.org/content/early/2013/10/10/pan.mpt019}{Kernel Regularized Least Squares: Reducing Misspecification Bias with a Flexible and Interpretable Machine Learning Approach}. \textit{Political Analysis} 22(2): 143-168.
+2014.
+\end{itemize}
+
+
+\subsection{Sensitivity Analysis for Selection on Observables}
+\medskip
+\emph{Readings}
+\begin{itemize}
+\item Cinelli, Hazlett. \href{https://www.researchgate.net/publication/322509816_Making_Sense_of_Sensitivity_Extending_Omitted_Variable_Bias}{Making Sense of Sensitivity: Extending omitted variable bias} ($\star$)
+\item Go through these example in the \texttt{sensemakr} software: \href{https://carloscinelli.com/sensemakr/articles/index.html}{https://carloscinelli.com/sensemakr/articles/index.html}
+\item Guido W. Imbens. 2003. \href{http://www.jstor.org/stable/3132212} {Sensitivity to Exogeneity Assumptions in Program Evaluation}. \textit{The American Economic Review} 93 (2): 126--32.
+%\item Morgan and Winship: Chapter 6 ($\star$)
+\item Rosenbaum, Paul R. 2002. Observational Studies. Springer-Verlag. 2nd edition. Chapter 4.
+\item Manski, Charles F. 1995. \textit{Identification Problems in the Social Sciences}. Cambridge: Harvard University Press. Chapter 2
+\item VanderWeele, Tyler J. , and Onyebuchi A. Arah. 2011. \href{http://journals.lww.com/epidem/Abstract/2011/01000/Bias_Formulas_for_Sensitivity_Analysis_of.8.aspx}{Bias Formulas for Sensitivity Analysis of Unmeasured Confounding for General Outcomes, Treatments, and Confounders}. \textit{Epidemiology} 22(1)
+%\item Rosenbaum, Paul R. 2009. \href{http://pubs.amstat.org/doi/pdf/10.1198/jasa.2009.tm08470}{Amplification of Sensitivity Analysis in Matched Observational Studies}. \textit{Journal of the American Statistical Association} 104 (488): 1398-1405.
+\item Rosenbaum and Rubin. 1983.  \href{http://www.jstor.org/stable/2345524} {Assessing Sensitivity to an Unobserved Binary Covariate in an Observational Study with Binary Outcome}. Journal of the Royal Statistical Society. Series B 45(2).
+\item Imbens and Rubin: Chapter 22.
+\end{itemize}
+
+%
+%\subsection{Extending (stretching!) Selection on Observables }
+%\textit{Topics:}
+%\begin{itemize}
+%\item Treatment effect heterogeneity: what is and is not identified.
+%\item Mediation, moderation, and mechanism: the problem of sequential ignorability
+%\end{itemize}
+%\medskip
+%\textit{Readings}: TBD
+
+
+%\subsection{Conclusion: Selection on Observables}
+%\begin{itemize}
+%\item Can Non-Experimental Method Recover Causal Effects?
+%\end{itemize}
+%
+%\emph{Readings: Comparison of Experimental and Non-experimental Methods}
+%\begin{itemize}
+%\item Dehejia, Rajeev H. and Sadek Wahba. 1999.  \href{http://www.jstor.org/stable/2669919} {Causal Effects in Non-Experimental Studies: Re-Evaluating the Evaluation of Training Programs}, \textit{Journal of the American Statistical Association} 94 (448): 1053-1062.
+%\item Heckman, James J., Hidehiko Ichimura and Petra Todd. 1998.  \href{http://www.jstor.org/stable/2566973} {Matching as an Econometric
+%Evaluation Estimator}, \textit{Review
+%of Economic Studies} 65: 261-294.
+%\item Shadish, William R., M.H. Clark, and Peter M. Steiner. 2008.  \href{http://stat-athens.aueb.gr/~jpan/Shadish-JASA2008(1334-1356)-17mr09.pdf} {Can Nonrandomized Experiments Yield Accurate Answers? A Randomized Experiment Comparing Random and Nonrandom Assignments}. \textit{Journal of the American Statistical Association} 103 (484): 1334-1344. ($\star$)
+%\item Arceneaux, Kevin, Alan S. Gerber, and Donald P. Green. 2006.  \href{http://pan.oxfordjournals.org/cgi/content/abstract/14/1/37} {Comparing Experimental and Matching Methods using a Large-Scale Voter Mobilization Experiment}. \textit{Political Analysis} 14 (1): 1-36.
+%\item John Concato, Nirav Shah, and Ralph Horwitz. 2000.  \href{http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1557642/} {Randomized, Controlled Trials, Observational Studies, and the Hierarchy of Research Designs}.
+%\textit{New England Journal of Medicine} 342 (25): 1887-92.
+%\item Benson, Kjell and Arthur J. Hartz. 2000.  \href{http://www.nejm.org/doi/full/10.1056/NEJM200006223422506} {A Comparison of Observational Studies and Randomized, Controlled Trials}. \textit{New England Journal of Medicine} 342(25): 1878-86.
+%\end{itemize}
+
+\section{Time permitting: An introduction to directed Acylic graphs and structural causal models}
+
+\begin{itemize}
+\item Pearl, Judea, Madelyn Glymour, and Nicholas P. Jewell. Causal inference in statistics: A primer. John Wiley \& Sons, 2016.
+\item This great, free \href{https://www.edx.org/course/causal-diagrams-draw-your-assumptions-before-your}{EdX course by Miguel Hernan}.
+\end{itemize}
+
+
+\section{Parallel-Trend Related Models}
+\subsection{Difference-in-Differences Estimators}
+\textit{Topics:}
+\begin{itemize}
+\item Identification, Estimation, Falsification tests
+\end{itemize}
+\medskip
+\emph{Readings: DID Theory}
+\begin{itemize}
+\item  Angrist and Pischke: Chapter 5.2-5.4 ($\star$)
+\item Bertrand, Marianne, Esther Duflo, and Sendhil Mullainathan. 2004.  \href{http://www.mitpressjournals.org/doi/abs/10.1162/003355304772839588} {How Much
+Should We Trust Differences-in-Differences Estimates?} \textit{Quarterly Journal of
+Economics} 119 (1): 249-275.
+\end{itemize}
+\textit{Topics:}
+\emph{Readings: DID Applications}
+\begin{itemize}
+\item Lyall, Jason. 2009.  \href{http://pantheon.yale.edu/~jml27/YaleWebsite/Research_files/Artillery_Final.pdf} {Does Indiscriminate Violence Incite Insurgent Attacks?
+Evidence from Chechnya}. \textit{Journal of Conflict Resolution} 53 (3): 331-62.
+\item Card, David. 1990.  \href{http://www.jstor.org/stable/2523702} {The Impact of the Mariel Boatlift on the Miami Labor Market}, \textit{Industrial and Labor Relations Review} 44 (2): 245-257.
+\item Card, David. and Alan B. Krueger. 1994.  \href{http://faculty.smu.edu/Millimet/classes/eco6352/papers/ck.pdf} {Minimum Wages and Employment: A Case Study
+of the Fast-Food Industry in New Jersey and Pennsylvania}," \textit{American Economic
+Review} 84 (4): 772-793.
+\end{itemize}
+
+\subsection{Panel Data Methods}
+\textit{Topics:}
+\begin{itemize}
+\item Fixed Effects and Random Effects Estimation
+\end{itemize}
+\medskip
+\emph{Readings: Panel Methods Theory}
+\begin{itemize}
+\item  Angrist and Pischke: Chapter 5.1 ($\star$)
+\item  Angrist and Pischke: Chapter 8 ($\star$)
+%\item Bai, Jushan. 2009. \href{http://www.jstor.org/stable/40263859}{Panel data models with interactive fixed effects}. \textit{Econometrica} 77(4): 1229-1279.
+\end{itemize}
+\medskip
+\emph{Readings: Panel Methods Applications}
+\begin{itemize}
+\item Ladd, Jonathan McDonald, and Gabriel S. Lenz. 2009.  \href{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.527.3582&rep=rep1&type=pdf}{Exploiting a Rare Communication Shift to Document the Persuasive Power of the News Media}. \textit{American Journal of Political Science} 53(2)($\star$)
+%\item Cox, Gary W., and William Terry. 2008.  %\href{http://dss.ucsd.edu/~wterry/index.html/research/cox_terry_2008.pdf} {Legislative Productivity in the 93d-105th Congresses}. \textit{Legislative Studies Quarterly} 33(4): 603-16.
+\item Berrebi, Claude. and Esteban F. Klor. 2008.  \href{http://journals.cambridge.org/abstract_S0003055408080246} {Are Voters Sensitive to Terrorism? Direct Evidence from the Israeli Electorate}. \textit{American Political Science Review} 102 (3): 279-301.
+\item Acemoglu, Daron, Simon Johnson, James A. Robinson, and Pierre Yared. 2008. \href{http://www.nber.org/papers/w11205}{Income and Democracy}. \textit{American Economic Review} 98 (3): 808-842.
+\end{itemize}
+
+\subsection{Synthetic Control Methods}
+
+\emph{Readings}
+\begin{itemize}
+\item Abadie, Diamond, and Hainmueller. 2010.  \href{http://www.mit.edu/~jhainm/Paper/ccs.pdf} {Synthetic Control Methods for Comparative Case Studies: Estimating the Effect of California's Tobacco Control Program}. \textit{JASA}($\star$)
+\item Abadie, Alberto and Javier Gardeazabal. 2003.  \href{http://www.hks.harvard.edu/fs/aabadie/eccp.pdf} {The Economic Costs of Conflict: a Case-Control Study for the Basque Country}. \textit{American Economic Review} 92 (1).
+\end{itemize}
+
+\section{Instrumental Variables}
+\textit{Topics:}
+\begin{itemize}
+\item Identification: exogenous influences on treatment taking
+\item Intent-to-treat, imperfect compliance, randomized encouragement
+\item Reduced form, Wald Estimator, Local Average Treatment Effects, 2SLS
+\end{itemize}
+\medskip
+\emph{Readings: Instrumental Variable Theory}
+\begin{itemize}
+\item  Angrist and Pischke: Chapter 4 ($\star$)
+\item Morgan and Winship: Chapter 7
+%\item Angrist, Joshua D., and Alan B. Krueger. 2001.  \href{http://www.jstor.org/stable/2696517} {Instrumental Variables and the Search for Identification: From Supply and Demand to Natural Experiments}.
+\item Angrist, Joshua D., Guido W. Imbens, and Donald B. Rubin. 1996. \href{http://www.jstor.org/stable/2291629}{Identification of Causal Effects Using Instrumental Variables.} \textit{Journal of the American Statistical Association} 91(434): 444-455.
+%\item Abadie, Alberto 2003. \href{http://www.hks.harvard.edu/fs/aabadie/gtep.pdf} {Semiparametric instrumental variable estimation of treatment response models}. Journal of Econometrics 113 (2003) 231-263.
+\item Gerber, Alan S., and Donald P. Green. 2012. \textit{Field Experiments}. W. W. Norton. Chapters 5-6.
+%\item Sovey, Allison J. and Donald P. Green 2011. \href{http://faculty.smu.edu/millimet/classes/eco6374/papers/sovey\%20green\%202011.pdf}{Instrumental Variables Estimation in Political Science: A Readers’ Guide}. {\it American Journal of Political Science} 55 (1): 188-200.
+\item Imbens and Rubin: Chapters 23 - 25.
+\end{itemize}
+\medskip
+\emph{Readings: Instrumental Variable Critique}
+\begin{itemize}
+\item Deaton, Angus. 2010. \href{http://pubs.aeaweb.org/doi/abs/10.1257/jel.48.2.424}{Instruments, Randomization, and Learning About Development}. \textit{Journal of Economic Literature} 48(2): 424-455.
+\item Hernan, Miguel A., and James M. Robins. 2006. \href{http://www.jstor.org.libproxy.mit.edu/stable/20486236}{Instruments for Causal Inference: An Epidemiologist's Dream?} \textit{Epidemiology} 17(4): 360-72.
+\item Imbens, Guido W. 2010. \href{http://www.jstor.org/stable/20778730}{Better LATE Than Nothing: Some Comments on Deaton (2009) and Heckman and Urzua (2009)}. \textit{Journal of Economic Literature} 48(2): 399-423.
+\end{itemize}
+\medskip
+\emph{Readings: Instrumental Variable Applications}
+\begin{itemize}
+\item Holger L. Kern and Jens Hainmueller  \href{http://www.mit.edu/~jhainm/Paper/OVM2009.pdf} {Opium for the Masses: How Foreign Free Media Can Stabilize Authoritarian Regimes}. Political Analysis (2009).
+%\item  Angrist and Krueger. 2001  \href{http://www.jstor.org/stable/2696517} {Instrumental Variables and the Search for Identification: From Supply and Demand to Natural Experiments}
+\item Acemoglu, Daron, Simon Johnson, and James A. Robinson. 2001.  \href{http://www.jstor.org/stable/2677930} {The Colonial Origins of Comparative Development: An Empirical Investigation}. \textit{American Economic Review} 91(5): 1369-1401.
+\item Clingingsmith, David, Asim Ijaz Khwaja, and Michael Kremer. 2009.  \href{http://www.mitpressjournals.org/doi/abs/10.1162/qjec.2009.124.3.1133} {Estimating the Impact of the Hajj: Religion and Tolerance in Islam'ss Global Gathering}. \textit{Quarterly Journal of Economics} 124(3): 1133-1170.
+\item Hidalgo, F. Daniel, Suresh Naidu, Simeon Nichter, and Neal Richardson. 2010. \href{http://www.mitpressjournals.org/doi/abs/10.1162/REST_a_00007}{Economic Determinants of Land Invasions}. \textit{Review of Economics and Statistics} 92(3): 505-523.
+\item Angrist, Joshua D. 1990.  \href{http://www.jstor.org/stable/2006669} {Lifetime Earnings and the Vietnam Era Draft Lottery: Evidence from Social Security Administrative Records}. \textit{American
+Economic Review} 80(3): 313-336.
+\end{itemize}
+
+\subsection{Discontinuity Designs}
+\textit{Topics:}
+\begin{itemize}
+\item Identification: continuity of the potential outcomes
+\item Sharp and Fuzzy Designs,  Estimation, Falsification Checks
+\end{itemize}
+\medskip
+\emph{Readings: RDD Theory}
+\begin{itemize}
+\item Imbens, Guido W., and Thomas Lemieux. 2008.  \href{http://linkinghub.elsevier.com/retrieve/pii/S0304407607001091} {Regression Discontinuity
+Designs: A Guide to Practice}. \textit{Journal of Econometrics} 142 (2): 615-35. (Part
+of special issue on RDD, all interesting.) ($\star$)
+\item  Angrist and Pischke: Chap. 6 ($\star$)
+%\item Titiunik, Roccio, Sebastián Calonico and Matías Cattaneo. \href{http://www-personal.umich.edu/~titiunik/papers/CalonicoCattaneoTitiunik2015-RJournal.pdf}{rdrobust: An R Package for Robust Inference in Regression-Discontinuity Designs, with R Journal, forthcoming.}($\star$)
+%\item Hahn, Jinyong, Petra Todd and Wilbert Van der Klaauw. 2001.  \href{http://www.jstor.org/stable/2692190} {Identification and Estimation of Treatment Effects with a Regression Discontinuity Design}, \textit{Econometrica} 69 (1): 201-209.
+\end{itemize}
+\medskip
+\emph{Readings: RDD Applications}
+\begin{itemize}
+\item Caughey, Devin, and Jasjeet Sekhon. 2011. \href{http://pan.oxfordjournals.org/content/19/4/385.abstract}{Elections and the Regression Discontinuity Design: Lessons From Close U.S. House Races, 1942-2008}. \textit{Political Analysis} 19 (4): 385-408.
+\item Eggers, Andrew, Fowler, Anthony, Hainmueller, Jens, Hall, Andrew B. and Snyder, James M. 2014. \href{http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2265625}{On the Validity of the Regression Discontinuity Design for Estimating Electoral Effects: New Evidence from over 40,000 Close Races}. \textit{American Journal of Political Science}
+%\item Hidalgo, F. Daniel. 2012. Fraud or Enfranchisement? The Consequences of Electronic Voting for Political Representation in Brazil. Working Paper.
+\item Lee, David S. 2008.  \href{http://linkinghub.elsevier.com/retrieve/pii/S0304407607001121} {Randomized Experiments from Non-random Selection in U.S. House Elections}. \textit{Journal of Econometrics} 142 (2): 675-697.
+\item  Eggers and Hainmueller:  \href{http://www.mit.edu/~jhainm/Paper/mpfs.pdf} {The Value of Political Power: Estimating Returns to Office in Post-War British Politics}.
+\end{itemize}
+
+\end{syllabus}
+\end{document}
