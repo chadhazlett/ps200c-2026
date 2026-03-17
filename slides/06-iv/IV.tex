@@ -1,0 +1,1259 @@
+\documentclass[xcolor=dvipsnames]{beamer}
+%\documentclass[handout,xcolor=dvipsnames,pdftex,hyperref={colorlinks=false}]{beamer}
+
+\usetheme[height=7mm]{Rochester}
+\setbeamertemplate{items}[ball]
+\setbeamertemplate{blocks}[rounded][shadow=true]
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{epsfig}
+%\usepackage{rotating}
+%\usepackage{theorem}
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{inconsolata}
+\usepackage{fancyvrb}
+
+% == theme & colors
+\usetheme{Warsaw}  % Jens' previous
+%\usepackage{helvet}
+\definecolor{someblue}{rgb}{0,.1,0.8}
+
+\title{PS200C: Instrumental Variables}
+\subtitle[ ]{Instrumental Variables: Modern Perspective with Heterogeneous Treatment Effects}
+\author{Chad Hazlett}
+\institute[UCLA]{UCLA\\[1ex]
+  \texttt{chazlett@ucla.edu}}
+%\date{}
+
+\definecolor{dgreen}{rgb}{0,.6,0.8}
+\newtheorem{assumption}{Assumption}
+\newtheorem{iass}{Identification Assumption}
+\newtheorem{ires}{Identification Result}
+\newtheorem{estm}{Estimand}
+\newtheorem{esti}{Estimator}
+\newtheorem{question}{Question}
+\newtheorem{answer}{Answer}
+\newtheorem{proposition}{Proposition}
+\newcommand{\bs}{\boldsymbol}
+\newcommand{\mb}{\mathbf}
+\newcommand{\real}{\mathbb{R}}
+\renewcommand{\u}{\ensuremath{\mb{u}}}
+\renewcommand{\v}{\ensuremath{\mb{v}}}
+\newcommand{\U}{\ensuremath{\mb{U}}}
+\newcommand{\Z}{\ensuremath{\mb{Z}}}
+\newcommand{\PP}{\ensuremath{\mb{P}}}
+\newcommand{\M}{\ensuremath{\mb{M}}}
+\newcommand{\X}{\ensuremath{\mb{X}}}
+\newcommand{\x}{\ensuremath{\mb{x}}}
+\newcommand{\Y}{\ensuremath{\mb{Y}}}
+\newcommand{\D}{\ensuremath{\mb{D}}}
+\newcommand{\y}{\ensuremath{\mb{y}}}
+\renewcommand{\b}{\ensuremath{\bs{\beta}}}
+\newcommand{\e}{\ensuremath{\bs{\epsilon}}}
+\newcommand{\bhat}{\ensuremath{\hat{\bs{\beta}}}}
+\newcommand{\XX}{\ensuremath{\X'\X}}
+\newcommand{\XXinv}{\ensuremath{\left(\XX\right)^{-1}}}
+\newcommand{\hatsig}{\ensuremath{\hat{\sigma}^2}}
+\newcommand{\sig}{\ensuremath{\sigma^2}}
+\newcommand{\hatmat}{\ensuremath{\X \XXinv \X'}}
+\newcommand{\ehat}{\ensuremath{\hat{\e}}}
+\newcommand{\tr}{\text{tr}}
+\newcommand{\Sig}{\ensuremath{\bs{\Sigma}}}
+\newcommand{\SigInv}{\ensuremath{\bs{\Sigma^{-1}}}}
+\newcommand{\W}{\ensuremath{\mb{W}}}
+\newcommand\E{\mathbb{E}}
+
+\newcommand{\indep}{{\bot\negthickspace\negthickspace\bot}}
+\useoutertheme{infolines}
+\begin{document}
+
+\subject{Talks}
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>
+    \frametitle{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>
+    \frametitle{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{The Intuition for (Modern) IV}
+\onslide<1-> The key intuition for most causal IV work can be thought about in terms of a \textit{randomized encouragement} design. \\
+\bigskip
+\onslide<2-> Suppose you want to test an important hypothesis: \onslide<3-> \textcolor{Red}{in humans, does pizza consumption improve happiness?}
+\small
+\begin{itemize} 
+\item<4-> Can we just look at a sample and use $\E[happy| pizza]-\E[happy|no\;pizza]$?
+\item<5-> Turns out your IRB won't let you randomize, because denying pizza for the controls would be a human rights violation
+\item<6-> Instead, suppose we randomly assign half the people in our sample to receive gift cards for pizza. 
+\item<7-> Assume we get to observe which ones actually get a pizza in the following week, then measure happiness for everybody in our sample. 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{The Intuition for (Modern) IV}
+\small
+\onslide<1-> \textcolor{Blue}{Good news}: we have an experiment w.r.t. our gift card \\ (aka ``encouragement'', ``instrument'') \\
+
+\begin{itemize}
+\item<2-> Is the following identifiable? $$ATE_{card}=\E[happy_{1i} - happy_{0i}]$$
+%\item<3-> Yes! Just a plain old experiment. 
+\item<4-> $ATE_{card}$ called the \textit{reduced form} or \textit{intent to treat} (ITT) effect
+\end{itemize}
+\medskip
+\onslide<5-> But how does this compare to actual causal effect of \textit{pizza} on \textit{happiness}? \\
+\medskip
+\onslide<6-> \textcolor{Blue}{Answer:} We can back-out effect of the pizza, but only for a certain group.\\
+\end{frame}
+
+\begin{frame}{Backing out effect of pizza:}
+ \onslide<1-> \textcolor{Blue}{Intuition}: 
+ \footnotesize
+ \begin{itemize}
+ \item<2-> suppose \textit{card} impacts \textit{happiness} only through \textit{pizza} consumption
+ \smallskip
+ \item<3-> our entire ITT estimate comes from just the sub-pop for whom \textit{card} changed their \textit{pizza} consumption.
+\smallskip 
+ \item<4-> $ATE_{card}$ is thus an average of: (a) the effect of $card$ on $happy$ among that group, and (b) a zero effect from those not driven to change their pizza consumption 
+\smallskip  
+  \item<5-> so $ATE_{card}$ is a possibly ``watered down'' estimate of the effect of pizza. 
+ \smallskip
+\item<6-> to undo this watering down, we'll see next that we want to divide the $ATE_{card}$ by $Pr(\text{somebody only get pizza because of the card})$, which we can estimate too.
+ \end{itemize}
+\end{frame}
+
+\begin{frame}{The Intuition for (Modern) IV}
+\onslide<1-> Formalizing this, let's consider four groups:
+\begin{enumerate}
+\footnotesize
+\item<2-> \textit{Never-takers.} People with gluten allergies. Won't take the pizza whether they get card or not. \textcolor{Blue}{What is $\E[Y|card]-\E[Y|no\;card]$ for this group?}
+\smallskip
+\item<3-> \textit{Compliers.} Those who will get the pizza if we give them the card, but not if we don't. Since they follow the encouragement, for them the encouragement \textit{is} the treatment, so \textcolor{Blue}{$\E[Y|card]-\E[Y|no\;card]$ \textit{is} the ATE} \textit{for this group}.
+\smallskip
+\item<4->  \textit{Always-takers} are those who will eat pizza regardless of getting the card. 
+\textcolor{Blue}{What is $\E[Y|card]-\E[Y|no\;card]$ for this group?}
+\smallskip
+\item<5-> \textit{Defiers} are those who feel like eating pizza if they don't get a card but when you give them the card, feel like eating salad.  We just assume these people don't exist. 
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{The Intuition for (Modern) IV}
+\onslide<1-> The $ATE_{card}$ is averaged over all units,\\ 
+\footnotesize
+\begin{align*}
+ATE_{card} &= \E_{type}[ATE_{card}|type] \\
+&= (ATE_{card}|\text{never-taker})\cdot Pr(\text{never-taker}) \\ 
+&+  \textcolor{Blue}{(ATE_{card}|\text{complier})\cdot Pr(complier)} \\
+&+ (ATE_{card}|\text{always-taker})\cdot Pr(\text{always-taker}) \\ 
+&+ (ATE_{card}|\text{defier})\cdot Pr(\text{defier}) \\
+&= 0 + \textcolor{Blue}{(ATE_{card}|\text{complier})\cdot Pr(complier)}  + 0 + 0 \\
+\frac{ATE_{card}}{\textcolor{Blue}{Pr(\text{complier})}} 
+&= \textcolor{Blue}{(ATE_{card}|\text{complier})} = ATE_{pizza} | \text{complier}
+\end{align*}
+\small
+
+\bigskip
+\onslide<2-> So we just need $Pr(complier)$...
+\end{frame}
+
+\begin{frame}{The Intuition for (Modern) IV}
+\small
+\onslide<1-> $Pr(complier)$ = prob. take treatment  when encouraged and not otherwise... \\
+\bigskip
+\onslide<2-> Let 
+\footnotesize
+\begin{itemize}
+\item $Z_i$ be the encouragement (card), $D_i$ the treatment (pizza) 
+\item $D_{1i}$ and $D_{0i}$ are ``potential treatments'', i.e. whether you take the treatment when encouraged ($D_{1i}$) or not encouraged ($D_{0i}$)
+\end{itemize}
+\bigskip
+\small
+\onslide<3-> So $Pr(complier) = Pr(D_{1i}=1)-Pr(D_{0i}=1)= \E[D_{1i}-D_{0i}]$ \\
+\bigskip
+\onslide<4-> Is this identifiable? \\
+\bigskip
+\onslide<5-> Yes, by randomization of encouragement!
+\begin{align*}
+Pr(Complier) &= \E[D_{1i}-D_{0i}] \\
+&= \E[D_{i}|Z_i=1]-\E[D_{i}|Z_i=0]
+\end{align*}
+\end{frame}
+
+\begin{frame}{Saying the Same Thing Many Ways:}
+\onslide<1-> We can estimate $ATE$ among compliers,  aka the $LATE$ (local average treatment effect): \\
+\footnotesize
+\begin{align*}
+LATE &= \frac{Reduced Form}{Compliance Ratio}= \frac{ITT}{Pr(complier)} \\
+&= \frac{\text{Effect of Z on Y}}{\text{Effect of Z on D}} \\
+&= \frac{\E[Y|Z=1]-\E[Y|Z=0]}{\E[D|Z=1]-\E[D|Z=0]} \\
+&= \frac{cov(Z,Y)}{var(Z)}/\frac{cov(Z,D)}{var(Z)}\\
+&= \frac{(Z^{\top}Z)^{-1}(Z^{\top}Y)}{(Z^{\top}Z)^{-1}(Z^{\top}D)} = (Z^{\top}D)^{-1} (Z^{\top}Y) 
+\end{align*}
+\smallskip
+\normalsize
+\begin{center}
+\color{Blue}
+\onslide<2-> This is the IV, 2SLS, or Wald Estimator
+\end{center}
+\end{frame}
+
+
+\begin{frame}{The Intuition for (Modern) IV}
+\onslide<1->  Lot's of things can go wrong: \\
+\small
+\begin{itemize}
+\item<2-> We had to assume no effect of $Z$ on $Y$ except through $D$.\\ \textcolor{Blue}{Exclusion restriction.} (\textcolor{Red}{What would go wrong otherwise?}) 
+\smallskip
+\item<3-> We had to assume $Z$ effects $D$.\\  \textcolor{Blue}{Relevance}. (\textcolor{Red}{What would go wrong otherwise?}) 
+\begin{itemize}
+\item<3-> Moreover, $Z$ cannot affect $D$ too weakly. (\textcolor{Red}{Why?})
+\end{itemize}
+\smallskip
+\item<4-> We had to assume $Z$ was ``random''\\ \textcolor{Blue}{Ignorability}.  (\textcolor{Red}{What would go wrong otherwise?}) 
+\smallskip
+\item<5-> We had to assume no defiers\\ \textcolor{Blue}{Monotonicity}. (\textcolor{Red}{What would go wrong otherwise?}) 
+\item<6-> If everything goes right, is the effect you estimate a representative treatment effect? 
+\end{itemize}
+\normalsize
+\smallskip
+\onslide<7-> \begin{center}
+Good habit to think through any IV problem \\ in this ``randomized encouragement'' setup
+\end{center}
+\end{frame}
+
+\begin{frame}{A loosely related example for intuition:}
+\vspace{-.2in}
+\begin{center}
+\begin{figure}
+\caption{Intent to Eat}
+\vspace{-.1in}
+\includegraphics[scale=.1]{ronin_intent_to_eat.jpg}
+\end{figure}
+\end{center}
+\footnotesize
+\begin{itemize}
+%\item<2-> Suppose for every 1 Tbs of applesauce I feed Ronin, he sleeps 1 more hour
+\item<2-> For every Tbs of applesauce I (try to ) feed Ronin, he sleeps another hour.
+\item<2-> But, for each Tbs I feed him, only 0.8 Tbs is actually ingested
+\item<4-> What is the effect of applesauce ingested on his sleep (in hours per Tbs)?
+\item<5-> What is the compliance rate? What is the exclusion restriction?
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Two Views on Instrumental Variables}
+\onslide<1-> That's a suitable way to think about instruments. Now let's do it all again with more technicality.  Two ways: 
+\bigskip 
+\begin{enumerate}
+\item<2-> Traditional Econometric Framework
+\begin{itemize}
+\item<3-> Constant treatment effects
+\item<4-> Linearity in the case of a multivalued treatment
+\end{itemize}\bigskip \bigskip
+\item<5-> Potential Outcome Model of IV
+\begin{itemize}
+\item<6-> Acknowledges heterogeneous treatment effects
+\item<7-> This induced a focus on Local Average Treatment Effect
+\item<8-> Most natural for binary treatments
+\end{itemize}
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Identification with Traditional Instrumental Variables}
+  \onslide<1->
+\begin{definition}
+Two equations:
+\begin{itemize}
+\item \textcolor{Blue}{First Stage:} $D=\tau+\rho Z+ \eta$ 
+\item \textcolor{Blue}{Second Stage:} $Y=\gamma+\alpha D+ \varepsilon$ 
+\end{itemize}
+\end{definition}
+\onslide<2->
+\begin{iass}
+\begin{enumerate}
+  \item Exogeneity and Exclusion: $Cov(Z,\eta)=0$ and $Cov(Z,\varepsilon)=0$
+  \item First Stage Relevance: $\rho\neq0$ \footnotesize (typically $F>10$ in first stage regression)
+  \normalsize
+  \item $\alpha=Y_{1i}-Y_{0i}$ constant for all units $i$.\\ ( \scriptsize or for continuous treatments, $Y_{a',i}-Y_{a,i} = \beta (a'-a)$.)
+\end{enumerate}
+\end{iass}\vspace{-.2in}
+\end{frame}
+
+
+
+%\begin{frame}
+%\frametitle{Instrumental Variable Estimator}
+%
+%\begin{itemize}
+%\item True model: $Y=D\alpha + X \beta + \varepsilon$
+%\item Given the IV assumptions, we could regress:
+%$Y=Z\rho+\omega$ and obtain an unbiased effect of $\hat{\rho}$, the effect of $Z$ on $Y$
+%\item But we can also obtain an unbiased effect of the estimate of $\beta_{a}$, the effect of $D$ on $Y$ by using only the
+%exogenous variation in $D$ that is induced by $Z$
+%\end{itemize}
+%
+%
+%
+%
+%Assume $Cov[\nu=\varepsilon + X\beta,Z]=0$. And consider the IV estimator:
+%
+%
+%\end{frame}
+
+\section{Instrumental Variables with Potential Outcomes (No Covariates)}
+
+\begin{frame}
+  \frametitle{Potential Outcome Model for Instrumental Variables}
+\onslide<1-> \begin{definition}[Instrument]
+$Z_i$: Binary instrument for {\em unit} $i$.
+ \[
+ Z_i = \left\{
+ \begin{array}{ll}
+  1 & \mbox{if unit $i$ ``encouraged'' to receive treatment}\\
+  0 & \mbox{if unit $i$ ``encouraged'' to receive control}
+ \end{array}
+ \right.
+ \]
+\end{definition}
+
+\onslide<2-> \begin{definition}[Potential Treatments]
+ $D_{zi}$ indicates \emph{potential} treatment status given $Z_i=z$
+\begin{itemize}
+\item e.g. if $D_{1i}=1$ encouraged to take treatment and takes treatment
+\end{itemize}
+\end{definition}
+
+\onslide<3-> \begin{assumption}
+Observed treatments are realized as
+\[
+D_i = Z_i \cdot D_{1i}+(1-Z_i)\cdot D_{0i} \,\, \mbox{so}\,\,
+D_i = \left\{
+ \begin{array}{ll}
+  D_{1i} & \mbox{if $Z_i=1$}\\
+  D_{0i} & \mbox{if $Z_i=0$}
+ \end{array}
+ \right.
+\]
+\end{assumption}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Potential Outcome Model for Instrumental Variables}
+Following Angrist, Imbens, and Rubin (1996), we can define:\bigskip
+\begin{Definition}
+\begin{itemize}
+ \item {\em Compliers}: $D_{1i}>D_{0i}$ ($D_{0i}=0$ and $D_{1i}=1$).
+ \item {\em Always-takers}: $D_{1i}=D_{0i}=1$.
+ \item {\em Never-takers}: $D_{1i}=D_{0i}=0$.
+ \item {\em Defiers}: $D_{1i}<D_{0i}$ ($D_{0i}=1$ and $D_{1i}=0$).
+\end{itemize}
+\end{Definition}
+%\bigskip
+\begin{Problem}
+Only one of the potential treatment indicators
+$(D_{0i},D_{1i})$ is observed, so we cannot identify which group any particular individual belongs to
+\end{Problem}
+\end{frame}
+
+
+%\begin{frame}
+%  \frametitle{Potential Outcome Model for Instrumental Variables}
+%  \small
+%\begin{definition}[Potential Outcomes]
+%Given the binary instrument $Z_i \in (1,0)$ and the binary treatment $D_i \in (1,0)$ every unit now has four potential outcomes $Y_i(D,Z)$:
+%
+%$$Y_i(D_i=1,Z_i=1);\; Y_i(D_i=1,Z_i=0);\; Y_i(D_i=0,Z_i=1);\; Y(D_i=0,Z_i=0)$$
+%
+%%%e.g. the causal effect of the treatment given the unit's realized encouragement status is given by $Y(D=1,Z_i)-Y(D=0,Z_i)$.
+%\end{definition}
+%
+%\onslide<2-> e.g. the causal effect of the treatment given the unit's realized encouragement status is given by $Y(D=1,Z_i)-Y(D=0,Z_i)$ \\
+%\bigskip
+%\onslide<3-> We will see that we need only write $Y_{di}$. 
+%\begin{itemize}
+%\item Under an exclusion restriction, we will have  $Y_i(d,z=0)=Y(d,z=1)$ for all $d$ 
+%\item Exclusion will be gauranteed by an assumption $\{ Y_{0i},Y_{1i} \} \indep Z_i$.\\
+%\item More on that soon.
+%\end{itemize}
+%%  $\rightarrow$ we can index potential outcomes solely by treatment status: ($Y_{1i}$,$Y_{0i}$
+%%\begin{assumption}[1. Ignorability of the Instrument]
+%%\[ \{Y_{0i},Y_{1i}, D_{0i},D_{1i}\} \indep Z_i \]
+%%\vspace{-.2in}
+%%\small
+%%\begin{enumerate}
+%%  \item Independence: Since $Z_i$ independent of all potential outcomes and potential treatments $(Y_i(d,z), D_{1i},D_{0i})\indep Z_i$ for all $d,Z$. Implies identifiability of effects of $Z_i$ on $Y_i$ and $Z_i$ on $D_i$.
+%%  \item Exclusion implied by $(Y_{0i},Y_{1i}) \indep Z_i$.\\
+%%   \smallskip \footnotesize Note, $Y_i(d,0)=Y(d,1)$ for all $d$ 
+%%  $\rightarrow$ we can index potential outcomes solely by treatment status: ($Y_{1i}$,$Y_{0i}$)
+%%\end{enumerate}
+%%\end{assumption}
+%%
+%\end{frame}
+
+
+
+
+\subsection{Identification}
+
+\begin{frame}
+  \frametitle{Potential Outcome Model for Instrumental Variables}
+\begin{estm}[LATE]
+\small
+$$\alpha_{LATE}=\E[Y_{1i}-Y_{0i}|D_{1i}>D_{0i}]$$ is the Local Average Treatment Effect among compliers.\\ \smallskip \footnotesize NB: this estimand varies with the particular instrument $Z$. 
+\end{estm}
+\normalsize
+\onslide<2-> Some special cases: 
+\footnotesize
+\begin{itemize}
+\item<2-> When the treatment intake, $D_i$, is itself randomized,\pause then $Z_i=D_i$ and every individual is a complier
+\item<3-> If one-sided noncompliance s.t. $D_{0i}=0$: \pause
+\end{itemize}
+\begin{equation*}
+\begin{split}
+\E[Y_{1i}|D_{1i}>D_{0i}]&=\E[Y_{1i}|Z_i=1,D_{1i}=1]=\E[Y_{1i}|D_i=1]\\ 
+&\mbox{And}\\
+\E[Y_{0i}|D_{1i}>D_{0i}]&=\E[Y_{0i}|D_i=1]
+\end{split}
+\end{equation*}
+Thus, 
+
+$$\alpha_{LATE}=\E[Y_{1i}-Y_{0i}|D_{1i}>D_{0i}]=\E[Y_{1i}-Y_{0i}|D_i=1]=\alpha_{ATET}$$
+\end{frame}
+
+\begin{frame}
+  \frametitle{Identification with Instrumental Variables}
+\begin{iass}
+\begin{enumerate}
+  \item Ignorability of the Instrument: $(Y_{0i},Y_{1i}, D_{0i},D_{1i}) \indep Z_i$
+  \item First Stage:  $P(D_{1i}=1) \neq P(D_{0i}=1)$
+  \item Monotonicity: $D_{1i} \geq D_{0i}$ for all $i$ (no defiers)
+  \end{enumerate}
+\end{iass}\vspace{-.2in}
+\bigskip
+\onslide<2->
+\begin{ires}
+\footnotesize
+\begin{align*}
+ \E[Y_1-Y_0|D_1>D_0] &= \frac{\E[Y|Z=1]-\E[Y|Z=0]}{\E[D|Z=1]-\E[D|Z=0]} \\
+   &= \frac{\mbox{Intent to Treat Effect of $Z$ on $Y$}}{\mbox{First Stage Effect of $Z$ on $D$}} \\
+   &= \frac{\mbox{Intent to Treat Effect}}{\mbox{Proportion of Compliers}}
+\end{align*}
+\end{ires}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Identification with Instrumental Variables}
+\begin{iass}
+\begin{enumerate}
+  \item Ignorability of the Instrument: $(Y_{0},Y_{1}, D_{0},D_{1}) \indep Z$
+  \item First Stage: $0 < P(Z=1) < 1$ and
+  $P(D_{1}=1) \neq P(D_{0}=1)$
+  \item Monotonicity: $D_{1} \geq D_{0}$
+  \end{enumerate}
+\end{iass}\vspace{-.2in}
+\onslide<2>
+\scriptsize
+\begin{Proof}
+\begin{multline*}
+\frac{E[Y|Z=1]-E[Y|Z=0]}{E[D|Z=1]-E[D|Z=0]}= \frac{E[Y_0 + (Y_1-Y_0) D_1|Z=1]-E[Y_0 + (Y_1-Y_0) D_0|Z=0]}{E[D_1|Z=1]-E[D_0|Z=0]}\\
+= \frac{E[Y_0 + (Y_1-Y_0) D_1] - E[Y_0 + (Y_1-Y_0) D_0]}{E[D_1]-E[D_0]}=\frac{E[(Y_1-Y_0)(D_1-D_0)]}{E[D_1-D_0]} \\
+= \frac{E[Y_1-Y_0|D_1>D_0]P(D_1>D_0)-E[Y_1-Y_0|D_1<D_0]P(D_1<D_0)}{E[D_1-D_0]} \,\mbox{as $(D_1-D_0)$=$(1,0,-1)$}\\
+= \frac{E[Y_1-Y_0|D_1>D_0]P[D_1>D_0]}{P(D_1>D_0)}=E[Y_1-Y_0|D_1>D_0]
+\end{multline*}
+\end{Proof}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Comments on Identification Assumptions}
+\small
+\onslide<1-> Ignorability of the Instrument: $$\{ Y_{0i},Y_{1i}, D_{0i},D_{1i} \} \indep Z_i$$
+\footnotesize
+\begin{itemize}
+\item Implies $Z_i$ ``random'', so that the intent to treat effect and first stage effect are causally identified
+\item Gets us exclusion too: if $Z_i$ changed outcome through channel other than treatment, it would change $Y_{0i}$ and $Y_{1i}$. (See pset!)
+\item Remember, exclusion needed to attribute effect of $Z$ on $Y$ to the effect of $D$ alone. \textcolor{Red}{Never fully testable!}
+\item Random assignment \textit{not} sufficient for exclusion. (\textcolor{Blue}{Why not?})
+\end{itemize}
+\bigskip
+\small
+\onslide<2-> First Stage/ Relevance \\
+\footnotesize
+\begin{itemize}
+\item Implies that the instrument $Z$ induces variation in $D$
+\item Fully testable by regressing $D$ on $Z$. Rule of thumb: get $F$-stat over 10 (better: use Anderson-Rubin CIs)
+\end{itemize}\bigskip
+\small
+\onslide<3-> Monotonicity: $D_{1} \geq D_{0}$\\
+\footnotesize
+\begin{itemize}
+\item Rules out defiers. Not testable but often qualitatively convincing.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{\small Who are the Compliers? Is exclusion restriction reasonable?}
+  \begin{center}
+  \includegraphics[height=2.55in,keepaspectratio=1]{IVexamples.pdf}\
+  \end{center}
+\end{frame}
+
+
+\subsection{Estimation}
+
+\begin{frame}
+  \frametitle{Instrumental Variable: Estimators}
+\begin{estm}[LATE]\small
+\begin{align*}
+\E[Y_1-Y_0|D_1>D_0]
+&= \frac{\E[Y|Z=1]-\E[Y|Z=0]}{\E[D|Z=1]-\E[D|Z=0]}
+\end{align*}
+\end{estm}\vspace{-.2in}
+\onslide<2>
+\bigskip
+\begin{esti}[Wald Estimator]\small
+The sample analog estimator is:
+\[
+\left.\left(
+\frac{\sum_{i=1}^N Y_iZ_i}{\sum_{i=1}^N Z_i}
+-
+\frac{\sum_{i=1}^N Y_i(1-Z_i)}{\sum_{i=1}^N (1-Z_i)}
+\right)\right/
+\left(
+\frac{\sum_{i=1}^N D_iZ_i}{\sum_{i=1}^N Z_i}
+-
+\frac{\sum_{i=1}^N D_i(1-Z_i)}{\sum_{i=1}^N(1-Z_i)}
+\right)
+\]
+\end{esti}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Instrumental Variable: Estimators}
+\onslide<1>
+\begin{esti}[Two-Stage Least Squares]\footnotesize
+Can also implement Wald Estimator using two-stage least squares regression:
+\begin{enumerate}
+\item $D=\pi_0 + \pi Z+ \eta$ (First Stage)
+\item $Y=\beta_0 +\beta D+\varepsilon$ (Second Stage)
+\end{enumerate}
+Implies
+\begin{align*}
+Y &= \beta_0 + \beta (\pi_0 + \pi Z + \eta)  + \varepsilon \\ 
+&= (\beta_0 + \beta \pi_0) + \beta \pi Z + (\beta \eta + \varepsilon)
+\end{align*}
+where $cov(\varepsilon,Z)=0$ due to exclusion and $cov(\eta,Z)=0$ by exogeneity in first stage
+\begin{itemize}
+\item $\beta$ gives the LATE
+\item If you just regressed $Y$ on $Z$, you get effect of $Z$ on $Y$, i.e. $\beta \pi$ (reduced form). Divide this by $\pi$ (compliance ratio or first stage) and you get $\beta$.
+\item Don't actually estimate this way, you will get wrong SEs
+\end{itemize}
+
+\bigskip
+\end{esti}
+\end{frame}
+
+\begin{frame}
+\frametitle{Instrumental Variable: Estimators}
+\onslide<1->
+\begin{esti}[IV Estimator]\footnotesize
+Standard implementation is the IV estimator:
+\[ \hat{\beta}_{IV} = (\Z^{\top} \D)^{-1} \Z^{\top} \Y   \]
+\end{esti}
+\onslide<2-> 
+\begin{enumerate}
+\item Typically estimate using \textit{ivreg()} 
+\item If ID assumptions only hold after conditioning on $X$, you can add covariates:
+\begin{itemize}
+\item<3-> they are added to both stages
+\smallskip
+\item<4-> $\X=[1;X\; \D]$ and $\Z=[1\;\X\;\Z]$  and estimated  by $(\Z^{\top}\X)^{-1}\Z^{\top}\Y$
+%\smallskip
+%\item<5-> In general, $\beta_{IV}$ estimated in this way does not necessarily have a clear causal interpretation (see Abadie (2003)). 
+\end{itemize}
+\end{enumerate}
+\end{frame}
+
+
+
+\subsection{Examples}
+
+%\begin{frame}
+%  \frametitle{Example: Effects of JTPA Training on Participants}
+%  \includegraphics[height=1.5in,keepaspectratio=1]{jtpa1.pdf}
+%\end{frame}
+
+
+\begin{frame}
+  \frametitle{Example: The Vietnam Draft Lottery (Angrist (1990))}
+\begin{itemize}
+ \item Effect of military service on civilian earnings
+ \item Simple comparison between Vietnam veterans and non-veterans are likely to be a biased measure
+ \item Angrist (1990) used draft-eligibility, determined by the Vietnam era
+draft lottery, as an instrument for military service in Vietnam
+\item Draft eligibility is random and affected the probability of enrollment
+\item Estimate suggest a 15\% effect of veteran status on earnings in the period 1981-1984 for white veterans born in
+1950-51; although imprecisely estimated.
+\end{itemize}
+\end{frame}
+
+%\begin{frame}
+%  \frametitle{Wald Estimates for Vietnam Draft Lottery (Angrist (1990))}
+%  \includegraphics[height=3.1in,keepaspectratio=1]{angrist1.pdf}
+%\end{frame}
+
+\subsection{Size of Complier Group}
+
+\begin{frame}
+  \frametitle{Estimating the Size of the Complier Group}
+\begin{itemize}
+ \item Since we never observe both potential treatment assignments for the same unit, we cannot identify individual units as compliers!
+ \medskip
+ \item However, we can easily identify the proportion of compliers in the population using the first stage effect:
+ \begin{eqnarray*}
+ % \nonumber to remove numbering (before each equation)
+   P(D_{1i}>D_{0i}) &=& \E[D_{1i}-D_{0i}] = \E[D_{1i}]-\E[D_{0i}] \\
+    &=& \E[D_{1i}|Z_i=1]-\E[D_{0i}|Z_{i}=0] \\
+    &=& \E[D_{i}|Z_i=1]-\E[D_{i}|Z_{i}=0]
+ \end{eqnarray*}
+%\item Using a similar logic we can identify the proportion of compliers among the treated or controls only. For example:
+%\[
+%P(D_1>D_0|D=1)=\frac{P(Z=1)(E[D|Z=1]-E[D|Z=0])}{P(D=1)}
+%\]
+%\item (We can also estimate characteristics of the compliers using $\kappa$-weighting)
+%\[
+%E[X|D_1>D_0]=\frac{E[\kappa X]}{E[\kappa]} \mbox{with} \kappa = 1-\frac{D(1-Z)}{1-P(Z=1|X)}-\frac{(1-D)Z}{P(Z=1|X)}
+%\]
+\end{itemize}
+\end{frame}
+
+%\begin{frame}
+%  \frametitle{Size of Complier Group}
+%  \includegraphics[scale=.7]{compliers1.pdf}
+%\end{frame}
+
+%\begin{frame}
+%  \frametitle{Characteristics of Complier Group}
+%  \includegraphics[scale=1]{compliers2.pdf}
+%\end{frame}
+
+%\begin{frame}
+% \frametitle{Further Issues}
+%\begin{itemize}
+%\item Under our identification assumptions, we can use 2SLS with multiple binary instruments. In this case, the IV estimand
+%is a weighted average of the individual, instrument specific LATE estimates.\bigskip
+%%\item We can add covariates to a 2SLS regression and think of it as a linear approximation to a weighted average of covariate-specific LATE estimates, unless
+%%$P(Z=1|X)$ is linear and we should use the local average average response function (LARF) \bigskip
+%\item If the treatment is continuous (treatment intensity) we can think of 2SLS as a weighted average derivative along the length of a possibly non-linear causal response function (see Angrist and Pischke 4.5.3), but linearity assumption may be wrong.\bigskip
+%%\item Do not use non-linear first stage (forbidden regression)
+%\end{itemize}
+%\end{frame}
+
+\subsection{Adding Covariates}
+
+\begin{frame}
+  \frametitle{Instrumental Variables with Covariates}
+\begin{itemize}
+\item<1-> Sometimes IV identification assumptions may only hold once we condition on a set of pre-treatment characteristics $X$. %\textcolor{Blue}{Example}: earthquakes as instrument may require country FEs \medskip
+\medskip
+\item<2-> In traditional econometric view of IV this poses no additional problems: treatment effects are assumed to be constant, so  just include $X$ in the 2SLS model\medskip
+\item<3-> But with heterogenous treatment effects, IV/2SLS does not formally identify LATE conditional on $X$. 
+\medskip
+\item<4-> Also hard to interpret, because complier group changes depending on strata of $X$.
+\begin{itemize}
+\item<5-> One approach: $\kappa$-weighting are weights s.t. any model you run gets you a result as if only estimated for compliers (Abadie, 2003)
+\item<6-> When you use these weights to estimate treatment effect, you get ``Local Average Response Function'' (LARF)
+\item<7-> But many investigators still ignore this by taking an econometric view, assuming constant treatment effects
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\subsection{Example: Natural Disasters and Aid}
+
+\begin{frame}{Example: Natural Disasters and Aid}
+\onslide<1-> Does getting US disaster aid makes countries cooperate with the US on UN generally assembly votes \\
+\footnotesize
+\begin{itemize}
+\item<2-> Aid not randomly assigned in general
+\item<3-> Disasters aren't entirely random either, especially seasonal ones
+\item<4-> Non-seasonal disasters -- earthquakes and volcanoes -- seem totally uncorrelated with ``politics''
+\item<5-> ...except maybe through location specific differences in probability (more soon)
+\end{itemize}
+\normalsize
+\medskip
+\onslide<6-> So
+\footnotesize
+\begin{itemize}
+\item<7-> Encouragement:  non-seasonal natural disasters that kill at least 25 people
+\item<8-> Treatment: getting aid from the US
+\item<9-> Outcome: agreement with the US at UNGA (at various times after disaster/aid)
+\end{itemize}
+\normalsize
+\medskip
+\onslide<10-> Let's confirm:
+\footnotesize
+\begin{itemize}
+\item<11-> What is the first-stage?
+\item<12-> What is the reduced-form/intent-to-treat?
+\item<13-> Who are the compliers? %What kinds of non-compliance are there?
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Natural Disasters and Aid with One Year Lag}
+\scriptsize
+\begin{verbatim}
+> pd=pdata.frame(d[d$year>1963,],c("country","year"))
+> rf.out=lm(daffinity~disaster_25_L1, data=pd)
+> summary(rf.out)
+Coefficients:
+                Estimate Std. Error t value Pr(>|t|)    
+(Intercept)    -0.010579   0.001353  -7.821 6.06e-15 ***
+disaster_25_L1  0.008352   0.007704   1.084    0.278    
+---
+Multiple R-squared:  0.0001759,	Adjusted R-squared:  2.621e-05 
+F-statistic: 1.175 on 1 and 6680 DF,  p-value: 0.2784
+\end{verbatim}
+\onslide<2->
+\begin{verbatim}
+> first.out = lm(allaid_L1~disaster_25_L1, data=pd)
+> summary(first.out) #note F stat
+Coefficients:
+               Estimate Std. Error t value Pr(>|t|)    
+(Intercept)    0.127977   0.004073   31.42   <2e-16 ***
+disaster_25_L1 0.308643   0.023651   13.05   <2e-16 ***
+---
+Multiple R-squared:  0.02317,	Adjusted R-squared:  0.02303 
+F-statistic: 170.3 on 1 and 7181 DF,  p-value: < 2.2
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Natural Disaster and Aid with One Year Lag}
+\scriptsize
+\begin{verbatim}
+> iv.out=ivreg(daffinity~allaid_L1 | disaster_25_L1, data=pd)
+> summary(iv.out)
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -0.014082   0.003744  -3.761 0.000171 ***
+allaid_L1    0.027133   0.025223   1.076 0.282085    
+---
+Multiple R-Squared: -0.01529,	Adjusted R-squared: -0.01544 
+Wald test: 1.157 on 1 and 6680 DF,  p-value: 0.2821 
+\end{verbatim}
+\small
+\onslide<2-> Compare to simple Wald Estimator:\\
+\scriptsize
+\begin{verbatim}
+> rf.out$coef[2]/first.out$coef[2]
+disaster_25_L1 
+    0.02705907 
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Two Extensions}
+\onslide<1-> First, we probably want country FEs to strengthen the identification
+\scriptsize
+\begin{verbatim}
+> iv.fe.out=ivreg(daffinity~allaid_L1+country | disaster_25_L1+country, data=pd)
+> coef(iv.fe.out)[2]
+ allaid_L1 
+0.05312396 
+\end{verbatim}
+\normalsize
+\onslide<2-> Second, we don't know what lag to look at so we can look at all of them. Could just run multiple models with different lags, e.g.
+\scriptsize
+\begin{verbatim}
+> rf0.out=lm(daffinity~disaster_25+country, data=pd)
+> rf1.out=lm(daffinity~disaster_25_L1+country, data=pd)
+> rf2.out=lm(daffinity~disaster_25_L2+country, data=pd)
+...
+> fs.out=lm(allaid~disaster_25+country, data=pd)
+> fs1.out=lm(allaid_L1~disaster_25_L1+country, data=pd)
+> fs2.out=lm(allaid_L2~disaster_25_L2+country, data=pd)
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Effects Over Time}
+\begin{center}
+ \includegraphics[scale=.5]{AidEffectsOverTime.pdf}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\small Finite-Impulse-Response, Distributed Lag, or Event Study Model}
+\small
+\onslide<1-> Alternatively, if disasters occur frequently enough that the effects might overlap at some time-points, we can assume additivity and do ``distributed lag'' or ``finite impulse response'' or ``event-study'' model. e.g.
+\scriptsize
+\begin{verbatim}
+iv.fe.fir.out=ivreg(daffinity~allaid+allaid_L1+allaid_L2+allaid_L3+ ...+country 
+     |  disaster_25+disaster_25_L1+disaster_25_L2+disaster_25_L3+...+country, data=pd)
+\end{verbatim}
+\begin{center}
+ \includegraphics[scale=.5]{AidEffectsOverTimeFIR.pdf}
+\end{center}
+
+\end{frame}
+
+\begin{frame}{Summary of Modern IV}
+\begin{itemize}
+\small
+\item Instruments can give you causal identification where you don't have SOO or other options. 
+\smallskip
+\item The key concern is usually the exclusion restriction:
+\footnotesize
+\begin{itemize}
+\item together with first-stage ignorability, captured by $$ \{ Y_{0i},Y_{1i}, D_{0i},D_{1i} \} \indep Z_i $$
+\item a randomized $Z_i$ is a good start, but not sufficient
+\item plausibility tests possible, but cannot be confirmed on observables
+\end{itemize}
+\small
+\item Generally useful to think about in terms of an ``encouragement'' to take the treatment and rescaling the ITT (RF) by the compliance ratio
+\smallskip
+\item If you do not assume constant treatment effects, then you must recognize the estimate as a LATE among the compliers
+%\smallskip
+%\item Covariates complicate things: may want to either consider LARF/$\kappa$-weighting or rely on constant effect assumption
+\end{itemize}
+\end{frame}
+
+
+%\begin{frame}
+%  \frametitle{Instrumental Variables with Covariates}
+%
+%Two ways to get at LATE conditional on $X$:
+%\begin{enumerate}
+%  \item Add covariates to 2SLS and interpret it as a linear approximation to a weighted average of covariate-specific LATE estimates.\bigskip
+%  \item Use the \alert{local average response function} (LARF) estimator that relies on \alert{kappa weighting} and formally identifies the LATE conditional on $X$.
+%  \begin{itemize}\medskip
+%    \item If $P(Z=1|X)$ is linear, the results are often similar\medskip
+%    \item Kappa weighting is always useful, because it allows us to estimate any characteristic or fit any model of interest to the subpopulation of compliers (even though we cannot identify individual compliers)
+%  \end{itemize}
+%\end{enumerate}
+%\end{frame}
+
+%\subsection{Identification}
+%
+%\begin{frame}
+%  \frametitle{IV Identification with Covariates}
+%\begin{iass}\small
+%\begin{enumerate}
+%  \item Conditional Independence of the Instrument: $(Y_{0},Y_{1}, D_{0},D_{1}) \indep Z|X$
+%  \item  First Stage: $0 < P(Z=1|X) < 1$ and
+%  $P(D_{1}=1|X) > P(D_{0}=1|X)$
+%  \item Monotonicity: $P(D_{1} \geq D_{0}|X)
+%  = 1$
+%  \end{enumerate}
+%\end{iass}\vspace{-.2in}
+%\begin{overprint}
+%\onslide<1>
+%\begin{proposition}\small
+%Given our identification assumptions:
+%\[
+%P(D_{1}>D_{0}|X) = E[D|Z=1,X] - E[D|Z=0,X]>0
+%\]
+%\end{proposition}
+%\onslide<2>
+%\begin{Theorem}[Magic Kappa]\small
+%Let $g(\cdot)$ be any measurable real function of $(Y,D,X)$ such that
+%$E|g(Y,D,\linebreak[0] X)|<\infty$. Define
+%\[
+%\kappa = 1-\frac{D\cdot (1-Z)}{P(Z=0|X)}-\frac{(1-D)\cdot Z}{P(Z=1|X)}.
+%\]
+%Given our identification assumptions we have that:
+%\[
+%E[g(Y,D,X)|D_{1}>D_{0}] = \frac{1}{P(D_1 > D_0)}E[\kappa\cdot g(Y,D,X)]
+%\]
+%\end{Theorem}
+%\end{overprint}
+%\end{frame}
+%
+%\subsection{Using Magic Kappa to Characterize Compliers}
+%
+%\begin{frame}
+%  \frametitle{Using Magic Kappa to Characterize Compliers}
+%  \small
+%\begin{Problem}
+%Let $X$ be a pre-treatment covariate (e.g. age). We like to estimate the average $X$ for compliers, but we cannot identify compilers individually.
+%\end{Problem}
+%\begin{ires}[Characterize Compliers]
+%We can use kappa theorem to identify any characteristic for compliers:
+%\[
+%E[g(Y,D,X)|D_{1}>D_{0}] = \frac{1}{P(D_1 > D_0)}E[\kappa\cdot g(Y,D,X)]
+%\]
+%so for example: $E[X|D_1>D_0]=\frac{E[\kappa \cdot X]}{P(D_1>D_0)}=\frac{E[\kappa \cdot X]}{E[\kappa]}$\\\bigskip
+%Suggests a 2 step procedure:
+%\begin{enumerate}
+%\item Estimate $\kappa=1-\frac{D\cdot (1-Z)}{P(Z=0|X)}-\frac{(1-D)\cdot Z}{P(Z=1|X)}$
+%\item Compute weighted average of $X$ using $\kappa$ weights
+%\end{enumerate}
+%\end{ires}
+%\end{frame}
+%
+%\begin{frame}
+%  \frametitle{Estimate $\kappa=1-\frac{D\cdot (1-Z)}{P(Z=0|X)}-\frac{(1-D)\cdot Z}{P(Z=1|X)}$ }
+%  \includegraphics[scale=.75]{larfpics1.pdf}
+%\end{frame}
+%
+%\begin{frame}
+%  \frametitle{Estimate  $E[X|D_1>D_0]=\frac{E[\kappa \cdot X]}{P(D_1>D_0)}=\frac{E[\kappa \cdot X]}{E[\kappa]}$}  \includegraphics[scale=.6]{larftpics2.pdf}
+%\end{frame}
+%
+%\begin{frame}
+%  \frametitle{Characteristics of Complier Group}
+%  \includegraphics[scale=.85]{compliers2.pdf}
+%\end{frame}
+%
+%\begin{frame}
+%  \frametitle{Local Average Response Function: Intuition}\small
+%We want to estimate $E[g(Y,D,X)|D_1>D_0]$ but
+%\begin{eqnarray*}
+%E[g(Y,D,X)]&=&E[g(Y,D,X)|D_1>D_0]\Pr(D_1>D_0)\\
+%&+&E[g(Y,D,X)|D_1=D_0=1]\Pr(D_1=D_0=1)\\
+%&+&E[g(Y,D,X)|D_1=D_0=0]\Pr(D_1=D_0=0)
+%\end{eqnarray*}
+%Therefore,
+%\begin{multline*}
+%E[g(Y,D,X)|D_1>D_0]\\
+%\hspace*{1.2cm}=\frac{1}{\Pr(D_1>D_0)}\Bigg\{E[g(Y,D,X)]\\
+%\hspace*{1.2cm}-E[g(Y,D,X)|D_1=D_0=1]\Pr(D_1=D_0=1)\\
+%-E[g(Y,D,X)|D_1=D_0=0]\Pr(D_1=D_0=0)\Bigg\}
+%\end{multline*}
+%Kappa:
+%\[
+%\kappa = 1-\frac{D\cdot (1-Z)}{P(Z=0|X)}-\frac{(1-D)\cdot Z}{P(Z=1|X)}
+%\]
+%\end{frame}
+%
+%\begin{frame}
+%  \frametitle{Estimation of $\kappa$}
+%\begin{itemize}
+%\item Estimate $\tau_0(x)=P(Z=1|X=x)$ using a probit of $Z$ on $X$
+%\item Compute: $\kappa_i = 1 - \frac{D_i\cdot (1-Z_i)}{1-\tau_0(X_i)} -
+%\frac{(1-D_i)\cdot Z_i}{\tau_0(X_i)}$
+%\begin{overprint}
+%\onslide<1>
+%\begin{itemize}
+%\item $\kappa$ is 1 for $(D=Z)$ which includes ``true'' compliers but also ``fake'' compliers that may be always takers or never takers\\\bigskip
+%\includegraphics[scale=.5]{larfpics3a.pdf}
+%\end{itemize}
+%\onslide<2>
+%\begin{itemize}
+%\item $\kappa$ takes larger negative values for identifiable always takers\\
+%      $(Z=0,D=1)$ that, based on their $X$ characteristics, look very likely\\
+%      to be assigned to treatment\\\bigskip
+%\includegraphics[scale=.5]{larfpics3c.pdf}
+%\end{itemize}
+%\onslide<3>
+%\begin{itemize}
+%\item $\kappa$ takes larger negative values for identifiable never takers\\
+% $(Z=1,D=0)$ that, based on their $X$ characteristics, look very unlikely\\
+% to be assigned to treatment \\\bigskip
+%\includegraphics[scale=.5]{larfpics3b.pdf}
+%\end{itemize}
+%%\item $E[\kappa]=P(D_1 > D_0)$
+%\end{overprint}
+%\end{itemize}
+%\end{frame}
+%
+%\subsection{Local Average Response Function}
+%
+%\begin{frame}
+% \frametitle{Local Average Response Function}
+%\begin{definition}[LARF]\small
+%We call the CEF of $Y$ given $X$ and $D$ for the subpopulation of compliers the local average response function:
+%\[
+%E[Y|X,D, D_1>D_0]
+%\]
+%Since $D \equiv Z$ for compliers and $Z$ is ignorable given
+%$X$, it follows that the LARF identifies the LATE conditional on $X$:
+%\begin{eqnarray}
+%E[Y|X,D=0,D_1>D_0]&=&E[Y_0|X,Z=0,D_1>D_0]\nonumber\\
+%&=&E[Y_0|X,D_1>D_0] \,\, \mbox{and similarly}\nonumber\\
+%E[Y|X,D=1,D_1>D_0]&=&E[Y_1|X,D_1>D_0]\nonumber
+%\end{eqnarray}
+%%\vfill
+%Therefore:\\
+%$E[Y|X,D=1,D_1>D_0]-E[Y|X,D=0,D_1>D_0]=E[Y_1-Y_0|X,D_1>D_0]$
+%\end{definition}
+%\end{frame}
+%
+%\begin{frame}
+%  \frametitle{Local Average Response Function: Identification}
+%\begin{Problem}
+%The LARF conditions on being a complier, but we cannot identify compilers individually
+%\end{Problem}
+%\begin{ires}
+%We can use kappa theorem to identify the LARF:
+%$E[Y|X,D,D_1>D_0] = 1/P(D_1>D_0) E[\kappa  Y |X,D]$\\\bigskip
+%Suggests a 2 step procedure:
+%\begin{enumerate}
+%\item Estimate $\kappa$\bigskip
+%\item Approximate $E[Y|X,D,D_1>D_0]$ by estimating $E[Y|X,D]$ in the whole population while weighting by $\kappa$\medskip
+%\begin{itemize}
+%  \item E.g. $(\widehat{\alpha}, \widehat{\beta}) = \mbox{argmin}_{\ (\alpha, \beta)\in\Theta}\frac{1}{N}\sum_{i=1}^{N} \kappa_i \cdot
+%(Y_i - \alpha D_i - X_i'\beta)^{2}$
+%\end{itemize}
+%\end{enumerate}
+%\end{ires}
+%\end{frame}
+%
+%%\begin{frame}
+%%  \frametitle{Local Average Response Function: Intuition}\small
+%%We want to estimate $E[g(Y,D,X)|D_1>D_0]$ but
+%%\begin{eqnarray*}
+%%E[g(Y,D,X)]&=&E[g(Y,D,X)|D_1>D_0]\Pr(D_1>D_0)\\
+%%&+&E[g(Y,D,X)|D_1=D_0=1]\Pr(D_1=D_0=1)\\
+%%&+&E[g(Y,D,X)|D_1=D_0=0]\Pr(D_1=D_0=0)
+%%\end{eqnarray*}
+%%Therefore,
+%%\begin{multline*}
+%%E[g(Y,D,X)|D_1>D_0]\\
+%%\hspace*{1.2cm}=\frac{1}{\Pr(D_1>D_0)}\Bigg\{E[g(Y,D,X)]\\
+%%\hspace*{1.2cm}-E[g(Y,D,X)|D_1=D_0=1]\Pr(D_1=D_0=1)\\
+%%-E[g(Y,D,X)|D_1=D_0=0]\Pr(D_1=D_0=0)\Bigg\}
+%%\end{multline*}
+%%Kappa:
+%%\[
+%%\kappa = 1-\frac{D\cdot (1-Z)}{P(Z=0|X)}-\frac{(1-D)\cdot Z}{P(Z=1|X)}
+%%\]
+%%\end{frame}
+%%
+%%\begin{frame}
+%%  \frametitle{Estimation of $\kappa$}
+%%\begin{itemize}
+%%\item Estimate $\tau_0(x)=P(Z=1|X=x)$ using a probit regression of $Z$ on $X$
+%%\item Compute:
+%%\[
+%%\kappa_i = 1 - \frac{D_i\cdot (1-Z_i)}{1-\tau_0(X_i)} -
+%%\frac{(1-D_i)\cdot Z_i}{\tau_0(X_i)}\mbox{\ }
+%%\]
+%%\begin{itemize}
+%%\item $\kappa$ is 1 for $(D=Z)$ which includes ``true'' compliers but also ``fake'' compliers that may be always takers or never takers
+%%\item $\kappa$ takes large negative values for identifiable always takers $(Z=0,D=1)$ that look very likely to be assigned to treatment based on their
+%%$X$ characteristics
+%%\item $\kappa$ takes large negative values for identifiable never takers $(Z=1,D=0)$ that look very unlikely to be assigned to treatment based on their
+%%$X$ characteristics
+%%\item $E[\kappa]=P(D_1 > D_0)$
+%%\end{itemize}
+%%\end{itemize}
+%%\end{frame}
+%
+%
+%
+%%\begin{frame}
+%%  \frametitle{Estimation of LARF given $\kappa$ }
+%%\begin{itemize}
+%%\item Can approximate LARF within some class of parametric
+%%functions ${\cal H}=\{h(D,X;\theta): \theta \in \Theta \subset
+%%\mathbb{R}^{\, m} \}$ using the best least squares predictor:
+%%\[
+%%\theta_0=\mbox{argmin}_{\,\theta \in \Theta}\, E\left[ \left( Y-h(D,X;\theta)
+%%\right)^2|D_1>D_0 \right]
+%%\]
+%%\item Applying the kappa theorem yields:
+%%\[
+%%\theta_0 = \mbox{argmin}_{\, \theta \in \Theta}\, E\left[
+%%\kappa \cdot \left( Y
+%%-h(D,X;\theta)\right)^2\right]
+%%\]
+%%\item With analog estimator:
+%%\[
+%%\widehat{\theta} = \mbox{argmin}_{\, \theta \in \Theta}\,
+%%\frac{1}{N} \sum_{i=1}^{N}
+%%\kappa_i \cdot (Y_i - h(D_i,X_i;\theta))^{2}
+%%\]
+%%\end{itemize}
+%%\end{frame}
+%
+%%\subsection{Estimation with LARF}
+%%
+%%\begin{frame}
+%%  \frametitle{Estimation of LARF given $\kappa$}
+%%\begin{itemize}
+%%\item Several ways to estimate the analog estimator:
+%%\[
+%%\widehat{\theta} = \mbox{argmin}_{\, \theta \in \Theta}\,
+%%\frac{1}{N} \sum_{i=1}^{N}
+%%\kappa_i \cdot (Y_i - h(D_i,X_i;\theta))^{2}
+%%\]
+%%\item Linear approximation
+%%\[
+%%(\widehat{\alpha}, \widehat{\beta}) = \mbox{argmin}_{\ (\alpha, \beta)\in
+%%\Theta}\
+%%\frac{1}{N}\sum_{i=1}^{N} \kappa_i \cdot
+%%(Y_i - \alpha D_i - X_i'\beta)^{2}
+%%\] Same as: $\beta_{LARF}=(X'W X)^{-1}X'W Y$ with $W=diag(\kappa)$.
+%%\item Probit approximation
+%%\[
+%%(\widehat{\alpha}, \widehat{\beta}) = \mbox{argmin}_{\, (\alpha, \beta)\in
+%%\Theta}\
+%%\frac{1}{N}\sum_{i=1}^{N} \kappa_i \cdot
+%%(Y_i - \Phi(\alpha D_i + X_i'\beta))^{2}
+%%\]
+%%\end{itemize}
+%%\end{frame}
+%
+%
+%% stata
+%%\begin{frame}
+%%  \frametitle{Fitting a LARF}
+%%  \includegraphics[scale=.75]{larftreg1.pdf}
+%%\end{frame}
+%%
+%%
+%%
+%%\begin{frame}
+%%  \frametitle{Fitting a LARF}
+%%  \includegraphics[scale=.75]{larftreg2.pdf}
+%%\end{frame}
+%%
+%%\begin{frame}
+%%  \frametitle{Fitting a LARF}
+%%  \includegraphics[scale=.75]{larftreg3.pdf}
+%%\end{frame}
+%
+%
+%\begin{frame}[fragile]
+%\frametitle{Fitting a LARF}
+%\begin{Verbatim}[fontsize=\scriptsize, frame=single, label=R Code]
+%> d <- read.dta("jtpa.dta")
+%> fstage.probit <- glm(assignmt~sex+age+married+hsorged+prevearn,
+%+                      family=binomial(link="probit"),data=d)
+%> phi <- fstage.probit$fitted.values
+%> kappa <- 1 - ((d$training*(1-d$assignmt))/(1-phi))-(((1-d$training)*d$assignmt)/phi)
+%> Y <- matrix(d$earnings)
+%> X <- as.matrix(cbind(1,d[,c("sex","age","married","hsorged","prevearn","training")]))
+%> larf <- solve(t(X) %*% diag(kappa) %*% X ) %*% t(X) %*% diag(kappa) %*% Y
+%> larf
+%                [,1]
+%1        8612.456173
+%sex      4857.976712
+%age       -69.550698
+%married  2719.630642
+%hsorged  3093.402183
+%prevearn    1.301121
+%training 1854.525498
+%\end{Verbatim}
+%\end{frame}
+%
+%
+%\begin{frame}[fragile]
+%\frametitle{Fitting a LARF}
+%\begin{Verbatim}[fontsize=\scriptsize, frame=single, label=R Code]
+%> d <- read.dta("jtpa.dta")
+%>
+%> out <- larf.ls(
+%+     fstage.eq         = training~sex+age+married+hsorged+prevearn+assignmt,
+%+     sstage.eq         = earnings~sex+age+married+hsorged+prevearn+training,
+%+     datafr            = d,
+%+     cluster.id        = FALSE
+%+     )
+%> out$coefficients
+%                 beta       asy.se
+%training  1854.525498 489.79328922
+%Intercept 8612.456173 850.28299445
+%sex       4857.976712 460.16638082
+%age        -69.550698  19.80140360
+%married   2719.630642 531.72234361
+%hsorged   3093.402183 472.01737178
+%prevearn     1.301121   0.08658346
+%\end{Verbatim}
+%\end{frame}
+%
+%%\begin{frame}
+%%  \frametitle{Fitting a LARF}
+%%  \includegraphics[scale=.6]{statalarf.pdf}
+%%\end{frame}
+%
+%%\subsection{More Examples}
+%%
+%%\begin{frame}
+%%  \frametitle{Example: Effect of Participation in 401(k) Saving Plans}
+%%\begin{itemize}
+%% \item Tax-deferred savings programs like 401(k) plans are design to increase savings for retirement
+%% \item Does participation in 401(k) lead to additional savings or simply to the crowding out of other types of savings?
+%% \item Participants presumably have stronger preferences for savings, so that even in the absence of the programs they would have
+%%saved more than those who do not participate
+%%\item Since 401(k) eligibility is decided by employers, preferences
+%%for savings should play a minor role in the determination of
+%%eligibility, once we control for the effects of observables (like
+%%income)
+%%\item Once we control for the effect of some observables, eligibility for a 401(k) plan may be used as an instrument
+%%for participation in a 401(k) plan
+%%\end{itemize}
+%%\end{frame}
+%%
+%%\begin{frame}
+%%\frametitle{Example: Effect of Participation in 401(k) Saving Plans}
+%%\begin{tabular}{ll}
+%%\multicolumn{2}{c}{\normalsize Variables:}\\
+%%\\
+%%{\em Treatment (D):}&Participation in 401(k)\\
+%%\\
+%%{\em Instrument (Z):}&Eligibility for  401(k)\\
+%%\\
+%%{\em Outcome variables (Y):}&Family Net Financial Assets\\
+%%\\
+%%{\em Covariates (X):}&Family Income\\
+%%
+%%                     &Age\\
+%%
+%%                     &Marital Status\\
+%%                     &Family Size\\
+%%\end{tabular}
+%%\end{frame}
+%%
+%%
+%\begin{frame}
+%\frametitle{Example: Effect on Family Net Financial Assets (in \$)}
+%  \includegraphics[height=4.3in,keepaspectratio=1,angle=270]{larf1.pdf}
+%\end{frame}
+%
+%%\begin{frame}
+%%\frametitle{Example: West German TV and Support for GDR Regime }
+%%  \includegraphics[scale=.4]{p1.pdf}
+%%\end{frame}
+%%
+%%\begin{frame}
+%%\frametitle{First Stage}
+%%  \includegraphics[scale=.4]{p2.pdf}
+%%\end{frame}
+%%
+%%\begin{frame}
+%%\frametitle{Balance}
+%%  \includegraphics[scale=.4]{p3.pdf}
+%%\end{frame}
+%%
+%%\begin{frame}
+%%\frametitle{Treatment Effects}
+%%  \includegraphics[scale=.4]{p4.pdf}
+%%\end{frame}
+%%
+%%\begin{frame}
+%%\frametitle{More Treatment Effects}
+%%  \includegraphics[scale=.4]{p5.pdf}
+%%\end{frame}
+
+\end{document}

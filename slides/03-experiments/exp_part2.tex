@@ -1,0 +1,949 @@
+\documentclass[xcolor=dvipsnames]{beamer}
+%\documentclass[pdftex,hyperref={colorlinks=false}]{beamer}
+%\documentclass[handout,xcolor=dvipsnames,pdftex,hyperref={colorlinks=false}]{beamer}
+
+% == Packages for beamer
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{fancybox}
+\usepackage{hyperref}
+\usepackage{amsmath,amssymb,amsfonts,bm}
+\usepackage{wasysym}
+\usepackage{colortbl}
+\usepackage[english]{babel}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+
+% == Other Packages
+\usepackage{rotating}
+\usepackage{latexsym}
+\usepackage{ulem}
+
+
+% == theme & colors
+\usetheme{Warsaw}  % Jens' previous
+\usepackage{helvet}
+\definecolor{someblue}{rgb}{0,.1,0.8}
+
+% == New Commands
+% = For general typesetting
+\newcommand\spacingset[1]{\renewcommand{\baselinestretch}{#1}\small\normalsize}
+\renewcommand\r{\right}
+\renewcommand\l{\left}
+
+\newcommand\makegaps{\addtolength{\itemsep}{.25\baselineskip}}
+\newcommand\makebiggaps{\addtolength{\itemsep}{.5\baselineskip}}
+
+% = For stats & econometrics
+\renewcommand{\epsilon}{\varepsilon}
+\newcommand\ud{\mathrm{d}}
+\newcommand\dist{\buildrel\rm d\over\sim}
+\newcommand\ind{\stackrel{\rm indep.}{\sim}}
+\newcommand\iid{\stackrel{\rm i.i.d.}{\sim}}
+\newcommand\logit{{\rm logit}}
+\newcommand\cA{\mathcal{A}}
+\newcommand\cN{\mathcal{N}}
+\newcommand\E{\mathbb{E}}
+\newcommand\V{\mathbb{V}}
+\newcommand\cJ{\mathcal{J}}
+\newcommand\y{{\bm y}}
+\newcommand\Y{{\bm Y}}
+\newcommand\X{{\bm X}}
+\newcommand\x{{\bm x}}
+\newcommand\eps{{\bm\varepsilon}}
+\newcommand\zero{{\bm 0}}
+\newcommand\be{{\bm\beta}}
+\renewcommand\b{{\bm b}}
+\newcommand\C{{\bm C}}
+\newcommand\D{{\bm D}}
+\newcommand\I{{\bm I}}
+\newcommand\Z{{\bm Z}}
+\newcommand\eeta{{\bm \eta}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+
+\DeclareMathOperator*\plim{plim}
+\DeclareMathOperator\rank{rank}
+\newcommand\indep{\protect\mathpalette{\protect\independenT}{\perp}}
+\DeclareMathOperator{\sgn}{sgn}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+%\documentclass[xcolor=dvipsnames]{beamer}
+%%\usecolortheme[named=OliveGreen]{structure}
+%\usecolortheme[named=Blue]{structure}
+%%\usetheme{Rochester}
+%\setbeamertemplate{items}[ball]
+%\setbeamertemplate{blocks}[rounded][shadow=true]
+%\usepackage{xcolor}
+%\usepackage{colortbl}
+%\setbeamertemplate{navigation symbols}{}
+%\usepackage{amssymb}
+%\usepackage{amsmath}
+%\usepackage[english]{babel}
+%% or whatever
+%
+%%\usepackage[latin1]{inputenc}
+%% or whatever
+%
+%%\mode<presentation>
+%%{
+%\usetheme{Warsaw}
+%  % or ...
+%  %\usecolorheme{albatross}
+%%  \setbeamercovered{transparent}
+%  % or whatever (possibly just delete it)
+%%}
+
+%\usepackage{helvet}
+%%\usepackage[T1]{fontenc}
+%% Or whatever. Note that the encoding and the font should match. If T1
+%% does not look nice, try deleting the line with the fontenc.
+
+\newtheorem{assumption}{Assumption}
+\newtheorem{iass}{Identification Assumption}
+\newtheorem{ires}{Identfication Result}
+\newtheorem{estm}{Estimand}
+\newtheorem{esti}{Estimator}
+
+%\newcommand{\indep}{{\bot\negthickspace\negthickspace\bot}}
+\newcommand{\notindep}{{\bot\negthickspace\negthickspace\bot}{\negthinspace
+  \negmedspace \negthickspace \negthickspace \diagup
+  \;}}
+
+\newcommand{\bs}{\boldsymbol}
+\newcommand{\mb}{\mathbf}
+\newcommand{\real}{\mathbb{R}}
+\renewcommand{\u}{\ensuremath{\mb{u}}}
+\renewcommand{\v}{\ensuremath{\mb{v}}}
+\newcommand{\U}{\ensuremath{\mb{U}}}
+\newcommand{\M}{\ensuremath{\mb{M}}}
+\renewcommand{\b}{\ensuremath{\bs{\beta}}}
+\newcommand{\e}{\ensuremath{\bs{\epsilon}}}
+\newcommand{\bhat}{\ensuremath{\hat{\bs{\beta}}}}
+\newcommand{\XX}{\ensuremath{\X'\X}}
+\newcommand{\XXinv}{\ensuremath{\left(\XX\right)^{-1}}}
+\newcommand{\hatsig}{\ensuremath{\hat{\sigma}^2}}
+\newcommand{\sig}{\ensuremath{\sigma^2}}
+\newcommand{\hatmat}{\ensuremath{\X \XXinv \X'}}
+\newcommand{\ehat}{\ensuremath{\hat{\e}}}
+\newcommand{\tr}{\text{tr}}
+\newcommand{\Sig}{\ensuremath{\bs{\Sigma}}}
+\newcommand{\SigInv}{\ensuremath{\bs{\Sigma^{-1}}}}
+\newcommand{\W}{\ensuremath{\mb{W}}}
+
+%\usepackage{fixltx2e} % provides \textsubscript
+%\ifxetex
+%%  \usepackage{fontspec,xltxtra,xunicode}
+%  \usepackage{mathspec,xltxtra,xunicode}
+%  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+%  \setmainfont[Ligatures={Common,TeX}]{Gill Sans}
+% % \setmathfont[Digits, Latin]{Gill Sans}
+% \setmathfont{LucidaBrightMathOT.otf}
+%
+%\else
+%  \ifluatex
+%    \usepackage{fontspec}
+%    \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+%  \else
+%    \usepackage[utf8]{inputenc}
+%  \fi
+%\fi
+
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>
+    \frametitle{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+%\AtBeginSubsection[]
+%{
+%  \begin{frame}<beamer>
+%    \frametitle{Outline}
+%    \tableofcontents[currentsection,currentsubsection]
+%  \end{frame}
+%}
+
+\title[]{Experiments: Part II}
+\subtitle[ ]{PS200C Quant Methods in Social Science, Spring 2025}
+\author[Hazlett]{Chad Hazlett }
+\institute[UCLA]{UCLA\\[1ex]
+  \texttt{chazlett@ucla.edu}
+}
+\date{}
+
+\definecolor{dgreen}{rgb}{0,.6,0.8}
+\useoutertheme{infolines}
+
+\begin{document}
+
+\subject{Talks}
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>
+    \frametitle{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+%\AtBeginSubsection[]
+%{
+%  \begin{frame}<beamer>
+%    \frametitle{Outline}
+%    \tableofcontents[currentsection,currentsubsection]
+%  \end{frame}
+%}
+
+\begin{frame}
+  \titlepage
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Some Important Topics in Experimental Design and Analysis}
+\onslide<1-> A brief introduction to some common topics:
+\bigskip
+\begin{itemize}
+\item<2->  Covariate adjustment
+\bigskip
+\item<3-> Blocking
+\bigskip
+\item<4-> Emphasizing design stage
+%\bigskip
+%\item<5-> Ethics
+\end{itemize}
+\end{frame}
+
+
+\subsection*{Covariates}
+
+\begin{frame}{Covariates and Experiments}
+\begin{center} 
+\includegraphics[width = .8\linewidth]{images/potential_outcomes_with_covariates.pdf}
+\end{center}
+\end{frame}
+
+\begin{frame}{Covariates}
+\small
+\begin{itemize}
+\makegaps
+\item<1-> Randomization is gold standard for causal inference because in expectation it balances \alert{observed} but also \alert{unobserved} characteristics between treatment and control group.\medskip
+\item<2->  Unlike potential outcomes, you observe baseline covariates for all units. 
+\item<3-> We mean ``pre-treatment'' covariates here,  or rather, those not affected by $D_i$ ...\pause \textcolor{Blue}{Though there are some other interesting cases of covariates you should not include,  but that's for another day.}
+\item<4->  Randomization implies \textit{covariate balance},  $$p(X|D=1)=p(X|D=0)$$
+\item<5-> If this is not the case, then one of two possibilities: 
+\begin{itemize}
+%  \itemsep1pt\parskip0pt\parsep0pt
+  \item randomization was compromised.
+  \item finite sample bad luck
+\end{itemize}
+\item<6-> Good idea to (i) check ``balance'', and/or (ii) adjust for chance imbalances to at least improve efficiency.
+\end{itemize}
+\end{frame}
+
+%\begin{frame}{Covariates and Experiments}
+%\begin{center}
+%    \includegraphics[width = .8 \linewidth]{images/potential_outcomes_scatter.pdf}
+%    \end{center}
+%\end{frame}
+%
+%
+%\begin{frame}{Covariates and Experiments}
+%
+%\begin{center}
+%    \includegraphics[width = .80 \linewidth]{images/covariate_imbalance_histogram.pdf}
+%    \end{center}
+%\end{frame}
+
+\begin{frame}{Regression with Covariates}
+\small
+\onslide<1-> A common model with experimental data:
+\[ Y_i = \alpha + \tau D_i + X_i\beta + \epsilon_i \]
+\onslide<2-> Though soon we will consider this (better) model:
+\[ Y_i = \alpha + \tau D_i + (X_i-\overline{X})\beta + D_i (X_i-\overline{X}) \theta +  \epsilon_i \]
+
+\onslide<3->  But why include $X_i$ when experiments ``control'' for covariates by design?\\
+\footnotesize
+ \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt 
+  \item<4-> Correct chance imbalances that may push $\hat{\tau}$ far from $\tau_{ATE}$.
+    \smallskip
+	\item<5-> Increase precision
+	\smallskip
+	\item<6-> (Those are really the same in a given sample)
+\end{itemize}
+\small
+\medskip
+\onslide<7-> ATE estimates are robust to model specification (with sufficient $N$).\\
+\begin{itemize}
+\footnotesize
+\item<8-> But, do not control for \textbf{post-treatment} covariates!\
+\item<9-> This is an over-simplification: sometimes post-tx variables are okay, sometimes your QOI involves post-tx control, and sometimes pre-tx variables are problematic...we will need DAGs for that. 
+\end{itemize}
+
+%\onslide<7-> One intuition: consider post-treatment variable $Z$
+%\begin{align*}  
+%  \tau(z) &= \E[Y_i|D_i=1,Z_i=z]-\E[Y_i|D_i=0,Z_i=z] \\
+%          &= \E[Y_{1i}|D_i=1,Z_{1i}=z]-\E[Y_{0i}|D_i=0,Z_{0i}=z]
+%\end{align*}
+%\begin{itemize}
+%\vspace{-.1in}
+%\footnotesize
+%  \item<8-> there is good chance $Z_{1i}-Z_{0i}$ correlated  with $Y_{1i}-Y_{0i}$...
+%  \item<9-> so only comparing cases with $Z_{1i} \approx Z_{0i}$ makes problematic comparison!
+%\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Regression Adjustment for Experiments}
+\vspace{-.4in}
+\begin{center}
+    \includegraphics[scale=.68]{images/regadjust_1.pdf}
+\end{center}
+\end{frame}
+
+\begin{frame}{Regression Adjustment For Experiments}
+\vspace{-.4in}
+\begin{center}
+    \includegraphics[scale=.68]{images/regadjust_2.pdf}
+\end{center}
+\end{frame}
+
+\begin{frame}{Regression Adjustment For Experiments}
+\vspace{-.4in}
+\begin{center}
+    \includegraphics[scale=.68]{images/regadjust_3.pdf}
+\end{center}
+\end{frame}
+
+\begin{frame}{Regression Adjustment For Experiments}
+\vspace{-.4in}
+\begin{center}
+    \includegraphics[scale=.68]{images/regadjust_4.pdf}
+\end{center}
+\end{frame}
+
+%
+%\begin{frame}{True ATE}
+%\begin{center}
+%  \includegraphics[width = .80 \linewidth] {images/regadjust1a.pdf}
+%  \end{center}
+%\end{frame}
+%
+%\begin{frame}{True ATE and Unadjusted Regression Estimator}
+%%% \centering
+%    \includegraphics[width = .80 \linewidth]{images/regadjust2a.pdf}
+%\end{frame}
+%
+%\begin{frame}{True ATE and Unadjusted Regression Estimator}
+%\centering
+%    \includegraphics[width = .80 \linewidth]{images/regadjust3a.pdf}
+%\end{frame}
+%
+%%%\begin{frame}{Adjusted Regression Estimator}
+%%%\centering
+%%%    \includegraphics[width = .90 \linewidth]{images/regadjust4a.pdf}
+%%%\end{frame}
+%
+%
+%\begin{frame}{Adjusted Regression Estimator}
+%\centering
+%    \includegraphics[width = .80 \linewidth]{images/regadjust5a.pdf}
+%\end{frame}
+%%
+%\begin{frame}{Adjusted Regression Estimator}
+%\centering
+%    \includegraphics[width = .80 \linewidth]{images/regadjust6a.pdf}
+%\end{frame}
+%
+%
+%\begin{frame}{Adjusted Regression Estimator}
+%\centering
+%    \includegraphics[width = .80 \linewidth]{images/regadjust7a.pdf}
+%\end{frame}
+
+
+\begin{frame}{Covariate Adjustment with Regression}
+\small
+Freedman (2008) noted that regression of the form:
+\[ Y_i = \alpha + \tau_{reg} D_i + \beta_1 X_i  + \epsilon_i \]\\
+is slightly biased (order $1/N$) in this scenario, does not necessarily improve precision, creates incorrect confidence intervals.\\
+\bigskip
+%\begin{itemize}
+%\footnotesize
+%\itemsep1pt\parskip5pt\parsep0pt
+%\item<1-> $\hat{\tau}_{reg}$; small bias on order of $1/N$
+%\item<2-> $\hat{\tau}_{reg}$ will not necessarily improve precision, confidence intervals wrong.
+%\end{itemize}
+\onslide<3-> Lin (2013) argued:\\
+\begin{itemize}
+\itemsep1pt\parskip5pt\parsep0pt
+\footnotesize
+\item<4-> if you interact covariates with $D$ it never hurts and likely improves precision:
+\[ Y_i = \alpha + \tau_{Lin} D_i + \beta_1 \cdot (X_i - \bar X) + \beta_2 \cdot D_i \ \cdot (X_i - \bar X)  + \epsilon_i \] \\
+\item<5-> this is what we mimicked graphically
+\end{itemize}
+\small
+\onslide<5-> Better still, (see \href{https://doi.org/10.48550/arXiv.2403.03299}{this working paper}):
+\begin{itemize}
+\footnotesize
+\item<6-> as we discuss later, regression with covariates induces a ``weird weighting'' we will discuss later... turns out that this interactive regression avoids this 
+\item<7-> this is also equivalent to some other methods you may hear about (g-computation, t-learner, regression imputation)
+%\item<8-> interactions not needed in large sample, but might as well
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Why the weird demeaning business in this model?}
+\onslide<1-> It is isomorphic to a model without the demeaning, but makes interpretation for ATE more immediate.\\
+ 
+\[ Y_i = \alpha + \tau_{Lin} D_i + \beta_1 \cdot (X_i - \bar X) + \beta_2 \cdot D_i \ \cdot (X_i - \bar X)  + \epsilon_i \]
+
+%\onslide<2-> Review:
+%\begin{itemize}
+%\footnotesize
+%\item What is $\frac{\partial Y_i}{\partial X_i}$? $\frac{\partial Y_i}{\partial D_i}$?
+%\end{itemize}
+\medskip
+\onslide<2-> Interpreting $\tau_{Lin}$: 
+\begin{itemize}
+\footnotesize
+\item<3-> What is $\E[Y_i|D_i=0, X_i=\overline{X}]$?
+\item<4-> What is $\E[Y_i|D_i=1, X_i=\overline{X}]$?
+\item<5-> What is $\E[Y_i|D_i=1,X_i=\overline{X}]-\E[Y_i|D_i=0, X_i=\overline{X}]$?
+\item<6-> What is $\E[Y_i|D_i=1,X_i=x^{\ast}]-\E[Y_i|D_i=0, X_i=x^{\ast}]$ for $x^{\ast} \neq \overline{X}$?
+\end{itemize}
+
+\onslide<7-> So, 
+\begin{itemize}
+\footnotesize
+\item<7-> $\tau_{Lin}$ tells you comparison after ``moving'' all points to  $X_i=\overline{X}$
+%\item<8-> same as $\E_X[ \hat{\tau}|X=x]$, so convenient (faster: what is $\E_X[\frac{\partial Y_i}{\partial D_i}]$?)
+\item<9-> model could be used to give you $ATE(X)$ but conveniently, $\E_x[ATE(X)]=\tau_{Lin}$. 
+\item<10-> allowing this interaction is a good idea, emerging as standard practice
+\end{itemize}
+\end{frame}
+
+%\begin{frame}{Covariate Adjustment with Regression}
+% \centering
+%    \includegraphics[width = .80 \linewidth]{images/treatment_effect_distribution_density_with_adjustment.pdf}
+%\end{frame}
+
+
+\begin{frame}{Experiments are robust to alternative specifications}
+\onslide<1-> Two facts:
+\footnotesize
+\begin{enumerate}
+\item<1-> \textit{any} bivariate regression of some $Y$ on $X$ has $\hat{\beta}=\frac{\widehat{\Cov}(Y,X)}{\widehat{\Var}(X)}$. 
+\item<2-> the coefficient on the $k$th variable, $X_k$, from a multivariate regression can be obtained by (i) regress $X_k$ on other $X$'s, call residual $\tilde{X}_k$.(ii) regress $Y$ on $\tilde{X}_k$. (Or $\tilde{Y}$ on $\tilde{X}_k$ for similarly defined $\tilde{Y}$)
+\end{enumerate}
+
+\onslide<3-> All together, this gives the Frisch-Waugh-Lovell (FWL) theorem:
+\[\beta_k = \frac{Cov(\tilde{Y_i}, \tilde{X}_{ki})}{Var(\tilde{X}_{ki})}\] 
+
+Where,  
+\onslide<3->
+\footnotesize
+\begin{itemize}
+\item $\tilde{X}_{ki}$ is the residual from a regression of $X_{ki}$ on all other covariates
+\item $\tilde{Y_i}$ may have all other $X$ partialled out as well or you can use the original $Y_i$.  
+\end{itemize}
+\bigskip
+\footnotesize
+\end{frame}
+
+\begin{frame}{Why are Experimental Findings Robust to Alternative Specifications?}
+\small
+\onslide<1-> If our ``$X_k$'' of interest is the $D$:
+\[\hat{\beta}_D = \frac{\widehat{\Cov}(\tilde{Y_i}, \tilde{D}_i)}{\widehat{\Var}(\tilde{D}_{i})}\] 
+where $\tilde{D}_i$ is the residual part of $D_i$ after regressing on $X_i$ \\
+\medskip
+\footnotesize
+\begin{itemize}
+\item<2-> For experimental data, on average, what will $\tilde{D}_i$ look like? \\
+\item<3-> What does this suggest about the effect of adding covariates to the simple regression of $Y$ on $D$?
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Summary: Covariate Adjustment with Regression}
+\small
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item<1-> ``Agnostic'' view of regression: one does not need to believe in the classical linear model (linearity and constant treatment effects) to advocate OLS covariate adjustment in randomized experiments \medskip
+\item<2-> Helpful both to protect against chance imbalance and improve efficiency.\medskip
+\item<3-> Since covariates are balanced by design, results  typically not model dependent \medskip
+\item<4-> Best reason to be skeptical of adjustment: fishing.
+\begin{itemize}
+\footnotesize
+\item always report unadjusted result first
+\item best if adjustment strategy pre-specified
+\end{itemize} 
+\end{itemize}
+\end{frame}
+
+\subsection*{Blocking}
+
+\begin{frame}{Blocking}
+\small
+\begin{itemize}
+\itemsep1pt\parskip5pt\parsep0pt
+\item<1->  Prior to randomization, collect background data on each unit. 
+\item<2-> Why leave it to chance to balance on these, especially in small sample?
+\item<3-> Blocking: better-than random balance by design:
+\begin{itemize}
+\item pre-stratify sample on important factor(s)
+\item randomize within each stratum
+\end{itemize}
+\item<4-> Randomization is still there to balance unobserved attributes in expectation
+\item<5-> Why is this helpful?
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+\footnotesize  
+
+  \item<5-> Four subjects with $Y_{0i}$ given by $\{2,2,8,8\}$. (Say $Y_{1i}$ are similar). 
+  \item<6->   Simple random assignment into two treated/control will place $\{2,2\}$ and $\{8,8\}$ together in the same group one-third of the time
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Blocking}
+\small
+\onslide<1-> Imagine you run an experiment where you block on sex as designated at birth. \\
+\medskip
+\onslide<2-> Obtain block specific ATEs, $\tau_{f}=\E[\tau | f]$, $\tau_{m}=\E[\tau | m]$.  \\
+\medskip
+\medskip
+\onslide<3-> Applying the LIE,
+\[ \E [\tau] = p[f]\E[\tau|f]  + p[m]\E[\tau|m]\]
+
+\onslide<5->  The sample analog is unbiased for this:
+\[ \hat \tau_{B} = \frac{N_f}{N_f + N_m} \cdot \hat \tau_f  + \frac{N_m}{N_f + N_m} \cdot \hat \tau_m\]
+\onslide<6->
+or more generally, if there are $J$ strata or blocks, then
+\[\hat\tau_B = \sum_{j=1}^J \frac{N_j}{N} \hat\tau_j\]
+\end{frame}
+
+\begin{frame}{Blocking}
+\small
+\onslide<1-> Taking the number of units per block as fixed (i.e. conditional on the experimental design), the variance is:
+\onslide<2->
+\footnotesize
+\[\Var(\hat \tau_B) = \left (\frac{N_f}{N_f + N_m} \right)^2 \Var(\hat \tau_f) + \left(\frac{N_m}{N_f + N_m} \right)^2 \Var(\hat \tau_m)\]
+\bigskip
+\small
+\onslide<3-> or more generally
+\footnotesize
+\[ Var(\hat \tau_B)  =  \sum_{j=1}^J  \left (\frac{N_j}{N} \right)^2  \Var(\hat \tau_j)\]
+\end{frame}
+
+
+\begin{frame}{Blocking with Regression}
+\small
+\onslide<1-> Can we treat these blocks as regressors in OLS?  \onslide<2-> \textcolor{Blue}{Yes, with caution} \\
+
+\medskip
+
+\onslide<2-> If Pr(D) is equal in all blocks, can use OLS with block intercepts (fixed effects):
+
+\[ Y_i =  \beta_0 +  \tau D_i + \sum_{j=2}^{J} \beta_j \cdot B_{j[i]} + \epsilon_i\]
+
+%where $B_j[i]$ is a dummy for the $j$-th block (one omitted as reference category).\bigskip \pause
+
+\medskip
+\onslide<3-> If (empirical) $Pr(D=1)$ changes by block, OLS differently weights the blocks.\\
+\medskip
+\onslide<4-> We can correct for this by going back to the Lin-style (interacted) regression!'
+\footnotesize
+\begin{itemize}
+\item Again see \href{https://doi.org/10.48550/arXiv.2403.03299}{this working paper}
+\item Turns out to be a better approach here than demeaning, but that is in the weeds.
+\item Another proposal is to weight each observation so that block-treatment probabilities become the same. Let
+\begin{align*}
+p_{ij} &\equiv Pr(D_i=1|\text{ block for unit i}) \\
+w_{ij} &= \left ( \frac{1}{p_{ij}} \right ) D_i + \left ( \frac{1}{1 - p_{ij}} \right ) (1 - D_i)
+\end{align*}
+...which turns out to be exactly the same thing as the interactive regression
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{When does blocking in the analysis help?}
+\small Imagine models for complete and block-randomized designs:
+
+\begin{small}
+\begin{eqnarray}
+  Y_i &=& \alpha + \tau_{CR} D_i + \textcolor{red}{\varepsilon_i} \pause \\
+  Y_i &=& \alpha + \tau_{BR} D_i + \sum_{j=2}^J \beta_j B_{j[i]}+ \textcolor{blue}{\varepsilon^{\ast}_i}
+\end{eqnarray}
+\end{small}
+
+where $B_j[i]$ is a dummy for the $j$-th block. Then given iid sampling:
+\pause
+\small
+\begin{eqnarray}
+Var[\widehat{\tau}_{CR}]  &= \frac{\textcolor{red}{\sigma_{\varepsilon}^2}}{\sum_{i=1}^n (D_i - \bar{D})^2}\quad \,\,\, \quad \quad \mbox{ with } \textcolor{red}{\widehat{\sigma}_{\varepsilon}^2} \quad = \pause \quad\frac{\sum_{i=1}^n \widehat{\varepsilon}_i^2}{n-2}=\frac{SSR_{\widehat{\varepsilon}}}{n-2}\nonumber \\
+\pause Var[\widehat{\tau}_{BR}]  &=  \frac{\textcolor{blue}{\sigma_{\varepsilon^{\ast}}^2}}{\sum_{i=1}^n (D_{i} - \bar{D})^2 (1-R_D^2)}\mbox{ with } \textcolor{blue}{\widehat{\sigma}_{\varepsilon^{\ast}}}^2 = \frac{\sum_{i=1}^n \widehat{ \varepsilon }^{\ast^2}_{i}}{n-k-1}=\frac{SSR_{\widehat{\varepsilon^{\ast}}}}{n-k-1}\nonumber
+\end{eqnarray}
+\normalsize
+\pause
+where $R_D^2$ is $R^2$ from regression of $D$ on all block indicators and a constant.
+\end{frame}
+
+\begin{frame}{When does blocking in the analysis help?}
+\begin{eqnarray}
+Var[\widehat{\tau}_{CR}]  &= \frac{\textcolor{red}{\sigma_{\varepsilon}^2}}{\sum_{i=1}^n (D_i - \bar{D})^2}\quad \,\,\, \quad \quad \mbox{ with } \textcolor{red}{\widehat{\sigma}_{\varepsilon}^2} \quad = \quad\frac{\sum_{i=1}^n \widehat{\varepsilon}_i^2}{n-2}=\frac{SSR_{\widehat{\varepsilon}}}{n-2}\nonumber \\
+ Var[\widehat{\tau}_{BR}]  &=  \frac{\textcolor{blue}{\sigma_{\varepsilon^{\ast}}^2}}{\sum_{i=1}^n (D_{i} - \bar{D})^2 (1-R_j^2)}\mbox{ with } \textcolor{blue}{\widehat{\sigma}_{\varepsilon^{\ast}}^2} = \frac{\sum_{i=1}^n \widehat{ \varepsilon }^{\ast^2}_{i}}{n-k-1}=\frac{SSR_{\widehat{\varepsilon^{\ast}}}}{n-k-1}\nonumber
+\end{eqnarray}
+\footnotesize
+where $R_D^2$ is $R^2$ from regression of $D$ on all $B$
+variables and a constant.\\
+\normalsize
+\bigskip
+\onslide<2->
+\small
+\begin{itemize}
+\item<3-> If $R_D^2$ is high, variance inflated.  But what can we say about $R_D^2$ when we're talking about blocking?
+\item<4-> If blocks explain outcomes strongly, how will $\textcolor{blue}{\widehat{\sigma}_{\varepsilon^{\ast}}^2}$ 
+compare to $\textcolor{red}{\widehat{\sigma}_{\varepsilon}^2}$?
+\item<5-> Adding DOF adjustment, we end up asking whether $\frac{SSR_{\widehat{\varepsilon^{\ast}}}}{n-k-1}<\frac{SSR_{\widehat{\varepsilon}}}{n-2}$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Fair Trade Labeling Experiment \\ (Hainmueller et al, 2012)}
+  \begin{center}
+  \includegraphics[scale=.4]{images/wf2.pdf}
+\end{center}
+\end{frame}
+%
+%\begin{frame}
+%  \frametitle{Example: Fair Trade Labeling Experiment}
+%  \centering
+%  \includegraphics[scale=.4]{images/wf1.pdf}
+%\end{frame}
+
+\begin{frame}
+  \frametitle{Example: Fair Trade Labeling Experiment}
+  \begin{center}
+  \includegraphics[scale=.40]{images/wf3.pdf}
+  \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Example: Fair Trade Labeling Experiment}
+{
+\footnotesize
+\begin{Verbatim}[frame=single, label=R Code, commandchars=\\\{\}]
+> d <- read.dta("FTdata.dta")
+> head(d)
+  store pair FTweek lnsalesd
+1     1    1      1     3.20
+2     4    1      0     2.77
+3     6    2      1     4.18
+4     9    2      0     4.04
+5    21    3      1     4.30
+6    24    3      0     3.93
+\end{Verbatim}
+}
+\end{frame}
+%%
+
+\begin{frame}[fragile]
+\frametitle{Example: Fair Trade Labeling Experiment}
+{
+\footnotesize
+\begin{Verbatim}
+> cr.out <- lm(lnsalesd~FTweek,data=d)
+> coeftest(cr.out,vcov = vcovHC(cr.out, type = "HC1"))
+
+t test of coefficients:
+
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  4.35000    0.16079 27.0537   <2e-16 ***
+FTweek       0.12385    0.21424  0.5781   0.5686    
+---
+\end{Verbatim}
+}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Example: Fair Trade Labeling Experiment}
+{
+\scriptsize
+\begin{Verbatim}
+> br.out <- lm(lnsalesd~FTweek+as.factor(pair),data=d)
+> coeftest(br.out,vcov = vcovHC(br.out, type = "HC1"))
+
+t test of coefficients:
+
+                  Estimate Std. Error t value  Pr(>|t|)    
+(Intercept)       2.923077   0.162144 18.0277 4.671e-10 ***
+FTweek            0.123846   0.060176  2.0581 0.0619840  
+as.factor(pair)2  1.125000   0.159549  7.0511 1.335e-05 ***
+as.factor(pair)3  1.130000   0.204440  5.5273 0.0001304 ***
+as.factor(pair)4  1.145000   0.231925  4.9369 0.0003439 ***
+as.factor(pair)5  1.280000   0.161773  7.9123 4.208e-06 ***
+as.factor(pair)6  1.410000   0.169987  8.2948 2.591e-06 ***
+as.factor(pair)7  1.575000   0.203689  7.7324 5.317e-06 ***
+as.factor(pair)8  1.585000   0.277319  5.7154 9.675e-05 ***
+as.factor(pair)9  1.610000   0.169987  9.4713 6.420e-07 ***
+as.factor(pair)10 1.795000   0.165195 10.8660 1.450e-07 ***
+as.factor(pair)11 1.810000   0.169987 10.6479 1.810e-07 ***
+as.factor(pair)12 2.015000   0.164183 12.2729 3.763e-08 ***
+as.factor(pair)13 2.070000   0.160298 12.9134 2.127e-08 ***
+---
+\end{Verbatim}
+}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example: Fair Trade Labeling Experiment}
+\vspace{-.3in}  
+  \begin{center}
+  \includegraphics[scale=.38]{images/FTblocking1.pdf}
+  \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{How much is explained by blocks?}
+{
+\scriptsize
+\begin{Verbatim}
+> summary(lm(lnsalesd~as.factor(pair),data=d))
+Coefficients:
+                  Estimate Std. Error t value Pr(>|t|)    
+(Intercept)         2.9850     0.1212  24.621 2.72e-12 ***
+as.factor(pair)2    1.1250     0.1715   6.562 1.82e-05 ***
+as.factor(pair)3    1.1300     0.1715   6.591 1.74e-05 ***
+as.factor(pair)4    1.1450     0.1715   6.678 1.52e-05 ***
+as.factor(pair)5    1.2800     0.1715   7.466 4.73e-06 ***
+as.factor(pair)6    1.4100     0.1715   8.224 1.65e-06 ***
+as.factor(pair)7    1.5750     0.1715   9.186 4.77e-07 ***
+as.factor(pair)8    1.5850     0.1715   9.245 4.44e-07 ***
+as.factor(pair)9    1.6100     0.1715   9.390 3.71e-07 ***
+as.factor(pair)10   1.7950     0.1715  10.469 1.05e-07 ***
+as.factor(pair)11   1.8100     0.1715  10.557 9.56e-08 ***
+as.factor(pair)12   2.0150     0.1715  11.752 2.68e-08 ***
+as.factor(pair)13   2.0700     0.1715  12.073 1.94e-08 ***
+---
+Residual standard error: 0.1715 on 13 degrees of freedom
+Multiple R-squared:  0.9474,	Adjusted R-squared:  0.8988 
+F-statistic:  19.5 on 12 and 13 DF,  p-value: 2.356e-06
+\end{Verbatim}
+}
+\end{frame}
+
+
+
+\begin{frame}{Conclusions: Blocking}
+\small
+\onslide<1->  How does blocking help? \\
+\footnotesize  
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item Increases efficiency if the blocking variables predict outcomes 
+ \item By design, reduced finite-sample bias due to ``bad'' randomization
+ \item Powerful -- can save your experiment! \pause
+   \end{itemize}
+   \bigskip
+   \small
+\onslide<2->  What to block on?
+\footnotesize
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item Two constraints: data you can get, number of units to work with. 
+  \item Irrelevant variables: burn up DOFs%,  worsen matches on good ones
+  \item Most important: predictors of potential outcomes!    \item Pre-Tx outcomes is great;
+add other main predictors if available/helpful
+  \item Another consideration: variables desired for subgroup analysis
+  \end{itemize}
+  \small
+\bigskip
+\onslide<3-> How to block? \\
+\footnotesize  
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item Stratification
+  \item Pair-wise matching; two pair-matching
+%  \item Check: \texttt{blockTools} library.
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Analysis with Blocking}
+\small
+\onslide<1-> \textbf{``As ye randomize, so shall ye analyze''} (Senn 2004)
+
+\begin{itemize}
+\itemsep1pt\parskip5pt\parsep0pt
+\item<2-> Account for the method of randomization when doing  analysis
+
+\item<3-> If using OLS, 
+\begin{itemize} 
+\item<3-> include block dummies 
+\item<3-> typically use clustered SEs
+\item<3-> if probability of treatment assignment varies across blocks, reweight
+\end{itemize}
+\item<4-> If doing randomization inference, block design influences construction of $\Omega$: re-randomization is within blocks.
+\item<5-> Also, type of SE can influence type of  bootstrap, e.g. use the block bootstrap (resample at level of blocks) for clustered SEs
+%\item<6-> Failure to account for the method of randomization in these ways can result in incorrect test size.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Hard work in design and implementation}
+\onslide<1-> Statistics are often easy; challenge is in implementation and design 
+\small
+\begin{itemize}
+\itemsep1pt\parskip5pt\parsep0pt
+\item<2->  Finding partners, manage relationships will be common failure point
+%\item<3-> Possible benefits to implementers
+%  \begin{itemize}
+%  \itemsep1pt\parskip0pt\parsep0pt
+%  \item free ``consulting'' to assist with monitoring and evaluation
+%  \item allocating limited resources (dealing with large target group)
+%  \item encouragement designs increase uptake
+%  \item ...but if implementers are happy with a much cheaper (non-causal) evaluation, may not be willing to do what it takes 
+%  \end{itemize}
+  \item<3-> Iron law of field experiments: keep it simple. Many ways to fail. 
+  \item<4-> Getting difficult to publish studies that only examine the efficacy of some intervention: look for substantively interesting treatment and outcome. 
+\end{itemize}
+\end{frame}
+
+%\subsection*{Ethics}
+%
+%\begin{frame}{Ethics and Experimentation}
+%\small
+%\begin{itemize}
+%\item Fearon, Humphreys, and Weinstein (2009) used a field experiment
+%  to examine if community-driven reconstruction programs foster
+%  social reconciliation in post-conflict Liberian villages.
+%  \item
+%    Outcome: funding raised for collective projects in public goods game
+%    played with 24 villagers. Total payout to village is publicly
+%    announced. \pause
+%\end{itemize}
+%
+%\begin{quote}
+%We received a report that leaders in one community had gathered
+%villagers together after we left and asked people to report how much
+%they had contributed. We moved quickly to prevent any retribution in
+%that village, but also decided to alter the protocol for subsequent
+%games to ensure greater protection for game participants. \pause
+%\end{quote}
+%\vspace{-.1in}
+%\begin{quote}
+%These changes included stronger language about the importance of
+%protecting anonymity, random audits of community behavior, facilitation
+%of anonymous reporting of violations of game protocol by participants,
+%and a new opportunity to receive supplemental funds in a postproject
+%lottery if no reports of harassment were received.
+%\end{quote}
+%
+%\end{frame}
+%
+%\begin{frame}{Ethics and Experimentation}
+%\small
+%\onslide<1-> IRB approval typically required. \\
+%\smallskip
+%\onslide<2-> Key principals (Belmont Report, 1978):
+%\small
+%\begin{itemize}
+%\itemsep1pt\parskip0pt\parsep0pt
+%\item<3->
+%  \textbf{Respect for persons}: informed consent.
+%  \begin{itemize}
+%  \footnotesize
+%  \itemsep1pt\parskip0pt\parsep0pt
+%  \item
+%    Informed consent often done as part of the baseline survey.
+%  \item If risks are minimal and consent will undermine the study, then informed consent rules sometimes waived. \pause
+%  \end{itemize}
+%  \smallskip
+%\item<4-> \textbf{Benefice}: Avoid knowingly doing harm. Does not mean that all risk can be eliminated, but possible risks must be balanced against overall benefits to society of the research.
+%  \begin{itemize}
+%  \footnotesize
+%  \itemsep1pt\parskip0pt\parsep0pt
+%  \item<5-> Control group is often difficult: denying access to some benefit.
+%  \item<6-> however, project benefits often finite anyway, so why not distribute them by randomization...but that won't always prevent possible envy problems
+%  \item<7-> treatments that are occurring already in the wild pose minimal additional risk, but still may be criticized when used for research
+%  \end{itemize}
+%\smallskip
+%\item<8->
+%  \textbf{Justice}: Benefits and risks should accrue to same group or individuals
+%    \begin{itemize}
+%\footnotesize
+%  \itemsep1pt\parskip0pt\parsep0pt
+%  \item<9-> evaluate interventions that are relevant to the subject population
+%  \end{itemize}
+%\end{itemize}
+%\end{frame}
+%
+%\begin{frame}
+%\begin{center}
+%\includegraphics[scale=.6]{images/research_ethics.png}
+%\end{center}
+%\end{frame}
+%
+%%\begin{frame}{Ethics and Experimentation}
+%%\small
+%%\begin{itemize}
+%%\item
+%%  IRB approval is required in almost all circumstances.\bigskip
+%%\item
+%%  If running an experiment in another country, you need to follow the
+%%  local regulations on experimental research.
+%%
+%%  \begin{itemize}
+%%  \item
+%%    Often poorly adapted to social science.
+%%  \item
+%%    Or legally murky whether or not approval is required.
+%%  \end{itemize}\bigskip
+%%\item
+%%  Still many unanswered questions and lack of consensus on the ethics of
+%%  field experimentation within Political Science!
+%%
+%%  \begin{itemize}
+%%  \itemsep1pt\parskip0pt\parsep0pt
+%%  \item
+%%    Be prepared to confront wildly varying opinons on these issues.
+%%  \end{itemize}
+%%\end{itemize}
+%%
+%%\end{frame}
+
+\begin{frame}{Conclusion: Experiments}
+\small
+\begin{itemize}
+\item<1-> Random assignment is great, but can use a helping hand sometimes...
+\smallskip
+\item<2-> Design: blocking to improve balance
+\begin{itemize}
+\item<2-> improves balance
+\item<2-> improves efficiency
+\item<2-> can save your experiments in small samples
+\end{itemize}
+\smallskip
+\item<3-> Analysis: covariate adjustment
+\begin{itemize}
+\item<4-> can improve efficiency and finite sample bias
+\item<4-> relatively safe, use interactive model (Lin 2013)
+\item<4-> main risk is user-defined specification (fishing)
+\begin{itemize}
+\item<5-> report unadjusted results first
+\item<5-> commit to adjustment plan, use non-arbitrary  choices
+\item<5-> typically results will stable though
+\end{itemize}
+\end{itemize}
+\smallskip
+\item<7->  Beyond methodology, remember to consider:
+\begin{itemize}
+\item<8-> can your experiment reveal an interesting effect?
+\item<8-> will it have external validity 
+\item<8-> ethical concerns
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\end{document} 

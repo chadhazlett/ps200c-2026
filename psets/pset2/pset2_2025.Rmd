@@ -1,0 +1,191 @@
+---
+title: 'PS 200C 2025 - Problem Set 2'
+author: 'Chad Hazlett, Barney Chen'
+date: 'Due April 30, 11:59pm'
+header-includes:
+   - \usepackage{framed}
+   - \usepackage{color}
+   - \usepackage{graphicx}
+   - \usepackage{booktabs}
+output: pdf_document
+---
+
+\newcommand{\X}{\mathbf{X}}
+\newcommand{\Y}{\mathbf{Y}}
+\renewcommand{\r}{\right}
+\renewcommand{\l}{\left}
+\newcommand{\dist}{\buildrel\rm d\over\sim}
+\newcommand{\ind}{\stackrel{\rm indep.}{\sim}}
+\newcommand{\ud}{\mathrm{d}}
+\newcommand{\iid}{\stackrel{\rm i.i.d.}{\sim}}
+\newcommand{\logit}{{\rm logit}}
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\V}{\mathbb{V}}
+\newcommand{\cJ}{\mathcal{J}}
+\newcommand{\bone}{\mathbf{1}}
+\newcommand{\var}{{\rm Var}}
+\newcommand{\cov}{{\rm Cov}}
+\newcommand{\tomega}{\tilde\omega}
+\newcommand{\indep}{\mbox{$\perp\!\!\!\perp$}}
+
+\newcommand{\spacingset}[1]{\renewcommand{\baselinestretch}%
+{#1}\small\normalsize}
+
+
+\section*{Question 1. Selection on Observables}
+In the lecture, we saw that both the ATE and ATT are nonparametrically identified under the conditional ignorability and common support assumptions, which can be stated as follows:
+
+$$ \{ Y_{0i}, Y_{1i} \} \ \indep \ D_i \mid X_i = x, $$
+$$ 0 < \Pr(D_i = 1 \mid X_i = x) < 1, $$
+for any $x \in \mathcal{X}$, where $Y_{1i}$ and $Y_{0i}$ are potential outcomes, $D_i$ is a treatment, $X_i$ is a vector of covariates and $\mathcal{X}$ is the set of all values $X_i$ can take on (i.e., the *support* of $X_i$). 
+
+a. First, state in plain English the meaning of the conditional ignorability assumption above. Give an example that you think would make this clear to somebody not in the class.
+
+
+b. It turns out that the ATT is actually identifiable under a slightly weaker set of assumptions. Formally write down this weaker set of assumptions using the potential outcome notation, and prove its sufficiency for identifying the ATT. Explain each of your steps. (Hint: both the assumptions above can be weakened slightly. You may want to start by writing down the ATT and then see what changes you need to "turn it into" the difference in means estimand.)
+
+
+c. In simple but precise language, explain the difference between the two sets of assumptions, and why one set is weaker than the other. Is the difference likely to matter in practice, and if so, under what circumstances?
+
+
+\section*{Question 2: NSW experiment and observational comparison}
+In this problem and the next, we will analyze data from the National Supported Work Demonstration, a subsidized work program implemented in the mid-70's. We will look at two datasets based on this program: First, an experimental sample from a randomized evaluation of the program (\texttt{nsw\_experimental.dta}). Second, a non-experimental (observational) sample from the Population Survey of Income Dynamics--PSID--(\texttt{nsw\_observational.dta}). In both datasets, the variable \texttt{nsw} is the treatment, the variables \texttt{re78} and \texttt{u78} are outcomes, and the rest are covariates.
+
+\begin{center}
+\begin{tabular}
+[c]{p{4cm}l}%
+Variable Definitions: & \\
+\hline 
+\texttt{nsw} & =1 for NSW participants, =0 otherwise\\
+\texttt{age} & age in years\\
+\texttt{educ} & years of education\\
+\texttt{black} & =1 if African American, =0 otherwise\\
+\texttt{hispanic} & =1 if Hispanic, =0 otherwise\\
+\texttt{married} & =1 if married, =0 otherwise\\
+\texttt{re74} & real (inflation adjusted) earnings for 1974\\
+\texttt{re75} & real (inflation adjusted) earnings for 1975\\
+\texttt{re78} & real (inflation adjusted) earnings for 1978\\
+\texttt{u74} & =1 if unemployed in 1974, =0 otherwise\\
+\texttt{u75} & =1 if unemployed in 1975, =0 otherwise\\
+\texttt{u78} & =1 if unemployed in 1978, =0 otherwise\\
+\hline
+\end{tabular}
+\end{center}
+
+a. Using the experimental data, obtain a simple unbiased estimate of the ATE of NSW on 1978 earnings, its SE and a 95\% confidence interval.
+
+```{r message=FALSE, warning=FALSE}
+library(foreign) # load the dta
+library(estimatr) # use lm_robust!
+
+nsw_experimental = read.dta("nsw_experimental.dta") # change to your path if needed
+```
+
+
+b. With the experimental data, use OLS to estimate the ATE controlling for age, education, race, ethnicity, marital status, and employment and earnings in 1974 and 1975. Report the estimate and its SE. Compare it to the one obtained in (a), explaining the reason for any similarities or differences.
+
+```{r}
+
+```
+
+c. Now, let's turn to the observational data file. This file, \texttt{nsw\_observational.dta}, contains treated units taken from the experiment, but control units replaced by a random non-experimental sample from the PSID. Check the covariate balance in this merged dataset. Decide on a few sensible balance statistics and report them in a table. How do the treatment and control group differ? Estimate the (naive) ATE of the program on 1978 earnings without adjusting for any of the covariates. Report the estimate and a standard error.
+
+```{r message=FALSE, warning=FALSE}
+library(Matching) # matching
+library(ebal) # to use baltest.collect()
+
+nsw_observational = read.dta("nsw_observational.dta") # change to your path if needed
+
+```
+
+d. With the observational data, use OLS to estimate the ATE controlling for age, education, race, ethnicity, marital status, and employment and earnings in 1974 and 1975. Report the estimate and its SE. Does the estimate of the ATE change compared to (b)? Why or why not?
+
+```{r}
+
+```
+
+
+e. Let's explore different model specifications. Using the non-experimental data, condition (only) on the marital status of individuals, and manually compute the subclassification estimator of the ATT.
+
+```{r}
+
+```
+
+
+f. Repeat the above, this time conditioning only on Unemployment status in 1975 using a sub-classification estimator of the ATT.
+
+```{r}
+
+```
+
+
+\section*{Question 3: Matching on NSW}
+In this problem, we will continue working with the NSW study using the experimental sample (\texttt{nsw\_experimental.dta}) and the (partially) non-experimental sample (\texttt{nsw\_observational.dta}).
+
+a. Above we saw the balance on the non-experimental data. Now, let's use matching to condition the balance of the sample. Match using the following covariates: "age", "educ", "black", "hisp", "married", "re74", "re75", "u74", and "u75". Comment on which covariates you used exact matching for and which you allowed to differ. Show the new balance table, and estimate the ATT.
+
+```{r}
+# hint: use Match() from the Matching package, type ?Match() in the Console to see the arguments
+# exact = c(...), which should be a logical vector 
+# you can type it manually, or use something like ifelse(colnames(X) %in% c("A", "B",...), FALSE, TRUE)
+# check the section notes
+
+
+```
+
+
+b. What is the importance of the bias adjustment? When is it most important to use the bias adjustment?
+
+
+c. In the observational (non-experimental) sample, compare the number of treated to untreated units. Comment on the result, and whether it is good or bad in your view.
+
+
+d. Using the data in the observational data file, estimate propensity scores (use a model to estimate selection into treatment) using a logistic regression. Discuss why a logistic regression might be a better choice than an LPM (linear probability model) for estimating propensity scores. Report the distribution of propensity scores for treated and control groups and comment on their overlap and differences.
+
+```{r}
+
+```
+
+
+e. Now using the \textit{experimental} sample, estimate propensity scores. Compare distributions of the propensity scores for treated and control groups here. What do you observe? Compare your results with part (d).
+
+```{r}
+
+```
+
+
+f. Using the observational sample, trim off (exclude) observations that have propensity scores lower than 0.1. Then report balance statistics for the trimmed data. Compare the results to the balance you initially saw for this dataset. Do the results differ, and why or why not?
+
+```{r}
+
+```
+
+
+g. In the observational sample, match on the estimated propensity scores (from part d) using \texttt{Match()} from the \texttt{Matching} package to obtain an estimator of the average effect of the treatment on the treated for the NSW program.
+
+```{r}
+
+```
+
+
+h. Compare the various results and tests above and discuss. For example, do the results differ for the experimental and non-experimental data? Why? Can you replicate the experimental results? How?
+
+
+i. Propensity scores were used to evaluate the NSW program in Dehejia and Wahba (1999, 2002). One prominent criticism of these findings was published in the paper: Smith, Jeffrey and Petra Todd. 2005. Does matching overcome LaLonde's critique of nonexperimental estimators? Journal of Econometrics 125(1): 305-353. Summarize Smith and Todd's criticisms of the use of propensity scores for matching with respect to the NSW study, and in general.
+
+
+\section*{Question 4: Published Papers}
+
+a. Consider the paper: 
+
+Lyall, Jason. 2010. Are Co-Ethnics More Effective Counter-Insurgents? Evidence from the Second Chechen War. American Political Science Review, 104:1 (February 2010): 1-20. 
+
+Concisely explain the identification strategy used in four steps: (1) describe why a simple comparison of the "treated" and "control" groups might not produce valid inference -- i.e. what is an example of a potential confounder here? (2) give the name of the strategy/strategies formally employed and describing the key assumption(s). (3) Explain the strategy as you would to a friend in simple terms, helping them to understand how and wow this approximates an experiment and presumably allows for valid inference. (4) Critique the approach. Do you believe it or not, and why?
+
+b. Now consider the paper: 
+
+Weaver, Vesla and Amy Lerman. 2010. Political Consequences of the Carceral State. American Political Science Review. 104 (4): 817-833. 
+
+Answer the same questions above. This time, for part (1), comment on whether the authors initial regression approach is likely to provide valid inference (and if not, why not). Continue by answering the remaining questions with respect to their subsequent follow-up approaches.
+

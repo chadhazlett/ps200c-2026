@@ -1,0 +1,112 @@
+---
+title: 'PS 200C - Problem Set 3'
+author: 'Instructor: Chad Hazlett; TA: Barney Chen'
+header-includes:
+   - \usepackage{framed}
+   - \usepackage{xcolor}
+output: pdf_document
+---
+
+\newcommand{\X}{\mathbf{X}}
+\newcommand{\Y}{\mathbf{Y}}
+\renewcommand{\r}{\right}
+\renewcommand{\l}{\left}
+\newcommand{\dist}{\buildrel\rm d\over\sim}
+\newcommand{\ind}{\stackrel{\rm indep.}{\sim}}
+\newcommand{\ud}{\mathrm{d}}
+\newcommand{\iid}{\stackrel{\rm i.i.d.}{\sim}}
+\newcommand{\logit}{{\rm logit}}
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\V}{\mathbb{V}}
+\newcommand{\cJ}{\mathcal{J}}
+\newcommand{\bone}{\mathbf{1}}
+\newcommand{\var}{{\rm Var}}
+\newcommand{\cov}{{\rm Cov}}
+\newcommand{\tomega}{\tilde\omega}
+\newcommand{\indep}{\mbox{$\perp\!\!\!\perp$}}
+\newcommand{\benum}{\begin{enumerate}}
+\newcommand{\eenum}{\end{enumerate}}
+\newcommand{\bitem}{\begin{itemize}}
+\newcommand{\eitem}{\end{itemize}}
+
+\newcommand{\spacingset}[1]{\renewcommand{\baselinestretch}%
+{#1}\small\normalsize}
+
+\date{\textbf{Due: May 11 by 11:59pm}}
+
+\section*{Problem 1. Difference in Differences}
+In this problem, you will analyze data from the Card and Krueger paper discussed in lecture.
+
+\begin{quote}
+Card, D. and A. B. Krueger (1994), "Minimum Wages and Employment: A Case Study of the Fast-Food Industry in New Jersey and Pennsylvania," \textit{American Economic Review}, vol. 84, 772-793.
+\end{quote}
+
+Card and Krueger are interested in estimating the impact of minimum wage on teenage employment. Conventional economic wisdom states that raises in minimum wages hurt employment, especially teenage employment, which often takes wages that will be affected by minimum wage law. However, empirical analysis has failed to find evidence of employment responses to raises in minimum wages. In 1992, New Jersey's minimum wage increased from \$4.25 to \$5.05 while the minimum wage in Pennsylvania remained at \$4.25. The authors used data on employment at fast-food establishments in New Jersey and Pennsylvania before and after the increase in the minimum wage to measure the impact of the increase in minimum wage on teenage employment. Download and import the dataset, \texttt{card\_krueger.RData}, from the assignment website.
+
+The dataset contains the following variables, with one row corresponding to a single fast-food restaurant:
+
+- \texttt{state}: New Jersey or Pennsylvania
+
+- \texttt{chain}: the fast-food chain to which the restaurant belongs
+
+- \texttt{wage\_pre}: starting wage in February 1992, in dollars per hour
+
+- \texttt{wage\_post}: starting wage in November 1992, in dollars per hour
+
+- \texttt{emp\_pre}: employment in February 1992, in number of full-time equivalent (FTE) employees
+
+- \texttt{emp\_post}: employment in November 1992, in number of full-time equivalent (FTE) employees
+
+- \texttt{closed}: whether the store was closed in November 1992
+
+Assume that the fast-food restaurants surveyed by Card and Krueger represent a random sample from a larger population of all fast-food restaurants in New Jersey and eastern Pennsylvania. Consider the estimands in table \ref{tab:estimands}, which correspond to the mean level of full-time equivalent (FTE) employment for population subgroups (restaurants within a given state-time). For example, $\alpha = \mathbb{E}[Y_i|T=\text{February},\text{state}=\text{NJ}]$.
+
+\begin{table}[!ht]
+\begin{center}
+\begin{tabular}{rcc}
+               &   February    &   November     \\
+New Jersey     &   $\alpha$    &   $\beta$      \\
+Pennsylvania   &   $\gamma$    &   $\delta$     \\
+\end{tabular}
+\caption{Average population FTE employment, by state and time}
+\label{tab:estimands}
+\end{center}
+\end{table}
+
+(a). Define the difference-in-differences (DID) estimand in terms of these values, and concisely explain what this represents.
+
+- Answer: 
+
+
+(b). Consider the eight potential quantities $\{\alpha(0), \alpha(1), \beta(0)...\}$. Let these represent the mean \textit{potential} level of FTE employment levels that \textit{would have realized} if the minimum wage had been raised in each state at each time. For example, $\alpha(0) = \mathbb{E}[Y_i(D=0)|T=\text{February},\text{state}=\text{NJ}]$. Define the causal quantity of interest, the ATT, in terms of these potential outcomes. Describe which of these are observed.
+
+- Answer: 
+
+
+(c). Discuss the identification assumption required for DID to yield a causal effect: (i) state it in general terms and then as applied to this problem; (ii) explain in simple and intuitive terms why this is a useful assumption; (iii) finally, tell us whether you think it is a good assumption here, and if not, what violations you imagine are problematic.
+
+- Answer: 
+
+
+(d). Making the required identification assumption from above, show that the DID estimand (part a) can identify the ATT (part b). Show all your work and note where the identification assumption comes in. Hint: 
+
+i. Estimate all quantities in table \ref{tab:estimands} and write them in a similar table. 
+ii. Calculate your DID estimate (with a standard error and p-value) and interpret the result.
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(estimatr)
+library(kableExtra) # install.packages("kableExtra") if needed
+
+# load("./card_krueger.RData") # change the path
+```
+
+- Answer: 
+
+
+(e). Discuss two forms of placebo tests for the DID estimand. What evidence do these provide for the validity of our casual estimate? Does passing these falsification tests allow us conclude our identification assumptions hold? 
+
+- Answer:
+
+

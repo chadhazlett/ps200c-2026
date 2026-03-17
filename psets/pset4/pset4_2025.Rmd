@@ -1,0 +1,230 @@
+---
+title: 'PS 200C - Problem Set 4'
+author: 'Instructor: Chad Hazlett; TA: Barney Chen'
+header-includes:
+   - \usepackage{framed}
+   - \usepackage{xcolor}
+output: pdf_document
+---
+
+\newcommand{\X}{\mathbf{X}}
+\newcommand{\Y}{\mathbf{Y}}
+\renewcommand{\r}{\right}
+\renewcommand{\l}{\left}
+\newcommand{\dist}{\buildrel\rm d\over\sim}
+\newcommand{\ind}{\stackrel{\rm indep.}{\sim}}
+\newcommand{\ud}{\mathrm{d}}
+\newcommand{\iid}{\stackrel{\rm i.i.d.}{\sim}}
+\newcommand{\logit}{{\rm logit}}
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\V}{\mathbb{V}}
+\newcommand{\cJ}{\mathcal{J}}
+\newcommand{\bone}{\mathbf{1}}
+\newcommand{\var}{{\rm Var}}
+\newcommand{\cov}{{\rm Cov}}
+\newcommand{\tomega}{\tilde\omega}
+\newcommand{\indep}{\mbox{$\perp\!\!\!\perp$}}
+\newcommand{\benum}{\begin{enumerate}}
+\newcommand{\eenum}{\end{enumerate}}
+\newcommand{\bitem}{\begin{itemize}}
+\newcommand{\eitem}{\end{itemize}}
+
+\newcommand{\spacingset}[1]{\renewcommand{\baselinestretch}%
+{#1}\small\normalsize}
+
+\date{\textbf{Due: May 21 by 11:59pm}}
+
+\section*{Problem 1: IV}
+
+In a well-known paper, Acemoglu, Johnson, and Robinson (2010) attempt to estimate the effect of property rights institutions on long-run economic growth. They use GDP per capita in 1995 to proxy a country's long-run economic growth. To address the endogeneity between institutions and economic growth, they use the mortality rate faced by European settlers in the 19th century as an instrument for property rights institutions in the 20th century. This problem asks you to replicate the results from 2SLS regressions in their original paper (Table 4 Columns 1 and 2). Please download \texttt{arj.dta} from the course website. The data file include the following variables:
+
+- \texttt{shortnam}: three letter country name
+- \texttt{lat\_abst}: absolute latitude of capital/90
+- \texttt{avexpr}: average protection against expropriation risks
+- \texttt{logpgp95}: log PPP GDP per capita in 1995
+- \texttt{logem4}: log settler mortality
+
+(a). Show results from (i) the first stage regression, (ii) the reduced form regression, and (iii) the 2SLS estimation using the following two specifications:
+\begin{eqnarray*}
+\texttt{logpgp95}_i &=& \beta_0 + \beta_1 \texttt{avexpr}_i + \epsilon_i \\
+\texttt{avexpr}_i &=& \gamma_0 + \gamma_1 \texttt{logem4} + \mu_i 
+\end{eqnarray*}
+and 
+\begin{eqnarray*}
+\texttt{logpgp95}_i &=& \beta_0 + \beta_1 \texttt{avexpr}_i + \beta_3 \texttt{lat\_abst} + \epsilon_i\\
+\texttt{avexpr}_i &=& \gamma_0 + \gamma_1 \texttt{logem4} + + \gamma_2 \texttt{lat\_abst} + \mu_i
+\end{eqnarray*}
+
+Report your results in the following table (you can use canned functions, such as \texttt{ivreg}):
+
+\begin{center}
+\begin{tabular}{llcc}\hline\hline
+& & (1) & (2) \\ 
+& & no covariates & including latitude \\ \hline
+ & & & \\
+First stage (dep: \texttt{avexpr}): & \texttt{logem4} & xx & xx \\
+ & & (xx) & (xx) \\
+ & \texttt{lat\_abst}  & & xx \\ 
+ & &  & (xx) \\ \hline
+Reduced form (dep: \texttt{logpgp95}): & \texttt{logem4}  & & \\
+ & & () & () \\
+ & \texttt{lat\_abst}  & & \\ 
+ & &  & () \\ \hline
+2SLS (dep: \texttt{logpgp95}): & \texttt{avexpr}  &  & \\
+ & & () & () \\
+ & \texttt{lat\_abst}  & & \\ 
+ & &  & () \\ \hline  
+\end{tabular}
+\end{center}
+
+```{r message=FALSE, warning=FALSE}
+library(foreign)
+library(AER) # to use ivreg()
+library(tidyverse)
+# library(stargazer) # to use stargazer()
+# library(kableExtra) # to use kable()
+
+data_AJR <- read.dta("./arj.dta") # change the path to where you saved the data
+```
+
+
+(b). Regress \texttt{logpgp95}, \texttt{avexpr}, and \texttt{logem4} on \texttt{lat\_abst} ("partialling out" the effect of latitude) and re-do the 2SLS estimation using the residuals. Do you get the same result as in Column 2 in the previous question? (Don't worry about the standard errors -- actually they are quite close to the right ones.)
+
+```{r}
+
+```
+
+
+(c). For the model with no covariates, discuss the identification strategy, and whether you believe it or not.  Is settler mortality a good instrument? Walk through the three identification assumptions we talked about in class (in the potential outcome framework) and address each in the context of this paper. 
+
+- Answer: 
+
+
+\section*{Problem 2: Sensitivity Analysis}
+For this problem, you will analyze data from an article by Hazlett and Mildenberger:
+
+\begin{quote}
+	Hazlett, Chad, and Matto Mildenberger. "Wildfire exposure increases pro-environment voting within democratic but not republican areas." \textit{American Political Science Review} 114, no. 4 (2020): 1359-1365.
+\end{quote}
+
+
+(a). Read the paper. In your own words, summarize it in a short paragraph. What is the research question? What is the main identification strategy? How is the outcome variable (environmental support) measured? What are the main results? 
+
+- Answer: 
+
+
+(b). Now load the \texttt{wfpanel} data. It is a huge panel dataset and I've done some data wrangling to create a dataset called \texttt{wfpanel\_short}, which you will use. Here are the variables that we will be using:
+
+- \texttt{envBI}: outcome; environmental ballot measure support
+- \texttt{wildfire2yr5000}: treatment; =1 if wildfires (that burned at least 5,000 acres) occurred within the block group's spatial perimeter in the preceding two-year period
+- \texttt{voteshare\_dem\_l2}: Democratic vote share
+- \texttt{precip2yr}: total precipitation over the two years leading up to the election
+- \texttt{precipdeviation}: deviation from historical average rainfall
+- \texttt{BG}: census block group
+- \texttt{year}: year
+
+```{r message=FALSE, warning=FALSE}
+library(sensemakr) # install if you need to
+library(estimatr)
+
+load("./wfpanel.Rdata") # load wfpanel
+```
+
+
+```{r echo=FALSE}
+# some data wrangling; don't alter the code here
+wfpanel$fire_0to5.0km = as.numeric(wfpanel$mindist5000<=5000)
+wfpanel$fire_5to10km = as.numeric(wfpanel$mindist5000>5000 & wfpanel$mindist5000<=10000)
+wfpanel$fire_10to15.0km = as.numeric(wfpanel$mindist5000>10000 & wfpanel$mindist5000<=15000)
+wfpanel$fire_15to20km = as.numeric(wfpanel$mindist5000>15000 & wfpanel$mindist5000<=20000)
+wfpanel$fire_20to25.0km = as.numeric(wfpanel$mindist5000>20000 & wfpanel$mindist5000<=25000)
+wfpanel$fire_25to30km = as.numeric(wfpanel$mindist5000>25000 & wfpanel$mindist5000<=30000)
+wfpanel$fire_30to35.0km = as.numeric(wfpanel$mindist5000>30000 & wfpanel$mindist5000<=35000)
+wfpanel$fire_35to40km = as.numeric(wfpanel$mindist5000>35000 & wfpanel$mindist5000<=40000)
+wfpanel$fire_over40km = as.numeric(wfpanel$mindist5000>40000)
+
+wfpanel_short <- wfpanel %>% 
+  dplyr::filter(!is.na(wfpanel$envBI)) %>% 
+  dplyr::select(envBI, wildfire2yr5000, wildfire1yr, wildfire2yr, voteshare_dem_l2, voteshare_dem , turnout, YEAR, BG, mindist5000, area, TOTREG, precip2yr, precipdeviation, contains("0km"), earlyfire) 
+
+wfpanel_short <- wfpanel_short %>% mutate(density = TOTREG/area)
+wfpanel_short <- na.omit(wfpanel_short)
+```
+
+We can then replicate Figure 1 (main results), for example. 
+
+```{r echo=FALSE}
+# Figure 1; don't alter the code here
+f.reltomedian = as.formula("envBI~fire_0to5.0km + fire_5to10km + 
+        fire_10to15.0km + fire_15to20km + fire_20to25.0km +
+        fire_25to30km + fire_30to35.0km + fire_over40km + voteshare_dem_l2 +
+        precip2yr + precipdeviation + as.factor(YEAR)")
+
+lmr.reltomedian = lm_robust(formula = f.reltomedian, fixed_effects = ~ BG, 
+                     cluster = BG, se_type="CR0",
+                     data = wfpanel_short)
+
+coef.reltomedian = summary(lmr.reltomedian)$coef
+
+whichdistances = seq(from=5, to=40, by=5)[1:7]
+numdistances = length(whichdistances)
+coefs.intervals = coef.reltomedian[1:numdistances,1]
+ses.intervals = coef.reltomedian[1:numdistances,2]
+
+plot.dat = data.frame(coefs.intervals, ses.intervals, ub = coefs.intervals+2.58*ses.intervals, 
+           lb = coefs.intervals-2.58*ses.intervals, dist = whichdistances)
+
+ggplot(plot.dat, aes(y=coefs.intervals, x=dist)) +
+  geom_point() + theme_bw() + 
+  geom_errorbar(aes(ymin=lb,ymax=ub),width=0.1) + 
+  labs(x="Distance from nearest wildfire (km)") + 
+  scale_y_continuous(name="Estimated effect of wildfire on support", limits=c(-.01, .075)) + 
+  geom_hline(yintercept = 0) + 
+  scale_x_continuous(breaks=seq(10,40,10), 
+                     labels=c("5-10 km","15-20 km","25-30 km","35-40 km"))
+```
+
+Now, on page 1361, the authors state: "We minimize confounding through a strategy of conditioning on block group and year such that only time-varying covariates within block groups and not already captured by the secular time trend can potentially generate confounding bias." \textbf{In your own words, explain what this means.} How does it justify the use of fixed effects and the choice of covariates (e.g., why include variation in precipitation and deviation from historical average rainfall in Equation 1)? 
+
+- Answer: 
+
+
+(c). The authors go one step further and discuss unobserved confounding. They have a baseline model called \texttt{wildfire.model} (provided in the code below). Following the lecture and section notes, use functions in \texttt{sensemakr} package to run a sensitivity analysis to examine the minimum amount of unobserved confounding that would be required to overturn the estimate. 
+
+\textbf{N.B.} the function \texttt{sensemakr()} only works with \texttt{lm} or \texttt{fixest} object directly. The original paper uses \texttt{lm\_robust()}, which requires to build the sensitivity analysis object manually. We replicate them using the \texttt{fixest} package instead.
+
+```{r}
+library(fixest)
+
+wildfire.model <- feols(envBI ~ wildfire2yr5000 + voteshare_dem_l2 + precip2yr + 
+                          precipdeviation + factor(YEAR) | BG, 
+                        data = wfpanel_short, se = "iid")
+summary(wildfire.model) # we have estimated treatment effect = 0.06
+```
+
+Let's use \texttt{precip2yr} (precipitation in the prior two years) as the benchmark covariate and set the ratio kd (ky) to 4. \textbf{Explain what the values of $R^2_{Y \sim D |{\bf X}}$, $RV_{q = 1}$, and $RV_{q = 1, \alpha = 0.05}$ represent in the output table.}
+
+```{r results='asis'}
+wildfire.sensitivity <- sensemakr(model = wildfire.model, 
+                                  treatment = "wildfire2yr5000",
+                                  benchmark_covariates = "precip2yr",
+                                  kd = 1:4,
+                                  q = 1,
+                                  alpha = 0.05, 
+                                  reduce = T)
+
+ovb_minimal_reporting(wildfire.sensitivity, format = "latex")
+```
+
+- Answer: 
+
+
+(d). Finally, examine the contour plot for the point estimate below. Explain in detail what this plot shows (x-axis, y-axis, red dashed line, red diamond, black triangle, etc.). What conclusion can you draw? 
+
+```{r}
+plot(wildfire.sensitivity)
+```
+
+- Answer: 
+

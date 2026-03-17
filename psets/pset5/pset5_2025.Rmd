@@ -1,0 +1,109 @@
+---
+title: 'PS 200C - Problem Set 5'
+author: 'Instructor: Chad Hazlett; TA: Barney Chen'
+header-includes:
+   - \usepackage{framed}
+   - \usepackage{xcolor}
+output: pdf_document
+---
+
+\newcommand{\X}{\mathbf{X}}
+\newcommand{\Y}{\mathbf{Y}}
+\renewcommand{\r}{\right}
+\renewcommand{\l}{\left}
+\newcommand{\dist}{\buildrel\rm d\over\sim}
+\newcommand{\ind}{\stackrel{\rm indep.}{\sim}}
+\newcommand{\ud}{\mathrm{d}}
+\newcommand{\iid}{\stackrel{\rm i.i.d.}{\sim}}
+\newcommand{\logit}{{\rm logit}}
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\V}{\mathbb{V}}
+\newcommand{\cJ}{\mathcal{J}}
+\newcommand{\bone}{\mathbf{1}}
+\newcommand{\var}{{\rm Var}}
+\newcommand{\cov}{{\rm Cov}}
+\newcommand{\tomega}{\tilde\omega}
+\newcommand{\indep}{\mbox{$\perp\!\!\!\perp$}}
+\newcommand{\benum}{\begin{enumerate}}
+\newcommand{\eenum}{\end{enumerate}}
+\newcommand{\bitem}{\begin{itemize}}
+\newcommand{\eitem}{\end{itemize}}
+
+\newcommand{\spacingset}[1]{\renewcommand{\baselinestretch}%
+{#1}\small\normalsize}
+
+\date{\textbf{Due: June 1 by 11:59pm}}
+
+\section*{Problem 1: RDD}
+For this problem, you will analyze data from an article by Erikson and Titiunik:
+\begin{quote}
+	Erikson, R. and Titiunik R. (2015), "Using Regression Discontinuity to Uncover the Personal Incumbency Advantage," \textit{Quarterly Journal of Political Science}, vol. 10, 101-119.
+\end{quote}
+
+Erikson and Titiunik are looking at a subset of elections where candidates are running for the first time following an open election in order to recover the personal incumbency effect. We will focus for now on simply estimating the incumbency effect on the dataset we present. Researchers who use regression discontinuities to study the incumbency advantage try to show how a particular party's vote shares change in an election at time $t$ when they barely won an election in time $t-1$. By arguing that there is some randomness as to whether a candidate wins or loses an election when the vote margin is close to $0$, they argue that winning an close election is as-if random. Erikson and Titiunik use Northern (non-Southern and non-border) U.S. House races from 1968 to 2008 in their study. Download and import the dataset, \texttt{EriksonTitiunik-QJPS-data.csv}, from the course website.
+
+The dataset contains the following variables, with one row corresponding to a congressional district in one election:
+- \texttt{demvotesh}: the Democratic Party vote share at time $t$
+- \texttt{demelected}: whether the Democratic candidate won the election in time $t$
+- \texttt{demmvlag}: the Democratic Party margin of victory at time $t-1$, rescaled to be between -1 and 1
+- \texttt{year}: the year of the election
+
+(a). Use the \texttt{rdrobust} package and the \text{rdplot} function to plot the vote share at time $t$ as a function of the running variable \texttt{demmvlag}. Show the plot with polynomials of order 1, 2, and one of a higher order. Describe the plots and what they imply about the incumbency advantage.
+
+```{r message=FALSE, warning=FALSE}
+library(rdrobust)
+library(tidyverse)
+library(estimatr)
+
+data_ET <- read.csv("./EriksonTitiunik-QJPS-data.csv") # change the directory
+```
+
+
+(b). Use a simple regression framework to estimate the Local Average Treatment Effect (LATE). Do this with two different models, one where you the slope is constant on either side of the cutpoint and another where the model is different on either side of the cutpoint. Interpret your results. 
+
+```{r}
+
+```
+
+
+(c). Repeat the regression based estimators in (b), but choosing a window that trims the results so you are only considering points near the cutoff. Do you trust this estimator more or less than that in (b)?
+
+```{r}
+
+```
+
+
+(d). Use the \texttt{rdrobust} command to estimate the LATE. Compare the results to your results above. What is the "kernel" it uses doing?
+
+```{r}
+
+```
+
+
+(e). Run the McCrary test using the \texttt{DCdensity} function in the \texttt{rdd} package. Report the p-value of the test as well as the plot. Interpret the results.
+
+```{r}
+
+```
+
+
+(f). Suppose you have a covariate $Z_i$ which you think is pre-treatment and that you think might influence the potential outcomes.  How would you check whether it is "balanced" or whether it might be a confounder?
+
+
+(g). Conduct such a test with the covariate `campaign_funding` with both `rdrobust` and a "different slopes regression" for the smaller window around zero you used in f). Interpret your results, then answer: what can we conclude from these results about the LATE we found above at the zero cutoff? Have we proven that this effect is a result of incumbency advantage? 
+
+```{r}
+
+```
+
+
+(h). Next consider two placebo cutoffs of +0.25 and -0.25. First, provide an interpretation of what a treatment effect at either of these cutoffs would mean if we were to find one. What do you expect to find at these cutoffs? Next, discuss the identification assumptions necessary to produce a causal estimate at these cutoffs and whether or not you think they are likely to hold. 
+
+
+(i). Now for both of these placebo cutoffs estimate a LATE and explore whether there is evidence of self-sorting. First interpret the results of your findings directly. Next, answer: what do we learn from these results about our original 0 cutoff and its corresponding LATE in light of these results?
+
+```{r}
+
+```
+

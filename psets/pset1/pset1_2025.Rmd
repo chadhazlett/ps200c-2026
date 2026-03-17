@@ -1,0 +1,157 @@
+---
+title: 'PS 200C 2025 - Problem Set 1'
+author: 'Chad Hazlett, Barney Chen. Due: Friday April 18, 11:59pm'
+header-includes:
+   - \usepackage{framed}
+   - \usepackage{color}
+   - \usepackage{graphicx}
+   - \usepackage{booktabs}
+output: pdf_document
+---
+
+\newcommand{\X}{\mathbf{X}}
+\newcommand{\Y}{\mathbf{Y}}
+\renewcommand{\r}{\right}
+\renewcommand{\l}{\left}
+\newcommand{\dist}{\buildrel\rm d\over\sim}
+\newcommand{\ind}{\stackrel{\rm indep.}{\sim}}
+\newcommand{\ud}{\mathrm{d}}
+\newcommand{\iid}{\stackrel{\rm i.i.d.}{\sim}}
+\newcommand{\logit}{{\rm logit}}
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\V}{\mathbb{V}}
+\newcommand{\cJ}{\mathcal{J}}
+\newcommand{\bone}{\mathbf{1}}
+\newcommand{\var}{{\rm Var}}
+\newcommand{\cov}{{\rm Cov}}
+\newcommand{\tomega}{\tilde\omega}
+\newcommand{\indep}{\mbox{$\perp\!\!\!\perp$}}
+
+\newcommand{\spacingset}[1]{\renewcommand{\baselinestretch}%
+{#1}\small\normalsize}
+
+
+\section*{Question 1. Practice with potential outcomes}
+
+
+a) Consider binary treatment $D_i\in\{0,1\}$ and observed outcome variable $Y_i$. What is the meaning of $Y_{1i}$ and $Y_{0i}$? Describe both in words, and choose an example to illustrate.
+
+
+b) Is $Y_{1i}$ different from "$Y_i$ for a unit that actually received the treatment"? Explain, using the example you began in section \textit{a}. 
+
+
+c) Is $Y_{0i}$ different from "$Y_i$ for a unit that actually received the treatment"? Explain, using the same example.
+
+
+d) Define the average treatment effect (ATE) and average treatment effect among the treated (ATT) using potential outcomes notation. Describe in words what each quantity means.
+
+
+e) How would you explain to a friend why how "the average effect among the treated" has meaning even though, if you were to look only at the treated, you would have no controls to compare to?
+
+
+\section*{Question 2. Practice with the Difference in Means Estimand}
+In this question we will explore how the difference in means estimator differs from causal quantities of interest such as the ATT, ATC, and ATE. Assume we have potential outcomes $Y_{1i},Y_{0i}$, treatment assignment $D_i$, and observed outcome $Y_i$. Note that the difference in means \textit{estimator} is what we use on a given observed sample; the difference in means \textit{estimand} is the expectation of this.
+
+a) Show that the difference in means \textit{estimand} (the expectation of the difference in means estimator) can be decomposed into the ATT and a bias term.  Derive the decomposition, showing your work -- do not simply state it.  Also describe clearly and concisely the meaning of the bias term. 
+
+b) Show how the difference in means estimand can be decomposed into the average treatment effect on the controls (ATC) and a bias term.  Again derive the decomposition and describe clearly the meaning of the bias term. 
+
+c) Now show how the difference in mean estimands can be decomposed into the ATE and a bias term. Again describe the meaning of the bias term.  (Hint: you may want to start by showing how the ATE relates to the ATT and ATC, using the law of iterated expectations).
+
+\section*{Question 3. Mandatory Voting Policies and Turnout}
+For this problem we will use data from \textsf{{'Turnout, Political Preferences, and Information: Experimental Evidence from Peru.' Leon, Gianmarco. (2017). \textit{Journal of Development Economics} 127}}. The paper and the data set are available on the course website.
+
+\noindent The objective of this experiment was to evaluate how mandatory voting policies, specifically penalties for not voting, affect voter turnout. The author exploited a recent change in voting laws which reduced the fine for not voting in Peru to evaluate how providing information on this change affect real world later voting behavior. The author first conducted a baseline survey at the household level, measuring demographics and baseline knowledge about the change in penalties for not voting. At baseline, the majority of respondents were unaware of the change in penalty. Across 29 villages, the author then randomized households into control and treated groups. After the baseline survey, the treated households received information about the recent reduction in the fine for not voting, while the control group received no additional information. In an endline survey following the election, the author then asked a series of questions on political interest and political information, and on their beliefs about the fine and whether or not they voted. (Vote participation in peru is marked on one's identification card, so the author was able to confirm this). The main outcome variable of interest we will focus on is vote behavior. We are interested in the question of how knowledge about a reduced penalty for not voting affected turnout in an election. The author used a more complex 2SLS approach which we will not use here. Please follow the directions below and do not be concerned with replicating the results of the paper.
+
+We will be looking at a simplified version of the results. We have cleaned and renamed a few variables for you so things are easier to follow:
+
+
+\noindent The variables in the data set are:
+
+\begin{itemize}
+\item \textit{vote102}: the central outcome of interest, whether an individual voted or not.  
+\item \textit{treat}: treatment assignment variable takes a value of $1$ if the household was informed about the reduction in penalty
+\item \textit{baseline\_fine}: respondents estimate of the fine for not voting in the baseline survey
+\item \textit{male}: gender of respondent 
+\item \textit{age}: age of respondent 
+\item \textit{educ}: education in years of respondent 
+\item \textit{lnexpend\_percap}: logged per capita expenditures in the district 
+\item \textit{center}, \textit{left}, \textit{right}: indicator variables for political ideology 
+\item \textit{very\_interested\_pol}, \textit{interested\_pol}, \textit{not\_interested\_pol}: indicator variables for interest level in politics 
+\item \textit{very\_interested\_results}, \textit{interested\_results}, \textit{not\_interested\_results}: indicator variables for interest in the results of the upcoming election 
+\item \textit{very\_interested\_campaign}, \textit{interested\_campaign}, \textit{not\_interested\_campaign}: indicator variables for interest in the campaign of the upcoming election 
+\end{itemize}
+
+```{r data_prep, echo = T}
+suppressMessages(library(dplyr))
+peru_dat <- haven::read_dta("./Voting_Panel_Replication.dta")
+peru_clean <- peru_dat %>% filter(panel_complete == 1 & pobreza != 1) %>% 
+  filter(!is.na(vote102) & !is.na(treat))
+
+peru_clean <- peru_clean %>% rename(baseline_fine = multa_1, 
+                                    male = gender, 
+                                    lnexpend_percap = lgastopc, 
+                                    left = izq, 
+                                    right = der, 
+                                    very_interested_pol = interesadopolitica2d1, 
+                                    interested_pol = interesadopolitica2d2, 
+                                    not_interested_pol = interesadopolitica2d3, 
+                                    very_interested_results = resultsinterestedd1, 
+                                    interested_results = resultsinterestedd2, 
+                                    not_interested_results = resultsinterestedd3, 
+                                    very_interested_campaign = campaigninterestedd1, 
+                                    interested_campaign  = campaigninterestedd2, 
+                                    not_interested_campaign  = campaigninterestedd3
+                                    )
+
+nas <- lm(vote102 ~ treat + male + lnexpend_percap + age + educ + 
+         + center + left + right 
+         + very_interested_pol + interested_pol + not_interested_pol 
+         + very_interested_results + interested_results + not_interested_results 
+         + very_interested_campaign + interested_campaign + not_interested_campaign, 
+         data = peru_clean)
+peru_clean <- peru_clean[-as.vector(nas$na.action), ]
+```
+
+a) The treatment effect here is estimated by comparing treated households (informed about change in penalty) to control households (not informed). For this to be a valid estimate of the treatment affect, we must assume SUTVA holds, and particularly we will worry about the "no-interference" or "no-spillover" part of SUTVA. Please explain this assumption and what it would mean in this case specifically? Can you think of any reasons to suspect it might not hold? How might this affect our estimates of the treatment effect?
+
+b) Estimate the average treatment effect in this dataset, using the difference in means estimator. 
+
+c) Ignore concerns about covariance and just thinking of your $Y_i|D_i=1$ and $Y_i|D_i=0$ as being sampled independently of each other. Under these conditions, derive a simple estimator for the standard error of the above difference-in-means. Then, use the data to estimate the standard error for the DIM. 
+
+d) Check the covariate balance in this dataset on the following covariates.  Report the average in the control group, treated group, the DIM and corresponding p-value for this difference. Where appropriate, conduct a KS test as well and report the corresponding p-value. Report this all in a clean table (5 columns total).
+- `baseline_fine`
+- `male` 
+- `age`
+- `educ`
+- `expend_percap` 
+- `center`, `left`, `right`
+- `very_interested_pol`, `interested_pol`, `not_interested_pol`
+- `very_interested_results`, `interested_results`, `not_interested_results`
+- `very_interested_campaign`, `interested_campaign`, `not_interested_campaign`
+
+e) Why is it important we check balance on these covariates? Why should we pay special attention in this context to differences in the baseline knowledge of the penalty for not voting? Next, interpret the results. What, if any, concerns might we have about our estimate of the treatment effect in part a) from these results? 
+
+f) Now use regression to estimate the $SATE$ (sample average treatment effect) (without any controls). Is this estimate different from the difference-in-means estimate? Be sure to use an appropriate choice of standard error. 
+
+g) Using your answer for (c), conduct a $t$-test of the null hypothesis that $SATE=0$. You may use a normal approximation for the cutoff value, given the number of observations we have.
+
+h) Is the standard error of the OLS estimate different than the standard error of the difference-in-means estimate? Why or why not?
+
+i) Re-estimate $SATE$ using three additional regression models: one in which you include all pre-treatment covariates from part (d) as additional linear predictors, another in which you include arbitrary functions of the covariates (polynomials, logs, interactions, etc.) as additional linear predictors, and a third in which you interact the treatment variable with a demeaned covariate ($X_i-\bar{X}$). Report the treatment effect estimates and their robust standard errors. How do these results vary across the regressions?
+
+j) Bonus: in the paper, the authors anticipate a heterogeneous treatment effect wherein treatment has a stronger affect in areas where the penalty was lowered the most. The variable `pobre2` divides districts by poverty level (1 is "poor" 0 is "not poor"). In poor districts the fine was reduced more than in not-poor districts. Use this variable along with the treatment variable to evaluate if there is evidence for heterogeneous effects. What do you conclude?
+
+k) Bonus: show formally why the variance in general differs between the controlled estimate and the uncontrolled estimate, using a simplified setup in which you compare the estimator of the variance of $\beta_{1}$ in the model $y_i = \alpha + \beta_1 D_i + \epsilon_1$ to the estimator of the variance of $\beta_1$ in the model $y_i = \alpha + \beta_1 D_i + \beta_2 X_i + \epsilon_2$.
+
+\section*{Question 4. Randomization Inference}
+
+a) What is the "sharp null"? How does the sharp null differ from conventional null hypotheses, like those tested in the previous section?
+
+b) How does the sharp null relate to the "fundamental problem of causal inference" (that we can only observe one of two potential outcomes for a given unit)? Specifically, how does the assumption of the sharp null allow us to "obtain enough data" to estimate a distribution of outcomes for a test statistic under the null?
+
+c) Write a function in R which takes as arguments the following: a vector of outcomes, $Y$; an original treatment vector, $D$; and a number of iterates $M$. The function should take the data, use the difference-in-means estimator on the actual data, and then run $M$ iterates of randomization inference. For each iterate, randomize treatment assignment and calculate the difference-in-means under the sharp null assumption and the new treatment assignment.
+
+d) Apply your function to the data from the Leon experiment in Peru from the previous section. How do your results compare to the results under the t-test or regression? Which do you trust, and how do you interpret any differences?
+

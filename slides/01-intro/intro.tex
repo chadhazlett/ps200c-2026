@@ -1,0 +1,608 @@
+\documentclass[xcolor=dvipsnames]{beamer}
+%\documentclass[handout,xcolor=dvipsnames,pdftex,hyperref={colorlinks=false}]{beamer}
+
+% == Packages for beamer
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{fancybox}
+\usepackage{hyperref}
+\usepackage{amsmath,amssymb,amsfonts,bm}
+\usepackage{wasysym}
+
+\usepackage[english]{babel}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+
+% == Other Packages
+\usepackage{rotating}
+\usepackage{latexsym}
+\usepackage{ulem}
+
+% == theme & colors
+\usetheme{Warsaw}  % Jens' previous
+\usepackage{helvet}
+\definecolor{someblue}{rgb}{0,.1,0.8}
+
+% == New Commands
+% = For general typesetting
+\newcommand\spacingset[1]{\renewcommand{\baselinestretch}{#1}\small\normalsize}
+\renewcommand\r{\right}
+\renewcommand\l{\left}
+
+\newcommand\makegaps{\addtolength{\itemsep}{.25\baselineskip}}
+\newcommand\makebiggaps{\addtolength{\itemsep}{.5\baselineskip}}
+
+% = For stats & econometrics
+\renewcommand{\epsilon}{\varepsilon}
+\newcommand\ud{\mathrm{d}}
+\newcommand\dist{\buildrel\rm d\over\sim}
+\newcommand\ind{\stackrel{\rm indep.}{\sim}}
+\newcommand\iid{\stackrel{\rm i.i.d.}{\sim}}
+\newcommand\logit{{\rm logit}}
+\newcommand\cA{\mathcal{A}}
+\newcommand\cN{\mathcal{N}}
+\newcommand\E{\mathbb{E}}
+\newcommand\V{\mathbb{V}}
+\newcommand\cJ{\mathcal{J}}
+\newcommand\y{{\bm y}}
+\newcommand\Y{{\bm Y}}
+\newcommand\X{{\bm X}}
+\newcommand\x{{\bm x}}
+\newcommand\eps{{\bm\varepsilon}}
+\newcommand\zero{{\bm 0}}
+\newcommand\be{{\bm\beta}}
+\renewcommand\b{{\bm b}}
+\newcommand\C{{\bm C}}
+\newcommand\D{{\bm D}}
+\newcommand\I{{\bm I}}
+\newcommand\Z{{\bm Z}}
+\newcommand\eeta{{\bm \eta}}
+\DeclareMathOperator*\plim{plim}
+\DeclareMathOperator\rank{rank}
+\newcommand\indep{\protect\mathpalette{\protect\independenT}{\perp}}
+\DeclareMathOperator{\sgn}{sgn}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\def\therefore{{\tiny$\bullet$}\kern-0.2ex\raisebox{1ex}{\tiny$\bullet$}\kern-0.2ex{\tiny$\bullet$}}
+
+%\newcommand{\indep}{{\bot\negthickspace\negthickspace\bot}}
+\newcommand{\notindep}{{\bot\negthickspace\negthickspace\bot}{\negthinspace
+  \negmedspace \negthickspace \negthickspace \diagup
+  \;}}
+
+\newcommand{\bs}{\boldsymbol}
+\newcommand{\mb}{\mathbf}
+\newcommand{\real}{\mathbb{R}}
+\renewcommand{\u}{\ensuremath{\mb{u}}}
+\renewcommand{\v}{\ensuremath{\mb{v}}}
+\newcommand{\U}{\ensuremath{\mb{U}}}
+\newcommand{\M}{\ensuremath{\mb{M}}}
+\renewcommand{\b}{\ensuremath{\bs{\beta}}}
+\newcommand{\e}{\ensuremath{\bs{\epsilon}}}
+\newcommand{\bhat}{\ensuremath{\hat{\bs{\beta}}}}
+\newcommand{\XX}{\ensuremath{\X'\X}}
+\newcommand{\XXinv}{\ensuremath{\left(\XX\right)^{-1}}}
+\newcommand{\hatsig}{\ensuremath{\hat{\sigma}^2}}
+\newcommand{\sig}{\ensuremath{\sigma^2}}
+\newcommand{\hatmat}{\ensuremath{\X \XXinv \X'}}
+\newcommand{\ehat}{\ensuremath{\hat{\e}}}
+\newcommand{\tr}{\text{tr}}
+\newcommand{\Sig}{\ensuremath{\bs{\Sigma}}}
+\newcommand{\SigInv}{\ensuremath{\bs{\Sigma^{-1}}}}
+\newcommand{\W}{\ensuremath{\mb{W}}}
+
+\title[]{PS200C Causal Inference, Spring 2025}
+\subtitle[ ]{Introduction}
+\author[Hazlett]{Chad Hazlett }
+\institute[UCLA]{UCLA\\[1ex]
+  \texttt{chazlett@ucla.edu}
+}
+\date{}
+
+\definecolor{dgreen}{rgb}{0,.6,0.8}
+\newtheorem{assumption}{Assumption}
+\useoutertheme{infolines}
+\begin{document}
+
+\subject{Talks}
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>
+    \frametitle{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>
+    \frametitle{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+\begin{frame}
+  \titlepage
+%\begin{block}{While we wait, please:}
+%  \begin{itemize}
+%  \item we are recording this for asynchronous purposes
+%  \item these slides are available on the course website
+%  \end{itemize}
+%\end{block}
+\end{frame}
+
+%\begin{frame}{First things first....}
+%\begin{itemize}
+%\item<1-> We'll be in-person, like the old days! No zoom broadcasts or recordings. 
+%\bigskip
+%\item<2-> But people still get sick. We are extremely open to adjustments, extensions etc.
+%\bigskip
+%\item<3-> Please read the syllabus and check the course website (bruinlearn). Be sure you are receiving announcements.
+%\begin{itemize}
+%\item just ask for extensions, as early as possible
+%\item we don't need to know why
+%\end{itemize}
+%\end{itemize}
+%\bigskip
+%\onslide<4-> Let's take a moment for introductions\\
+%\end{frame}
+
+%\begin{frame}{Other housekeeping}
+%\begin{itemize}
+%\item See the syllabus!
+%\item 
+%
+%\end{itemize}
+%
+%\end{frame}
+
+
+\begin{frame}
+\frametitle{Modes of Statistical Inference}
+  \begin{enumerate}
+  \item[1.] Descriptive Inference: summarizing and exploring data
+    \begin{itemize}
+    \item means, correlations, regression coefficients
+    \item hypothesis testing
+    \item inferring ``ideal points'' from roll-call votes
+    \item inferring ``topics'' from texts and speeches
+    %\item Inferring ``social networks'' from surveys
+    \end{itemize}
+    \medskip \pause
+  \item[2.] Predictive Inference: forecasting out-of-sample data
+    points
+    \begin{itemize}
+    \item predicting future state failures from past failures and covariates
+%    \item predicting turnout from a sample of voters
+    \item predicting vote share from a survey of likely-voters
+ %   \item Placing ads based on presumed interest
+   % \item Inferring individual level behavior from aggregate data
+   \end{itemize}
+
+    \medskip \pause
+  \item[3.] \alert{Causal Inference}: engages {\it counterfactuals}
+    \begin{itemize}
+    \item inferring whether the lack of war among democracies can be attributed to regime type
+    \item determining whether a medical treatment improved outcomes.
+    \item generally, estimating effect of some policy or institution or treatment on some outcome...
+    \end{itemize}
+  \end{enumerate}
+
+\end{frame}
+
+\begin{frame}{You cannot escape}
+
+Actually it's more than that, 
+\small
+
+\begin{enumerate}
+\item \textit{Some} descriptive enterprises are truly descriptive, but many are at least hoping the reader thinks the result is ``suggestive'' or ``consistent with'' a causal implication.
+\medskip
+\item Issues such as missingness, case-selection, choosing what to condition on, and generalization all actually invoke causal assumptions, even if your goals are descriptive. 
+\medskip
+\item If you can do a randomized experiment, great, but many questions (e.g. mediation) aren't answered by the randomization. 
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Is causal inference more difficult?}
+\onslide<1-> Version 1: Is it more difficult as a scientific problem?\\
+\small
+\begin{itemize}
+\item Yes. 
+\item Why? Because the assumptions required to say things about unobervable counterfactuals are understandably onerous. 
+\end{itemize}
+\medskip
+\normalsize
+\onslide<2-> Version 2: Is it more difficult to \textit{learn and do}?\\
+\small
+\begin{itemize}
+\item Yes and no.
+\item \textcolor{blue}{Yes}: it is a different way of thinking that may be awkward and magical sounding at first!
+\item \textcolor{blue}{No}: the challenges are conceptual, not technical or mathematical. 
+\end{itemize}
+\small
+\onslide<3-> In fact, I hope the course helps to convince you that technical sophistication of methods often does not solve core problems...its not about the latest estimator, machine learning, or more complicated standard errors. 
+\end{frame}
+
+
+%\begin{frame}
+%\frametitle{Correlation $\neq$ Causation}
+%\begin{center}
+%\includegraphics[scale=0.5]{images/cell-phones-cancer.png}
+%\end{center}
+%\end{frame}
+
+% \begin{frame}{Being fussy about causal inference matters!\\ Post-Menopausal Estrogen Replacement Therapy}
+ %   \small
+  %  \onslide<1-> Numerous observational studies with regression adjustment showed hormone replacement therapy seemed to reduce risk of heart % attack.
+%    \footnotesize
+  %  \begin{itemize}
+  %  \item<2-> Among them, the Nurses Health Study involved tens of thousands of participants, showed a 30\% lower risk of heart attack, and was basis for wide scale prescription of estrogen replacement
+%    \item<3-> Panels of experts were saying things like (Grodstein and Stampfer, 1998):
+  %  \end{itemize}
+  %  \begin{quote}
+  %  \onslide<3->``Consistent evidence from over \textbf{40} epidemiologic studies demonstrates that postmenopausal women who use estrogen therapy after the menopause have significantly lower rates of heart disease than women who do not take estrogen\ldots{}the evidence clearly supports a clinically important protection against heart disease for postmenopausal women who use estrogen.''
+  %  \end{quote}
+  %  \bigskip
+   % \begin{center}
+   % \onslide<4-> Even now, society answers many important questions with this kind of approach.
+    % \end{center} 
+   % \end{frame}
+    
+%
+%\begin{frame}{Case Study: Post-Menopausal Estrogen}
+%\includegraphics[width=3.5in]{images/hormone_studies.png}
+%\small
+%\begin{itemize}
+%\itemsep1pt\parskip0pt\parsep0pt
+%\small
+%\item<1-> Women's Health Initiative (WHI, 2002) was a large randomized trial studying \texttt{Prempro} for estrogen+progesterone replacement.
+%\item<2-> Experiment showed 40\% \textit{increase} in risk of heart attack; also increased risk of breast cancer, and dementia. 
+%\item<3-> Had to halt experiment, issue new advice to physicians
+%\item<4-> This is actually part of a longer story and it turns out the WHI was also misunderstood...but serves to show that even ``compelling'' observational evidence can be dangerously misleading.
+%\end{itemize}
+%\end{frame}
+
+\begin{frame}{Causal inference $\neq$ data analysis}
+\small
+\onslide<1-> The shift in thinking needed for this course begins by \textbf{getting away from the idea that data ``speak for themselves''.} Data $\neq$ evidence. \\
+\medskip
+\onslide<2-> Rather, there are causal quantities you'd like to know, but \textit{without further assumptions}, data are largely silent on them, no matter how much you have. \\
+\medskip
+\onslide<3->
+Stylized illustration:
+\begin{itemize}
+\item you have data on X and Y
+\item you want to learn some effect of X on Y 
+\item you compute something with data, say, $coef(Y\sim X)$ 
+\item trust me (for now): \textit{without further assumption}, any causal effect can produce any coefficient...and thus any coefficient you get is equally suggestive of any causal effect. 
+\end{itemize} 
+\onslide<3-> In other words, ``looking at the data'' is not a sufficient strategy (nor value) for learning about the world... \\
+\bigskip
+\onslide<4-> Curious as to what it takes? What could be better than data? Take the class!
+\end{frame}
+
+
+\begin{frame}
+\onslide<1-> Causal inference is about that ``further assumption'' bit: 
+\small
+\begin{itemize}
+\item<2-> What assumptions can we make in order to connect the causal thing we want to know to something in the data?
+\item<3-> In other words can we \textcolor{blue}{identify} our quantity of interest with something we can estimate?
+\item<4-> Accordingly, we speak of \textcolor{blue}{identification assumptions} or \textcolor{blue}{identification strategies} that provide such bridges.
+\end{itemize}
+\normalsize
+\medskip
+\onslide<5-> Causal inference then is about stating the assumptions/strategies and arguing whether they are defensible
+\small
+\begin{itemize}
+\item<6-> most identifying assumptions cannot be proven correct using data! It's not about ``knowing the right test'' to run.
+\item<7-> hence we will always be appealing to information, assumptions, or context from outside the data!
+\item<8-> ... it is not the method or estimator, much less software, that makes the result causal.
+\end{itemize}
+\end{frame}
+
+%
+%\begin{frame}{}
+%\onslide<1-> Causal Identification (Manski 1995) \\
+%\footnotesize
+%\begin{quote}
+%...it is useful to separate the inferential problem into statistical and identification components. Studies of \textbf{identification} seek to characterize the conclusions that could be drawn if one could...obtain an unlimited number of observations. Identification problems cannot be solved by gathering more [data]. \pause
+%\end{quote}
+%\small
+%\medskip
+%\onslide<2-> Manski continues, 
+%\footnotesize
+%\begin{quote}
+%``The study of identification logically comes first.  Negative identification findings imply that statistical inference is fruitless... positive identification findings imply that one should go on to study the feasibility of statistical inference.'' 
+%\end{quote}
+%\end{frame}
+
+\begin{frame}{Causal Identification Requires Assumptions}
+\small
+\onslide<1-> Put differently,  
+\bigskip
+\begin{center}
+Assumptions + Data $\rightarrow$ Causal Conclusions
+\end{center}
+\bigskip
+\onslide<3-> Credibility does NOT derive from ``what method you used'' or how new it is
+\begin{itemize}
+\item  ...It is about finding a technique whose assumptions you can work with
+\item There are not ``causal methods''!  You can't say ``it's causal because I did xyz.''
+\item This is one of the hardest things for many students to absorb, in part because we are surrounded by mistakes and false advertizing.
+\end{itemize}
+\end{frame}
+
+%
+%\frame{
+%\frametitle{Design-based inference}
+%\onslide<1-> A powerful tool to \textit{make} assumptions reasonable is through research designs that enforce those assumptions.  \\
+%\bigskip
+%\onslide<2-> Hence the warm-glow phrase, ``design-based inference'':
+%
+%}
+
+\begin{frame}{Questions Answered in This Course}
+\begin{itemize}
+\makebiggaps
+
+\item<1-> Why do we accept (certain) results from randomized experiments as causal? Are they so special?
+
+\item<2-> We often cannot run randomized experiments or want to know the effect of something that ``really happened''. Can we still make a causal inference?
+
+\item<3-> How can we understand how vulnerable a given estimate might be to threats such as confounding?
+
+\item<4-> \textbf{How can you conduct top quality work that seeks to make causal claims in tricky situations, while accurately characterizing what we can and cannot be claimed?} 
+\end{itemize}
+\end{frame}
+
+\begin{frame}{This year's ambitious plan}
+\begin{table}[ht]
+\renewcommand{\arraystretch}{1.3}
+\centering
+\scriptsize
+\begin{tabular}{|c|p{5cm}|p{4.5cm}|}
+\hline
+\textbf{Week} & \textbf{Topic} & \textbf{Assignment} \\
+\hline
+1 & Introduction; Potential Outcomes & Pset 0: Background Check \\
+\hline
+2 & Potential Outcomes into Experiments & Pset 1: POs \& ID in randomization \\
+\hline
+3 & Conditional Ignorability (Identification) & Read+discuss example \\
+\hline
+4 & Conditional Ignorability (Estimation) & Pset 2: CI in theory and practice; another paper \\
+\hline
+5 & Directed Acyclic Graphs (DAGs) & Pset 3: DAGs; discuss another CI paper \\
+\hline % <-- Corrected here
+6 & Sensitivity Analysis for CI & Readings; Pset 4: Applying sensitivity analysis \\
+\hline
+7 & (i) Difference-in-Differences and TWFE \newline (ii) Synthetic control/ panel methods & Read 2 papers, discuss parallel trends \\
+\hline
+8 & (i) Instrumental Variables \newline (ii) Sharp Regression Discontinuity & Pset 5: Read and discuss 3 papers on assumptions; one estimation example \\
+\hline
+9 & (i) Fuzzy Regression Discontinuity \newline (ii) Overflow (or choose a topic) & --- \\
+\hline
+10 & Presentations (Part 1) & --- \\
+\hline
+Final slot & Presentations (Part 2) & --- \\
+\hline
+\end{tabular}
+\label{tab:course_schedule}
+\end{table}
+
+\end{frame}
+
+
+%
+%\begin{frame}
+%  \frametitle{WBER editors Alain de Janvry and Elisabeth Sadoulet:} Question: Any pet peeves with submissions or with referees that it would be good for people to avoid?\\\medskip
+%  \begin{quotation}
+%Unfortunately yes. Our main two criteria in selecting papers for publication are rigorous identification and policy relevance. The two go together as we cannot have credible policy recommendations without strong causal inference. Too many of the submitted papers offer simple ``determinants'' that are partial correlates with no causal value, and yet are the basis for bold policy recommendations... This includes a large number of cross-country panel regressions with only mechanical, and hence not credible, identification, and yet eventually huge claims of policy implications.
+%  \end{quotation}
+%\end{frame}
+
+
+%\frame{
+%\frametitle{Who Takes This Class}
+%\small
+%\begin{itemize}
+%\item Anyone who plans to practice empirical research involving causal claims \pause
+%\bigskip
+%\item Regardless of your specialty, the goal is to: \pause
+%  \begin{itemize}
+%  \item know what assumptions are required to make causal claims
+%  \smallskip
+%  \item<2-> design your research to maximize the credibility of causal claims
+%  \smallskip
+%  \item<3-> know where a study falls on the credibility spectrum
+%  \smallskip
+%  \item<4-> know tools for testing, maximizing the credibility of causal claims.
+%  \smallskip 
+%  \item<5-> show what happens as you violate assumptions that you need for unbiasedness, and discipline the argument about how severe these violations need to be to change the research conclusions.
+%\end{itemize}
+%\end{itemize}
+%}
+%
+
+
+\begin{frame}{Is This Class Right for You?}
+\small
+\onslide<1-> Vitally important: \\
+\begin{enumerate}
+   \item<2-> probability theory
+   \item<3-> statistical inference
+   \item<4-> (linear) regression
+   \item<5-> familiarity with statistical software \texttt{R} and hopefully \LaTeX 
+\end{enumerate}
+\onslide<6-> Nice to have:
+\begin{enumerate}
+   \item<7-> multivariate calculus (e.g. recognizing objects like $\frac{\partial y}{\partial x}, \frac{\partial^2 y}{\partial xx'}$)\small
+   \item<8-> linear algebra \scriptsize (test: $\X\beta$, $x_i^{\top}\beta$, derive $\beta_{OLS}$)\small
+\end{enumerate}
+\smallskip
+\onslide<9-> For students who have taken PS200A \& B, you are all set.  \\
+\smallskip
+\onslide<10-> For others you may have obtained this background elsewhere. \\
+\smallskip
+\onslide<11-> Problem set 1 will help you assess if you have the tools we will be using\\
+\smallskip
+\onslide<12-> A note on coding and why I don't emphasize it.
+\end{frame}
+
+%%\begin{frame}{Roadmap for the Course}
+%%\begin{itemize}
+%%\item Introduction and review
+%%\item Potential outcome model
+%%\item Randomized experiments, natural experiments
+%%\item Causal inference under ``selection on observables''
+%%\begin{itemize}
+%%\item matching
+%%\item weighting
+%%\item propensity scores
+%%\item regression
+%%\item extensions: effect heterogeneity, mediation, mechanism
+%%\end{itemize}
+%%\item Sensitivity analyses
+%%\item Parallel-trend related approaches
+%%\begin{itemize}
+%%\item difference in difference
+%%\item panel methods
+%%\item synthetic controls
+%%\end{itemize}
+%%\item Instrumental variables
+%%\item Discontinuity designs
+%%\end{itemize}
+%%\end{frame}
+
+
+\begin{frame}{Books/Readings}
+\begin{itemize}
+\makebiggaps
+\small
+\item<1-> In general, the slides are verbose and together with the psets form the material you are expected to know.
+\item<2-> Readings: when there is required reading we will post it on the course website and tell you 
+\item<4-> We don't follow a textbook directly, but useful books include: 
+  \begin{itemize}
+  \item Angrist, Joshua D. and J\"orn-Steffen Pischke. 2009. \textit{Mostly Harmless Econometrics: An Empiricist's Companion}. Princeton University Press. 
+%  \smallskip
+%  \item Morgan, Stephen L. and Christopher Winship. 2007. \textit{Counterfactuals and Causal Inference: Methods and Principles for Social Research}. Cambridge University Press.   
+  \end{itemize}
+\onslide<5-> And we will use:  \begin{itemize}
+\item Hernan MA, Robins JM (2020). Causal Inference: \textit{What If}. Boca Raton: Chapman \& Hall/CRC.”
+\end{itemize}
+which you can fortunately get freely online: \scriptsize \url{https://cdn1.sph.harvard.edu/wp-content/uploads/sites/1268/2021/01/ciwhatif_hernanrobins_31jan21.pdf}.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Project}
+\small
+\onslide<1-> The final project pulls it all together!\\
+\footnotesize
+\begin{itemize}
+\item  Work in small groups (2-3 usually, with some exceptions)
+\item Present to class in last week(s)
+\item \textbf{Classic project:} focus on a substantive question of interest to you and produce a cutting edge analysis that takes causal inference seriously, using some of the tools you learned in class. 
+\item \textbf{Sensitivity study}. Using tools you will learn in class, apply sensitivity analysis to an important finding from your literature or otherwise of interest to determine ``how much confounding would it take to alter this conclusion?'' 
+\item \textbf{Research practice round-up}.  Review a discipline or literature to describe common practice, issues, successes, etc.
+\item Other options by permission.
+\end{itemize}
+\small
+\onslide<2-> Tentative milestones, 
+\footnotesize
+\begin{itemize}
+\item April 26: submit teams and a notional topic for your project (we can help with team-finding as needed)
+\smallskip
+\item May 10: submit a two-page progress report, schedule a meeting with us 
+\smallskip
+\item May 28-June 6 (depending on numbers): class presentations
+\smallskip
+\item By June 14 (end of quarter) submit final project to website
+\end{itemize}
+%\medskip
+%\item<4-> \textbf{Methodological development}: while unusual, if you have a methodological idea you would like to pursue relating to causal inference, great.  
+%\end{itemize}
+\end{frame}
+
+%\begin{frame}{Projects}
+%
+%\onslide<1->  Small groups (2-3) recommended but solo is an option.\\
+%\bigskip
+%\onslide<2-> Tentative milestones, 
+%\begin{itemize}
+%\item April 16: submit teams and a notional topic for your project
+%\bigskip
+%\item May 7: submit a two-page progress report, schedule a meeting with us 
+%\bigskip
+%\item May 31, June 2: class presentations
+%\bigskip
+%\item By June 10 (end of quarter) submit final project to website
+%\end{itemize}
+%\end{frame}
+%
+
+
+\begin{frame}{Course Requirements and Grades}
+\begin{itemize}
+\item Participation (5\%)
+ \smallskip
+\item Psets (50\%): about 5 of them, 
+  \begin{itemize}
+  \item \alert{Problem Set 1 is a review -- will be up soon.}
+  \item Working in groups encouraged, but must produce your own complete solutions (see syllabus), list people you worked with.
+  \end{itemize}
+\smallskip
+\item Project milestones: 10\%
+\item Project presentation+paper: 35\%
+\end{itemize}
+\bigskip
+\onslide<2-> Come to class, engage, do the work. If you aren't going to attend regularly, don't take the class.
+\end{frame}
+
+\begin{frame}{Housekeeping}
+\begin{itemize}
+\item<1-> Course website: syllabus, slides, readings, psets, data sets, additional resources
+\bigskip
+\item<2-> Pset submission: Rmarkdown-based PDF preferable, TeX-based PDF acceptable. %(First one \textcolor{red}{due in a week!})
+\bigskip
+\item<3-> Come to class!  Please ask questions! We're all here to learn, don't miss your chance.\\
+\bigskip
+\item<4-> Office hours! Tuesday 230-330pm, Bunche 3264.
+\bigskip
+\item<7-> Your TA: Barney
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Some resources}
+
+\begin{enumerate}
+\item CAPS: \href{https://www.counseling.ucla.edu}{https://www.counseling.ucla.edu}. They also have a 24/7 crisis support at 310-825-0768
+\bigskip
+\item The Bruin Fund offers funding for students with computing needs.
+\bigskip
+\item I'm always happy to help you get any services you need or to figure out whats available.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{}
+\begin{center}
+\includegraphics[scale=0.5]{xkcd_correlation.jpg} \\
+\end{center}
+\begin{itemize}
+\item Questions? 
+\item Introductions!
+\end{itemize}
+
+\end{frame}
+%
+%\begin{frame}
+%%\frametitle{Correlation $\neq$ Causation}
+%\begin{center}
+%\includegraphics[scale=0.5]{xkcd_correlation.jpg} \\
+%\bigskip
+%Questions?
+%\end{center}
+%\end{frame}
+\end{document} 
