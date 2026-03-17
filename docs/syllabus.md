@@ -147,8 +147,8 @@ The following is an approximate schedule of topics. They do not correspond exact
 ### 10. Special topics (time permitting)
 
 - **Panel methods beyond parallel trends.** Synthetic control; when parallel trends is hard to defend; the Blackwell–Hazlett (BH) / Causal ANOVA approach
-- **TRACE: temptations to condition on the wrong things.** Post-treatment conditioning and its consequences; bad instruments; why mediation analysis is harder than it looks
-- **SCQE.** Sensitivity analysis for the complier quantile effect; what can you learn when IV assumptions are only approximately right?
+- **TRACE (Treatment Reactive Average Causal Effect).** The temptation to condition on post-treatment variables — implementation checks, attention screens, mediators — and why it fails. TRACE as bounded inference about effects within subgroups defined by post-treatment response, without the untenable assumptions of mediation or per-protocol analysis.
+- **SCQE (Stability-Controlled Quasi-Experiment).** When treatment prevalence shifts sharply over time, what can we learn? Rather than assuming no confounding or parallel trends, SCQE asks you to reason about the baseline trend — how much could outcomes have changed absent the treatment shift? Partial identification via a quantity investigators can actually assess.
 
 ## Course website
 
