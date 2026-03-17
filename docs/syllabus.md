@@ -116,33 +116,39 @@ The following is an approximate schedule of topics. They do not correspond exact
 - Regression as a conditional-means machine
 - When is selection on observables credible?
 
-### 5. Sensitivity analysis
+### 5. DAGs and structural causal models
+- Directed acyclic graphs as a language for causal assumptions
+- d-separation, backdoor criterion, front-door criterion
+- DAGs as a visual language for the assumptions behind SOO, experiments, and what comes next
+
+### 6. Sensitivity analysis
 - What if unconfoundedness doesn't hold?
 - Omitted variable bias and its formalization
 - Sensitivity analysis via `sensemakr`: bounding the effect of unobserved confounders
 
-### 6. Difference-in-differences
+### 7. Difference-in-differences
 - The parallel trends assumption
 - Two-period and staggered designs
 - Falsification and pre-trend tests
 - Panel data and fixed effects
 
-### 7. Instrumental variables
+### 8. Instrumental variables
 - The logic of instruments: exogenous variation in treatment
 - Exclusion restriction, relevance, monotonicity
 - LATE and compliers
 - Weak instruments and the problem of over-identification
 
-### 8. Regression discontinuity
+### 9. Regression discontinuity
 - Sharp and fuzzy designs
 - Continuity assumptions and local identification
 - Estimation, bandwidth, and specification checks
 - Sorting and manipulation tests
 
-### 9. DAGs and structural causal models
-- Directed acyclic graphs as a language for causal assumptions
-- d-separation, backdoor criterion, front-door criterion
-- Connecting DAGs to the identification strategies above
+### 10. Special topics (time permitting)
+
+- **Panel methods beyond parallel trends.** Synthetic control; when parallel trends is hard to defend; the Blackwell–Hazlett (BH) / Causal ANOVA approach
+- **TRACE: temptations to condition on the wrong things.** Post-treatment conditioning and its consequences; bad instruments; why mediation analysis is harder than it looks
+- **SCQE.** Sensitivity analysis for the complier quantile effect; what can you learn when IV assumptions are only approximately right?
 
 ## Course website
 
