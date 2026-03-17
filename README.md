@@ -2,25 +2,30 @@
 
 UCLA Political Science — Spring 2026 — Chad Hazlett
 
-## Folder structure
+**Course website: [chadhazlett.github.io/ps200c-2026](https://chadhazlett.github.io/ps200c-2026/)**
+
+If you're a student looking for the syllabus, slides, or project guidelines, head to the website above.
+
+---
+
+## For contributors (instructor & TA)
+
+### Folder structure
 
 ```
+docs/            Course website (GitHub Pages source)
 slides/          Beamer slide decks (one folder per topic)
   shared/        Shared preamble and macros
-psets/           Problem sets
-syllabus/        Syllabus source files
 section/         TA section materials
-docs/            GitHub Pages website source
+syllabus/        Syllabus LaTeX source (archival)
+archive/         2025 compiled PDFs for reference
 pdf/             Compiled PDFs (served by the website)
 ```
 
-## Building
+### Building slides
 
 ```bash
 make slides      # compile all slide decks
-make psets       # compile all problem sets
-make syllabus    # compile the syllabus
 make pdf         # copy compiled PDFs into pdf/
-make all         # everything
 make clean       # remove LaTeX aux files
 ```
