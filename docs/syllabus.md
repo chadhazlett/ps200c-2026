@@ -6,13 +6,13 @@ title: Syllabus
 # PS200C: Causal Inference for Social Scientists — Spring 2026
 
 *Class:* M 2-3:15 (Pub Aff 2238); W 2-3:15 (Bunche 3178)
-*Section:* Friday 9:00–9:50 AM; see course website for location.
+*Section:* Thursday 9:00–9:50 AM, on [Zoom](https://ucla.zoom.us/j/94794109684)
 
 **Professor:** Chad Hazlett — [chazlett@ucla.edu](mailto:chazlett@ucla.edu)
 *Office Hours:* Thursday 10am and by appointment, Bunche 3264
 
-**Teaching Assistant:** Barney — [barneychen@ucla.edu](mailto:barneychen@ucla.edu)
-*Office Hours:* See course website
+**Teaching Assistant:** Barney Chen — [barneychen@ucla.edu](mailto:barneychen@ucla.edu)
+*Office Hours:* Mondays 5 PM at Bunche 3244 and by appointment
 
 ---
 
