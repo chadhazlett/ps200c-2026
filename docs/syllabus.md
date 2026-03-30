@@ -9,7 +9,7 @@ title: Syllabus
 *Section:* Thursday 9:00–9:50 AM, on [Zoom](https://ucla.zoom.us/j/94794109684)
 
 **Professor:** Chad Hazlett — [chazlett@ucla.edu](mailto:chazlett@ucla.edu)
-*Office Hours:* Thursday 10am and by appointment, Bunche 3264
+*Office Hours:* Wednesday 3:30–4:45 PM and by appointment, Bunche 3264
 
 **Teaching Assistant:** Barney Chen — [barneychen@ucla.edu](mailto:barneychen@ucla.edu)
 *Office Hours:* Mondays 5 PM at Bunche 3244 and by appointment
