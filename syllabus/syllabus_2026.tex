@@ -24,7 +24,7 @@
 \begin{center}
 \vspace{-.75in}
 
-\textit{Class}:  M 2-315 (Pub Aff 2238); W 2-315 (Bunche 3178) \\
+\textit{Class}:  MW 2:00--3:15 PM, Bunche 2160 \\
 \textit{Section}: Thursday 9:00--9:50 AM, on \href{https://ucla.zoom.us/j/94794109684}{Zoom}\\
 \bigskip
 \textbf{Professor}: Chad Hazlett\\
@@ -32,7 +32,10 @@
 \textit{Office Hours}:  Wednesday 3:30--4:45 PM and by appointment, Bunche 3264  \\
 \bigskip
 \textbf{Teaching Assistant}: Barney Chen  \href{mailto: barneychen@ucla.edu}{barneychen@ucla.edu} \\
-\textit{Office Hours}: Mondays 5 PM at Bunche 3244 and by appointment
+\textit{Office Hours}: Mondays 5 PM at Bunche 3244 and by appointment \\
+\bigskip
+\textbf{Course website}: \url{https://chadhazlett.github.io/ps200c-2026/} \\
+\textbf{Announcements}: \href{https://bruinlearn.ucla.edu}{BruinLearn} --- make sure you are receiving notifications.
  \\
 \end{center}
 
@@ -49,7 +52,7 @@ This year's course reflects a deliberate shift in how we think about graduate me
 
 Rather than assigning traditional problem sets, we are investing that time where it matters most: \textit{applying causal reasoning to real research problems}. Starting early in the quarter, you will develop a final project in which you formulate a causal question, identify an appropriate strategy, and carry out an empirical analysis. The course is structured around milestones that build toward this project, with regular feedback from the instructor, TA, and peers.
 
-In lecture, the emphasis is on building intuition for the core ideas and assumptions behind each identification strategy---not on derivations or code. You are expected and encouraged to use AI tools (Claude, ChatGPT, etc.) as tutors to fill in details, clarify concepts, and work through implementation. We want you to learn to \textit{think} about causal inference; the tools can help you \textit{do} it.
+In lecture, the emphasis is on building intuition for the core ideas and assumptions behind each identification strategy. Truly understanding the (heroic) assumptions required by these approaches---and what it means to do credible science given them---is the most important aspect of the course. You are expected and encouraged to use AI tools (Claude, ChatGPT, etc.) as tutors to fill in details, clarify concepts, and work through implementation. We want you to learn to \textit{think} about causal inference; the tools can help you \textit{do} it.
 
 To keep everyone engaged and to create an honest signal of understanding, most class sessions will end with a short, pen-and-paper in-class activity reviewing the material covered that day. These replace exams as the primary individual assessment and also serve as the attendance mechanism.
 
@@ -106,7 +109,7 @@ Attendance is expected and tracked through the in-class activities. There is no 
 \end{itemize}
 \bigskip
 
-We will also make reference to ``Causal Inference: What if'' by Hernan and Robins, freely available at \href{https://www.hsph.harvard.edu/miguel-hernan/wp-content/uploads/sites/1268/2024/01/hernanrobins_WhatIf_2jan24.pdf}{this link}.
+We will also make reference to ``Causal Inference: What If'' by Hern\'an and Robins, freely available at \href{https://miguelhernan.org/whatifbook}{miguelhernan.org/whatifbook}.
 
 \textbf{A Great Review:}\\
 If you want to review statistics up through regression from a perspective that is very consistent with how we will use these concepts, check out chapters 1--3 of:
@@ -153,6 +156,13 @@ The following is an approximate schedule of topics. They do not correspond exact
 \item When is selection on observables credible?
 \end{itemize}
 
+\section{DAGs and structural causal models}
+\begin{itemize}
+\item Directed acyclic graphs as a language for causal assumptions
+\item d-separation, backdoor criterion, front-door criterion
+\item DAGs as a visual language for the assumptions behind SOO, experiments, and what comes next
+\end{itemize}
+
 \section{Sensitivity analysis}
 \begin{itemize}
 \item What if unconfoundedness doesn't hold?
@@ -184,11 +194,24 @@ The following is an approximate schedule of topics. They do not correspond exact
 \item Sorting and manipulation tests
 \end{itemize}
 
-\section{DAGs and structural causal models}
+\section*{Special topics (time permitting)}
+
+\textbf{(i) Panel data without parallel trends.}
 \begin{itemize}
-\item Directed acyclic graphs as a language for causal assumptions
-\item d-separation, backdoor criterion, front-door criterion
-\item Connecting DAGs to the identification strategies above
+\item Synthetic control methods: constructing a counterfactual from weighted donors
+\item A new approach: when parallel trends is too strong, what can we assume instead?
+\end{itemize}
+
+\textbf{(ii) Safe inference, partial identification, and new opportunities.}
+\begin{itemize}
+\item Moving from making claims we can't support to describing what we can believe
+\item The SCQE (Stability-Controlled Quasi-Experiment): when treatment prevalence shifts sharply, partial identification by reasoning about how much outcomes could have changed absent the treatment shift---a quantity investigators can actually assess
+\end{itemize}
+
+\textbf{(iii) Mediation (or not) and the TRACE.}
+\begin{itemize}
+\item The temptation to condition on post-treatment variables---implementation checks, attention screens, mediators---and why it fails
+\item The TRACE (Treatment Reactive Average Causal Effect): bounded inference about effects within subgroups defined by post-treatment response, without the untenable assumptions of traditional mediation analysis
 \end{itemize}
 
 \section*{Course website}
