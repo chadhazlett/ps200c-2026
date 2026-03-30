@@ -1,7 +1,7 @@
 LATEXMK = latexmk -pdf -interaction=nonstopmode -halt-on-error
 
 # Slide directories
-SLIDE_DIRS = 01-intro 02-pom 03-experiments 04-soo 05-did 06-iv 07-sensitivity 08-rdd 09-dags
+SLIDE_DIRS = 01-intro 02-pom 03-experiments 04-soo 05-dags 06-sensitivity 07-did 08-iv 09-rdd
 
 .PHONY: all slides psets syllabus pdf clean $(addprefix slides-,01 02 03 04 05 06 07 08 09)
 
@@ -21,19 +21,19 @@ slides-04:
 	cd slides/04-soo && $(LATEXMK) *.tex
 
 slides-05:
-	cd slides/05-did && $(LATEXMK) *.tex
+	cd slides/05-dags && $(LATEXMK) *.tex
 
 slides-06:
-	cd slides/06-iv && $(LATEXMK) *.tex
+	cd slides/06-sensitivity && $(LATEXMK) *.tex
 
 slides-07:
-	cd slides/07-sensitivity && $(LATEXMK) *.tex
+	cd slides/07-did && $(LATEXMK) *.tex
 
 slides-08:
-	cd slides/08-rdd && $(LATEXMK) *.tex
+	cd slides/08-iv && $(LATEXMK) *.tex
 
 slides-09:
-	cd slides/09-dags && $(LATEXMK) *.tex
+	cd slides/09-rdd && $(LATEXMK) *.tex
 
 slides: slides-01 slides-02 slides-03 slides-04 slides-05 slides-06 slides-07 slides-08 slides-09
 
@@ -51,11 +51,11 @@ pdf:
 	-cp slides/02-pom/*.pdf pdf/slides/ 2>/dev/null
 	-cp slides/03-experiments/*.pdf pdf/slides/ 2>/dev/null
 	-cp slides/04-soo/*.pdf pdf/slides/ 2>/dev/null
-	-cp slides/05-did/*.pdf pdf/slides/ 2>/dev/null
-	-cp slides/06-iv/*.pdf pdf/slides/ 2>/dev/null
-	-cp slides/07-sensitivity/*.pdf pdf/slides/ 2>/dev/null
-	-cp slides/08-rdd/*.pdf pdf/slides/ 2>/dev/null
-	-cp slides/09-dags/*.pdf pdf/slides/ 2>/dev/null
+	-cp slides/05-dags/*.pdf pdf/slides/ 2>/dev/null
+	-cp slides/06-sensitivity/*.pdf pdf/slides/ 2>/dev/null
+	-cp slides/07-did/*.pdf pdf/slides/ 2>/dev/null
+	-cp slides/08-iv/*.pdf pdf/slides/ 2>/dev/null
+	-cp slides/09-rdd/*.pdf pdf/slides/ 2>/dev/null
 	-cp psets/pset*/*.pdf pdf/psets/ 2>/dev/null
 	-cp syllabus/*.pdf pdf/syllabus/ 2>/dev/null
 

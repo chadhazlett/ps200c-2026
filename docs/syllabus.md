@@ -5,7 +5,7 @@ title: Syllabus
 
 # PS200C: Causal Inference for Social Scientists — Spring 2026
 
-*Class:* M 2-3:15 (Pub Aff 2238); W 2-3:15 (Bunche 3178)
+*Class:* MW 2:00–3:15 PM, Bunche 2160
 *Section:* Thursday 9:00–9:50 AM, on [Zoom](https://ucla.zoom.us/j/94794109684)
 
 **Professor:** Chad Hazlett — [chazlett@ucla.edu](mailto:chazlett@ucla.edu)
@@ -82,7 +82,7 @@ Another classic on the topic that is nice to have is:
 
 - Morgan, Stephen L. and Christopher Winship. 2007. *Counterfactuals and Causal Inference: Methods and Principles for Social Research*. Cambridge University Press.
 
-We will also make reference to "Causal Inference: What if" by Hernan and Robins, freely available [here](https://www.hsph.harvard.edu/miguel-hernan/wp-content/uploads/sites/1268/2024/01/hernanrobins_WhatIf_2jan24.pdf).
+We will also make reference to "Causal Inference: What If" by Hernán and Robins, freely available at [miguelhernan.org/whatifbook](https://miguelhernan.org/whatifbook).
 
 **A great review:** If you want to review statistics up through regression from a perspective that is very consistent with how we will use these concepts, check out chapters 1–3 of:
 
