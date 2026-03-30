@@ -46,18 +46,18 @@ syllabus:
 	cd syllabus && $(LATEXMK) syllabus_2026.tex
 
 pdf:
-	@echo "Copying compiled PDFs to pdf/ ..."
-	-cp slides/01-intro/*.pdf pdf/slides/ 2>/dev/null
-	-cp slides/02-pom/*.pdf pdf/slides/ 2>/dev/null
-	-cp slides/03-experiments/*.pdf pdf/slides/ 2>/dev/null
-	-cp slides/04-soo/*.pdf pdf/slides/ 2>/dev/null
-	-cp slides/05-dags/*.pdf pdf/slides/ 2>/dev/null
-	-cp slides/06-sensitivity/*.pdf pdf/slides/ 2>/dev/null
-	-cp slides/07-did/*.pdf pdf/slides/ 2>/dev/null
-	-cp slides/08-iv/*.pdf pdf/slides/ 2>/dev/null
-	-cp slides/09-rdd/*.pdf pdf/slides/ 2>/dev/null
-	-cp psets/pset*/*.pdf pdf/psets/ 2>/dev/null
-	-cp syllabus/*.pdf pdf/syllabus/ 2>/dev/null
+	@echo "Copying compiled PDFs to docs/pdf/ ..."
+	-cp slides/01-intro/*.pdf docs/pdf/slides/ 2>/dev/null
+	-cp slides/02-pom/*.pdf docs/pdf/slides/ 2>/dev/null
+	-cp slides/03-experiments/*.pdf docs/pdf/slides/ 2>/dev/null
+	-cp slides/04-soo/*.pdf docs/pdf/slides/ 2>/dev/null
+	-cp slides/05-dags/*.pdf docs/pdf/slides/ 2>/dev/null
+	-cp slides/06-sensitivity/*.pdf docs/pdf/slides/ 2>/dev/null
+	-cp slides/07-did/*.pdf docs/pdf/slides/ 2>/dev/null
+	-cp slides/08-iv/*.pdf docs/pdf/slides/ 2>/dev/null
+	-cp slides/09-rdd/*.pdf docs/pdf/slides/ 2>/dev/null
+	-cp psets/pset*/*.pdf docs/pdf/psets/ 2>/dev/null
+	-cp syllabus/*.pdf docs/pdf/syllabus/ 2>/dev/null
 
 clean:
 	find slides psets syllabus -type f \( \
