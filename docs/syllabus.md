@@ -14,6 +14,9 @@ title: Syllabus
 **Teaching Assistant:** Barney Chen — [barneychen@ucla.edu](mailto:barneychen@ucla.edu)
 *Office Hours:* Mondays 5 PM at Bunche 3244 and by appointment
 
+**Course website:** <https://chadhazlett.github.io/ps200c-2026/>
+**Announcements:** [BruinLearn](https://bruinlearn.ucla.edu) — make sure you are receiving notifications.
+
 ---
 
 ## Why causal inference?
