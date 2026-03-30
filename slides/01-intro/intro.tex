@@ -126,15 +126,50 @@
 \end{frame}
 
 
+\begin{frame}{The stakes are real: Hormone Replacement Therapy}
+\small
+\onslide<1-> For decades, \textbf{40+ observational studies} consistently showed that postmenopausal women on hormone replacement therapy (HRT) had $\sim$30\% lower rates of heart disease.\\
+\medskip
+\onslide<2-> Panels of experts endorsed HRT. Millions of women were prescribed it.\\
+\medskip
+\onslide<3-> But these were observational comparisons: women who \textit{chose} HRT tended to be wealthier, healthier, and more engaged with the medical system---classic \textbf{healthy user bias}.\\
+\bigskip
+\onslide<4-> \textbf{Lesson 1:} Even large, consistent bodies of observational evidence can reflect confounding rather than causation.
+\end{frame}
+
+\begin{frame}{HRT, Act 2: The RCT gets it wrong too}
+\small
+\onslide<1-> The Women's Health Initiative (2002) randomized $\sim$16,000 women to HRT or placebo. It found a $\sim$29\% \textit{increase} in heart attacks and elevated cancer risk.\\
+\medskip
+\onslide<2-> The trial was \textbf{halted early}. Physicians reversed course overnight. Millions of women stopped HRT.\\
+\medskip
+\onslide<3-> But the WHI enrolled women who were on average \textbf{63 years old}---10--20 years past menopause. Later reanalysis showed that for women near menopause, HRT likely \textit{is} protective. The ``timing hypothesis'' is now widely accepted, and guidelines have largely come back around.\\
+\bigskip
+\onslide<4-> \textbf{Lesson 2:} Even a large RCT isn't automatically credible. Design choices---who is enrolled, when you stop---and interpretation still require careful reasoning about assumptions. An experiment answers a causal question, but \textit{which} causal question depends on the design.
+\end{frame}
+
+\begin{frame}{More examples to keep in mind}
+\small
+\begin{itemize}
+\makebiggaps
+\item<1-> \textbf{Scared Straight programs:} Observational studies suggested exposing at-risk youth to prison life reduced delinquency. Multiple RCTs later showed it made outcomes \textit{worse}. Programs were widely implemented before the evidence caught up.
+\medskip
+\item<2-> \textbf{Microfinance:} Celebrated as a path out of poverty based on observational comparisons of borrowers vs.\ non-borrowers. Six major RCTs found much more modest effects---helpful in some ways, but not transformative.
+\medskip
+\item<3-> \textbf{Smoking and lung cancer:} We will never have an RCT. Yet the causal conclusion is among the most trusted in all of science. Why? Not because of the volume of data, but because researchers could formalize \textit{what it would take} for the result to be wrong---and the required confounding was implausible. (We will return to this when we cover sensitivity analysis.)
+\end{itemize}
+\end{frame}
+
+
 \begin{frame}
 \frametitle{Modes of Statistical Inference}
   \begin{enumerate}
   \item[1.] Descriptive Inference: summarizing and exploring data
     \begin{itemize}
     \item means, correlations, regression coefficients
-    \item hypothesis testing
     \item inferring ``ideal points'' from roll-call votes
     \item inferring ``topics'' from texts and speeches
+    \item Note: the statistical inference you are used to---hypothesis tests, $p$-values, confidence intervals---is \textit{descriptive} inference. It furthers the description of how variables look or move together. It does not, by itself, get you any closer to causal.
     \end{itemize}
     \medskip \pause
   \item[2.] Predictive Inference: forecasting out-of-sample data
@@ -155,26 +190,12 @@
 
 \end{frame}
 
-\begin{frame}{You cannot escape}
-
-Actually it's more than that,
-\small
-
-\begin{enumerate}
-\item \textit{Some} descriptive enterprises are truly descriptive, but many are at least hoping the reader thinks the result is ``suggestive'' or ``consistent with'' a causal implication.
-\medskip
-\item Issues such as missingness, case-selection, choosing what to condition on, and generalization all actually invoke causal assumptions, even if your goals are descriptive.
-\medskip
-\item If you can do a randomized experiment, great, but many questions (e.g. mediation) aren't answered by the randomization.
-\end{enumerate}
-\end{frame}
-
 \begin{frame}{Is causal inference more difficult?}
 \onslide<1-> Version 1: Is it more difficult as a scientific problem?\\
 \small
 \begin{itemize}
 \item Yes.
-\item Why? Because the assumptions required to say things about unobervable counterfactuals are understandably onerous.
+\item Why? Because the assumptions required to say things about unobservable counterfactuals are understandably onerous.
 \end{itemize}
 \medskip
 \normalsize
@@ -186,7 +207,7 @@ Actually it's more than that,
 \item \textcolor{blue}{No}: the challenges are conceptual, not technical or mathematical.
 \end{itemize}
 \small
-\onslide<3-> In fact, I hope the course helps to convince you that technical sophistication of methods often does not solve core problems...its not about the latest estimator, machine learning, or more complicated standard errors.
+\onslide<3-> In fact, I hope the course helps to convince you that technical sophistication of methods often does not solve core problems...it's not about the latest estimator, machine learning, or more complicated standard errors.
 \end{frame}
 
 
@@ -204,44 +225,42 @@ Stylized illustration:
 \item you compute something with data, say, $coef(Y\sim X)$
 \item trust me (for now): \textit{without further assumption}, any causal effect can produce any coefficient...and thus any coefficient you get is equally suggestive of any causal effect.
 \end{itemize}
-\onslide<3-> In other words, ``looking at the data'' is not a sufficient strategy (nor value) for learning about the world... \\
+\onslide<3-> In other words, ``looking at the data'' is not a sufficient strategy for learning about the world... \\
 \bigskip
-\onslide<4-> Curious as to what it takes? What could be better than data? Take the class!
+\onslide<4-> So what \textit{does} it take? That's what this course is about.
 \end{frame}
 
 
-\begin{frame}
+\begin{frame}{Identification: Assumptions + Data $\rightarrow$ Causal Conclusions}
+\small
 \onslide<1-> Causal inference is about that ``further assumption'' bit:
-\small
 \begin{itemize}
-\item<2-> What assumptions can we make in order to connect the causal thing we want to know to something in the data?
-\item<3-> In other words can we \textcolor{blue}{identify} our quantity of interest with something we can estimate?
-\item<4-> Accordingly, we speak of \textcolor{blue}{identification assumptions} or \textcolor{blue}{identification strategies} that provide such bridges.
+\item<2-> What assumptions let us connect the causal thing we want to know to something in the data?
+\item<3-> Can we \textcolor{blue}{identify} our quantity of interest with something we can estimate?
+\item<4-> We speak of \textcolor{blue}{identification assumptions} or \textcolor{blue}{identification strategies} that provide such bridges.
 \end{itemize}
-\normalsize
 \medskip
-\onslide<5-> Causal inference then is about stating the assumptions/strategies and arguing whether they are defensible
-\small
+\onslide<5-> Key implications:
 \begin{itemize}
-\item<6-> most identifying assumptions cannot be proven correct using data! It's not about ``knowing the right test'' to run.
-\item<7-> hence we will always be appealing to information, assumptions, or context from outside the data!
-\item<8-> ... it is not the method or estimator, much less software, that makes the result causal.
+\item<6-> Most identifying assumptions cannot be proven correct using data. It's not about ``knowing the right test'' to run.
+\item<7-> We will always be appealing to information, assumptions, or context from \textit{outside} the data.
+\item<8-> Credibility does NOT derive from ``what method you used.'' There are not ``causal methods''! You can't say ``it's causal because I did xyz.''
+\item<9-> This is one of the hardest things for many students to absorb, in part because we are surrounded by mistakes and false advertising.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Causal Identification Requires Assumptions}
+\begin{frame}{You cannot escape causal reasoning}
 \small
-\onslide<1-> Put differently,
-\bigskip
-\begin{center}
-Assumptions + Data $\rightarrow$ Causal Conclusions
-\end{center}
-\bigskip
-\onslide<3-> Credibility does NOT derive from ``what method you used'' or how new it is
+\onslide<1-> You might think causal inference is only for people making ``clearly causal claims,'' and only when they can't run an experiment. Both are wrong.\\
+\medskip
 \begin{itemize}
-\item  ...It is about finding a technique whose assumptions you can work with
-\item There are not ``causal methods''!  You can't say ``it's causal because I did xyz.''
-\item This is one of the hardest things for many students to absorb, in part because we are surrounded by mistakes and false advertizing.
+\item<2-> Many ``comparisons'' are only interesting because the audience will read them as suggestive of a causal relationship. If you compare outcomes across groups, you are implicitly in causal territory whether you say so or not.
+\medskip
+\item<3-> Even genuinely descriptive tasks invoke causal reasoning. Handling \textbf{missingness} requires assumptions about \textit{why} data are missing---a causal question. Choosing what to \textbf{condition on} requires knowing the causal structure, or you risk conditioning on a collider and creating bias that wasn't there before.
+\medskip
+\item<4-> Randomized experiments don't make causal reasoning unnecessary---they make it \textit{more} necessary. What \textbf{mechanism} produced the total effect? How do you handle \textbf{attrition} (which is post-treatment)? How do you choose covariates for \textbf{precision} without introducing bias? These all require understanding causal structure.
+\medskip
+\item<5-> Even \textbf{generalization}---asking whether a result applies beyond the study sample---is a causal question about what would happen under different conditions.
 \end{itemize}
 \end{frame}
 
@@ -255,7 +274,7 @@ Assumptions + Data $\rightarrow$ Causal Conclusions
 
 \item<3-> How can we understand how vulnerable a given estimate might be to threats such as confounding?
 
-\item<4-> \textbf{How can you conduct top quality work that seeks to make causal claims in tricky situations, while accurately characterizing what we can and cannot be claimed?}
+\item<4-> \textbf{How can you conduct top quality work that seeks to make causal claims in tricky situations, while accurately characterizing what can and cannot be claimed?}
 \end{itemize}
 \end{frame}
 
