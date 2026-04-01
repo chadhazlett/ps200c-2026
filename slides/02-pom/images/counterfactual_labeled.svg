@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 240" font-family="Helvetica, Arial, sans-serif" style="font-variant-ligatures: none;">
+
+  <defs>
+    <g id="person">
+      <circle cx="0" cy="-32" r="9"/>
+      <rect x="-10" y="-22" width="20" height="26" rx="4"/>
+      <rect x="-10" y="4" width="8" height="24" rx="3"/>
+      <rect x="2" y="4" width="8" height="24" rx="3"/>
+      <rect x="-16" y="-20" width="7" height="22" rx="3"/>
+      <rect x="9" y="-20" width="7" height="22" rx="3"/>
+    </g>
+    <g id="person-gray">
+      <circle cx="0" cy="-32" r="9" fill="#ccc" stroke="#888" stroke-width="1.2"/>
+      <rect x="-10" y="-22" width="20" height="26" rx="4" fill="#ccc" stroke="#888" stroke-width="1.2"/>
+      <rect x="-10" y="4" width="8" height="24" rx="3" fill="#ccc" stroke="#888" stroke-width="1.2"/>
+      <rect x="2" y="4" width="8" height="24" rx="3" fill="#ccc" stroke="#888" stroke-width="1.2"/>
+      <rect x="-16" y="-20" width="7" height="22" rx="3" fill="#ccc" stroke="#888" stroke-width="1.2"/>
+      <rect x="9" y="-20" width="7" height="22" rx="3" fill="#ccc" stroke="#888" stroke-width="1.2"/>
+    </g>
+  </defs>
+
+  <!-- Person 1: gray first (behind), then blue (in front) -->
+  <g transform="translate(98, 97)" opacity="0.6"><use href="#person-gray" transform="scale(1.3)"/></g>
+  <g transform="translate(80, 110)"><use href="#person" fill="#2b5797" transform="scale(1.3)"/></g>
+  <path d="M 80,54 Q 89,38 98,44" stroke="#c44" stroke-width="2" fill="none"/>
+  <text x="89" y="28" text-anchor="middle" font-size="24" fill="#c44" font-style="italic">&#x3c4;&#x2081;</text>
+  <text x="80" y="166" text-anchor="middle" font-size="17" fill="#2b5797" font-style="italic">Y(1)&#x2081;</text>
+  <text x="120" y="154" text-anchor="middle" font-size="17" fill="#888" font-style="italic">Y(0)&#x2081;</text>
+
+  <!-- Person 2 -->
+  <g transform="translate(248, 97)" opacity="0.6"><use href="#person-gray" transform="scale(1.3)"/></g>
+  <g transform="translate(230, 110)"><use href="#person" fill="#2b5797" transform="scale(1.3)"/></g>
+  <path d="M 230,54 Q 239,38 248,44" stroke="#c44" stroke-width="2" fill="none"/>
+  <text x="239" y="28" text-anchor="middle" font-size="24" fill="#c44" font-style="italic">&#x3c4;&#x2082;</text>
+  <text x="230" y="166" text-anchor="middle" font-size="17" fill="#2b5797" font-style="italic">Y(1)&#x2082;</text>
+  <text x="270" y="154" text-anchor="middle" font-size="17" fill="#888" font-style="italic">Y(0)&#x2082;</text>
+
+  <!-- Ellipsis -->
+  <text x="375" y="115" text-anchor="middle" font-size="28" fill="#555">. . .</text>
+
+  <!-- Person 7 -->
+  <g transform="translate(498, 97)" opacity="0.6"><use href="#person-gray" transform="scale(1.3)"/></g>
+  <g transform="translate(480, 110)"><use href="#person" fill="#2b5797" transform="scale(1.3)"/></g>
+  <path d="M 480,54 Q 489,38 498,44" stroke="#c44" stroke-width="2" fill="none"/>
+  <text x="489" y="28" text-anchor="middle" font-size="24" fill="#c44" font-style="italic">&#x3c4;&#x2087;</text>
+  <text x="480" y="166" text-anchor="middle" font-size="17" fill="#2b5797" font-style="italic">Y(1)&#x2087;</text>
+  <text x="520" y="154" text-anchor="middle" font-size="17" fill="#888" font-style="italic">Y(0)&#x2087;</text>
+
+  <!-- Person 8 -->
+  <g transform="translate(648, 97)" opacity="0.6"><use href="#person-gray" transform="scale(1.3)"/></g>
+  <g transform="translate(630, 110)"><use href="#person" fill="#2b5797" transform="scale(1.3)"/></g>
+  <path d="M 630,54 Q 639,38 648,44" stroke="#c44" stroke-width="2" fill="none"/>
+  <text x="639" y="28" text-anchor="middle" font-size="24" fill="#c44" font-style="italic">&#x3c4;&#x2088;</text>
+  <text x="630" y="166" text-anchor="middle" font-size="17" fill="#2b5797" font-style="italic">Y(1)&#x2088;</text>
+  <text x="670" y="154" text-anchor="middle" font-size="17" fill="#888" font-style="italic">Y(0)&#x2088;</text>
+
+</svg>

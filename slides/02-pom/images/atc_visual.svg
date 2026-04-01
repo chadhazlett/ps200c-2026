@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 310" font-family="Helvetica, Arial, sans-serif" style="font-variant-ligatures: none;">
+
+  <defs>
+    <g id="person">
+      <circle cx="0" cy="-32" r="9"/>
+      <rect x="-10" y="-22" width="20" height="26" rx="4"/>
+      <rect x="-10" y="4" width="8" height="24" rx="3"/>
+      <rect x="2" y="4" width="8" height="24" rx="3"/>
+      <rect x="-16" y="-20" width="7" height="22" rx="3"/>
+      <rect x="9" y="-20" width="7" height="22" rx="3"/>
+    </g>
+    <g id="person-gray">
+      <circle cx="0" cy="-32" r="9" fill="#ccc" stroke="#888" stroke-width="1.2"/>
+      <rect x="-10" y="-22" width="20" height="26" rx="4" fill="#ccc" stroke="#888" stroke-width="1.2"/>
+      <rect x="-10" y="4" width="8" height="24" rx="3" fill="#ccc" stroke="#888" stroke-width="1.2"/>
+      <rect x="2" y="4" width="8" height="24" rx="3" fill="#ccc" stroke="#888" stroke-width="1.2"/>
+      <rect x="-16" y="-20" width="7" height="22" rx="3" fill="#ccc" stroke="#888" stroke-width="1.2"/>
+      <rect x="9" y="-20" width="7" height="22" rx="3" fill="#ccc" stroke="#888" stroke-width="1.2"/>
+    </g>
+  </defs>
+
+  <!-- ===== ROW 1 (y=100) ===== -->
+
+  <!-- Unit 1 (TREATED) — dimmed -->
+  <g opacity="0.25">
+    <g transform="translate(66, 100)" opacity="0.6"><use href="#person-gray" transform="scale(0.75)"/></g>
+    <g transform="translate(55, 100)"><use href="#person" fill="#2b5797" transform="scale(0.75)"/></g>
+  </g>
+
+  <!-- Unit 2 (CONTROL) -->
+  <rect x="124" y="38" width="54" height="107" rx="6" fill="#eef6ee" stroke="#4a9e4a" stroke-width="1.2" stroke-dasharray="3,2"/>
+  <g transform="translate(156, 100)" opacity="0.6"><use href="#person-gray" transform="scale(0.75)"/></g>
+  <g transform="translate(145, 100)"><use href="#person" fill="#2b5797" transform="scale(0.75)"/></g>
+  <path d="M 145,68 Q 150.5,56 156,62" stroke="#c44" stroke-width="1.5" fill="none"/>
+  <text x="150.5" y="52" text-anchor="middle" font-size="18" fill="#c44" font-style="italic">&#x3c4;&#x2082;</text>
+  <text x="150" y="138" text-anchor="middle" font-size="10" fill="#4a9e4a" font-weight="bold">D=0</text>
+
+  <!-- Unit 3 (TREATED) — dimmed -->
+  <g opacity="0.25">
+    <g transform="translate(246, 100)" opacity="0.6"><use href="#person-gray" transform="scale(0.75)"/></g>
+    <g transform="translate(235, 100)"><use href="#person" fill="#2b5797" transform="scale(0.75)"/></g>
+  </g>
+
+  <!-- Unit 4 (CONTROL) -->
+  <rect x="304" y="38" width="54" height="107" rx="6" fill="#eef6ee" stroke="#4a9e4a" stroke-width="1.2" stroke-dasharray="3,2"/>
+  <g transform="translate(336, 100)" opacity="0.6"><use href="#person-gray" transform="scale(0.75)"/></g>
+  <g transform="translate(325, 100)"><use href="#person" fill="#2b5797" transform="scale(0.75)"/></g>
+  <path d="M 325,68 Q 330.5,56 336,62" stroke="#c44" stroke-width="1.5" fill="none"/>
+  <text x="330.5" y="52" text-anchor="middle" font-size="18" fill="#c44" font-style="italic">&#x3c4;&#x2084;</text>
+  <text x="330" y="138" text-anchor="middle" font-size="10" fill="#4a9e4a" font-weight="bold">D=0</text>
+
+  <!-- Unit 5 (TREATED) — dimmed -->
+  <g opacity="0.25">
+    <g transform="translate(426, 100)" opacity="0.6"><use href="#person-gray" transform="scale(0.75)"/></g>
+    <g transform="translate(415, 100)"><use href="#person" fill="#2b5797" transform="scale(0.75)"/></g>
+  </g>
+
+  <!-- Unit 6 (CONTROL) -->
+  <rect x="484" y="38" width="54" height="107" rx="6" fill="#eef6ee" stroke="#4a9e4a" stroke-width="1.2" stroke-dasharray="3,2"/>
+  <g transform="translate(516, 100)" opacity="0.6"><use href="#person-gray" transform="scale(0.75)"/></g>
+  <g transform="translate(505, 100)"><use href="#person" fill="#2b5797" transform="scale(0.75)"/></g>
+  <path d="M 505,68 Q 510.5,56 516,62" stroke="#c44" stroke-width="1.5" fill="none"/>
+  <text x="510.5" y="52" text-anchor="middle" font-size="18" fill="#c44" font-style="italic">&#x3c4;&#x2086;</text>
+  <text x="510" y="138" text-anchor="middle" font-size="10" fill="#4a9e4a" font-weight="bold">D=0</text>
+
+  <!-- ===== ROW 2 (y=205) ===== -->
+
+  <!-- Unit 7 (CONTROL) -->
+  <rect x="34" y="143" width="54" height="107" rx="6" fill="#eef6ee" stroke="#4a9e4a" stroke-width="1.2" stroke-dasharray="3,2"/>
+  <g transform="translate(66, 205)" opacity="0.6"><use href="#person-gray" transform="scale(0.75)"/></g>
+  <g transform="translate(55, 205)"><use href="#person" fill="#2b5797" transform="scale(0.75)"/></g>
+  <path d="M 55,173 Q 60.5,161 66,167" stroke="#c44" stroke-width="1.5" fill="none"/>
+  <text x="60.5" y="157" text-anchor="middle" font-size="18" fill="#c44" font-style="italic">&#x3c4;&#x2087;</text>
+  <text x="60" y="243" text-anchor="middle" font-size="10" fill="#4a9e4a" font-weight="bold">D=0</text>
+
+  <!-- Unit 8 (TREATED) — dimmed -->
+  <g opacity="0.25">
+    <g transform="translate(156, 205)" opacity="0.6"><use href="#person-gray" transform="scale(0.75)"/></g>
+    <g transform="translate(145, 205)"><use href="#person" fill="#2b5797" transform="scale(0.75)"/></g>
+  </g>
+
+  <!-- Unit 9 (CONTROL) -->
+  <rect x="214" y="143" width="54" height="107" rx="6" fill="#eef6ee" stroke="#4a9e4a" stroke-width="1.2" stroke-dasharray="3,2"/>
+  <g transform="translate(246, 205)" opacity="0.6"><use href="#person-gray" transform="scale(0.75)"/></g>
+  <g transform="translate(235, 205)"><use href="#person" fill="#2b5797" transform="scale(0.75)"/></g>
+  <path d="M 235,173 Q 240.5,161 246,167" stroke="#c44" stroke-width="1.5" fill="none"/>
+  <text x="240.5" y="157" text-anchor="middle" font-size="18" fill="#c44" font-style="italic">&#x3c4;&#x2089;</text>
+  <text x="240" y="243" text-anchor="middle" font-size="10" fill="#4a9e4a" font-weight="bold">D=0</text>
+
+  <!-- Unit 10 (TREATED) — dimmed -->
+  <g opacity="0.25">
+    <g transform="translate(336, 205)" opacity="0.6"><use href="#person-gray" transform="scale(0.75)"/></g>
+    <g transform="translate(325, 205)"><use href="#person" fill="#2b5797" transform="scale(0.75)"/></g>
+  </g>
+
+  <!-- Unit 11 (CONTROL) -->
+  <rect x="394" y="143" width="54" height="107" rx="6" fill="#eef6ee" stroke="#4a9e4a" stroke-width="1.2" stroke-dasharray="3,2"/>
+  <g transform="translate(426, 205)" opacity="0.6"><use href="#person-gray" transform="scale(0.75)"/></g>
+  <g transform="translate(415, 205)"><use href="#person" fill="#2b5797" transform="scale(0.75)"/></g>
+  <path d="M 415,173 Q 420.5,161 426,167" stroke="#c44" stroke-width="1.5" fill="none"/>
+  <text x="420.5" y="157" text-anchor="middle" font-size="18" fill="#c44" font-style="italic">&#x3c4;&#x2081;&#x2081;</text>
+  <text x="420" y="243" text-anchor="middle" font-size="10" fill="#4a9e4a" font-weight="bold">D=0</text>
+
+  <!-- Unit 12 (TREATED) — dimmed -->
+  <g opacity="0.25">
+    <g transform="translate(516, 205)" opacity="0.6"><use href="#person-gray" transform="scale(0.75)"/></g>
+    <g transform="translate(505, 205)"><use href="#person" fill="#2b5797" transform="scale(0.75)"/></g>
+  </g>
+
+  <!-- Formula at bottom -->
+  <text x="310" y="278" text-anchor="middle" font-size="16" fill="#222">ATC = average of</text>
+  <text x="310" y="298" text-anchor="middle" font-size="16" fill="#c44" font-style="italic">&#x3c4;&#x2082;, &#x3c4;&#x2084;, &#x3c4;&#x2086;, &#x3c4;&#x2087;, &#x3c4;&#x2089;, &#x3c4;&#x2081;&#x2081;</text>
+
+</svg>
