@@ -10,9 +10,9 @@ title: Slides
 | Topic | Slides | Handout |
 |-------|--------|---------|
 | Introduction | [PDF](pdf/slides/intro.pdf) | [PDF](pdf/slides/intro_handout.pdf) |
+| Potential Outcomes Model | [PDF](pdf/slides/pom.pdf) | [PDF](pdf/slides/pom_handout.pdf) |
 
 <!-- Uncomment as the quarter progresses:
-| Potential Outcomes Model | [PDF](pdf/slides/pom.pdf) | [PDF](pdf/slides/pom_handout.pdf) |
 | Experiments | [PDF](pdf/slides/experiments.pdf) | [PDF](pdf/slides/experiments_handout.pdf) |
 | Selection on Observables | [PDF](pdf/slides/soo.pdf) | [PDF](pdf/slides/soo_handout.pdf) |
 | DAGs & Structural Causal Models | [PDF](pdf/slides/dags.pdf) | [PDF](pdf/slides/dags_handout.pdf) |
