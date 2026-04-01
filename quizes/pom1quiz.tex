@@ -1,0 +1,128 @@
+\documentclass[12pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{enumitem}
+
+\setlist{nosep}
+
+\begin{document}
+
+\noindent
+\textbf{Name:} \rule{3in}{0.4pt}
+
+\vspace{0.5cm}
+
+\begin{center}
+    {\Large \textbf{In-Class Activity}}\\[0.2cm]
+    {\large PS200C: Causal Inference in the Social Sciences}\\
+    {\large Spring 2026}
+\end{center}
+
+\vspace{0.5cm}
+
+\begin{enumerate}
+
+\item \textbf{What is the causal question?}
+
+Which of the following best captures the causal question in the potential outcomes framework?
+
+\begin{enumerate}[label=(\alph*)]
+    \item Compare average outcomes between treated and untreated groups
+    \item Compare outcomes for the same unit under treatment vs.\ control
+    \item Compare treated units to similar control units
+    \item Compare before-and-after outcomes for treated units
+\end{enumerate}
+
+\vspace{0.8cm}
+
+\item \textbf{Observability}
+
+For a given unit $i$, classify each as \emph{always observable}, \emph{sometimes observable}, or \emph{never observable}:
+
+\begin{itemize}
+    \item $Y_i(1)$ and $Y_i(0)$ (both at once)
+    \item $D_i$
+    \item $Y_i$
+    \item $\tau_i = Y_i(1) - Y_i(0)$
+\end{itemize}
+
+\vspace{1cm}
+
+\item \textbf{Difference in Means}
+
+Consider:
+\[
+E[Y_i \mid D_i = 1] - E[Y_i \mid D_i = 0]
+\]
+
+Which is correct?
+
+\begin{enumerate}[label=(\alph*)]
+    \item Always equals ATE
+    \item Always equals ATT
+    \item Equals ATT plus selection bias
+    \item Equals ATC
+\end{enumerate}
+
+\vspace{1cm}
+
+\item \textbf{Direction of Bias}
+
+Suppose:
+\begin{itemize}
+    \item $Y_i(1) = Y_i(0)$ for all $i$ (no treatment effect)
+    \item Treatment is more likely for units with higher $Y_i(1)$
+\end{itemize}
+
+What do you expect for:
+\[
+E[Y_i \mid D_i = 1] - E[Y_i \mid D_i = 0] \, ?
+\]
+
+\begin{enumerate}[label=(\alph*)]
+    \item Zero
+    \item Positive
+    \item Negative
+\end{enumerate}
+
+\vspace{1cm}
+
+\item \textbf{Science Table}
+
+\begin{center}
+\begin{tabular}{c c c c}
+$i$ & $D_i$ & $Y_i(1)$ & $Y_i(0)$ \\
+\hline
+1 & 1 & 10 & 4 \\
+2 & 1 & 1 & 2 \\
+3 & 0 & 3 & 3 \\
+4 & 0 & 5 & 2 \\
+\end{tabular}
+\end{center}
+
+Compute:
+
+\begin{itemize}
+    \item ATE:
+    \vspace{0.5cm}
+    \item ATT:
+    \vspace{0.5cm}
+\end{itemize}
+
+
+\vspace{1cm}
+
+\item \textbf{Bonus:}
+
+Why does
+\[
+E[Y_i(1)\mid D_i = 1] = E[Y_i \mid D_i = 1]
+\]
+hold?
+
+\vspace{1cm}
+
+\end{enumerate}
+
+\end{document}
