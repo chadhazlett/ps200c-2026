@@ -1,8 +1,10 @@
 \documentclass[12pt]{article}
 
 \usepackage[margin=1in]{geometry}
-\usepackage{amsmath}
+\usepackage{amsmath,amssymb}
 \usepackage{enumitem}
+
+\newcommand\E{\mathbb{E}}
 
 \setlist{nosep}
 
@@ -53,7 +55,7 @@ For a given unit $i$, classify each as \emph{always observable}, \emph{sometimes
 
 Consider:
 \[
-E[Y_i \mid D_i = 1] - E[Y_i \mid D_i = 0]
+\E[Y_i \mid D_i = 1] - \E[Y_i \mid D_i = 0]
 \]
 
 Which is correct?
@@ -77,7 +79,7 @@ Suppose:
 
 What do you expect for:
 \[
-E[Y_i \mid D_i = 1] - E[Y_i \mid D_i = 0] \, ?
+\E[Y_i \mid D_i = 1] - \E[Y_i \mid D_i = 0] \, ?
 \]
 
 \begin{enumerate}[label=(\alph*)]
@@ -117,7 +119,7 @@ Compute:
 
 Why does
 \[
-E[Y_i(1)\mid D_i = 1] = E[Y_i \mid D_i = 1]
+\E[Y_i(1)\mid D_i = 1] = \E[Y_i \mid D_i = 1]
 \]
 hold?
 

@@ -11,9 +11,16 @@ title: Slides
 |-------|--------|---------|
 | Introduction | [PDF](pdf/slides/intro.pdf) | [PDF](pdf/slides/intro_handout.pdf) |
 | Potential Outcomes Model | [PDF](pdf/slides/pom.pdf) | [PDF](pdf/slides/pom_handout.pdf) |
+| Experiments I | [PDF](pdf/slides/exp_part1.pdf) | [PDF](pdf/slides/exp_part1_handout.pdf) |
+| Experiments II | [PDF](pdf/slides/exp_part2.pdf) | [PDF](pdf/slides/exp_part2_handout.pdf) |
+
+## In-Class Activities
+
+| Topic | PDF |
+|-------|-----|
+| Experiments | [PDF](pdf/activities/activity02_exp.pdf) |
 
 <!-- Uncomment as the quarter progresses:
-| Experiments | [PDF](pdf/slides/experiments.pdf) | [PDF](pdf/slides/experiments_handout.pdf) |
 | Selection on Observables | [PDF](pdf/slides/soo.pdf) | [PDF](pdf/slides/soo_handout.pdf) |
 | DAGs & Structural Causal Models | [PDF](pdf/slides/dags.pdf) | [PDF](pdf/slides/dags_handout.pdf) |
 | Sensitivity Analysis | [PDF](pdf/slides/sensitivity.pdf) | [PDF](pdf/slides/sensitivity_handout.pdf) |

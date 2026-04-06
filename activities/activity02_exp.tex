@@ -1,0 +1,147 @@
+\documentclass[12pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+
+\newcommand\E{\mathbb{E}}
+
+\setlist{nosep}
+
+\begin{document}
+
+\noindent
+\textbf{Name:} \rule{3in}{0.4pt}
+
+\vspace{0.5cm}
+
+\begin{center}
+    {\Large \textbf{In-Class Activity: Experiments}}\\[0.2cm]
+    {\large PS200C: Causal Inference in the Social Sciences}\\
+    {\large Spring 2026}
+\end{center}
+
+\vspace{0.5cm}
+
+\begin{enumerate}
+
+\item \textbf{From ATE to the Difference in Means}
+
+Suppose treatment $D_i$ is randomly assigned, so that $\{Y_i(1), Y_i(0)\} \perp\!\!\!\perp D_i$.
+
+Starting from the ATE, fill in the missing expressions and justify each step.
+
+\begin{align*}
+\tau_{\text{ATE}} &= \E[Y_i(1)] - \E[Y_i(0)] \\[6pt]
+    &= \E[Y_i(\rule{.4cm}{0.4pt}) \mid D_i= \rule{.4cm}{0.4pt}] - \E[Y_i(\rule{.4cm}{0.4pt}) \mid D_i=\rule{.4cm}{0.4pt}] \quad \text{consistency} \\[14pt]
+    &= \E[\rule{.4cm}{0.4pt} \mid D_i= 1] - \E[\rule{.4cm}{0.4pt} \mid D_i = 0] \quad \text{ignorability} \\[14pt]
+    &\approx \bar{Y}_1 - \bar{Y}_0
+\end{align*}
+
+
+\vspace{0.3cm}
+
+\item \textbf{Selection bias and randomization}
+
+Recall from the POM lecture that the difference in means can be decomposed as:
+\[
+\E[Y_i \mid D_i=1] - \E[Y_i \mid D_i=0] \;=\; \underbrace{\E[Y_i(1) - Y_i(0) \mid D_i=1]}_{\text{ATT}} \;+\; \underbrace{\E[Y_i(0)\mid D_i=1] - \E[Y_i(0)\mid D_i=0]}_{\text{Selection Bias}}
+\]
+
+\begin{enumerate}[label=(\alph*)]
+    \item In words, what does the selection bias term measure?
+
+    \vspace{2cm}
+
+    \item Why does random assignment of $D_i$ eliminate this term?
+
+    \vspace{2cm}
+
+    \item Once the bias term is zero, the DIM equals the ATT. Why does it also equal the ATE under randomization?
+
+    \vspace{2cm}
+\end{enumerate}
+
+\clearpage
+
+\item \textbf{Sharp null and randomization inference}
+
+Consider this table of observed data from a small experiment with 2 treated and 2 control units:
+
+\begin{center}
+\begin{tabular}{c c c}
+$i$ & $D_i$ & $Y_i$ \\
+\hline
+1 & 1 & 8 \\
+2 & 1 & 4 \\
+3 & 0 & 3 \\
+4 & 0 & 5 \\
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[label=(\alph*)]
+    \item What is the observed difference in means, $\widehat{\tau}$?
+
+    \vspace{0.8cm}
+
+    \item Under the sharp null $H_0: Y_i(1) = Y_i(0)$ for all $i$, fill in $Y_i(1)$ and $Y_i(0)$ for every unit:
+
+    \begin{center}
+    {\renewcommand{\arraystretch}{1.6}
+    \begin{tabular}{c c c c c}
+    $i$ & $D_i$ & $Y_i$ & $Y_i(1)$ & $Y_i(0)$ \\
+    \hline
+    1 & 1 & 8 & \rule{1cm}{0.4pt} & \rule{1cm}{0.4pt} \\
+    2 & 1 & 4 & \rule{1cm}{0.4pt} & \rule{1cm}{0.4pt} \\
+    3 & 0 & 3 & \rule{1cm}{0.4pt} & \rule{1cm}{0.4pt} \\
+    4 & 0 & 5 & \rule{1cm}{0.4pt} & \rule{1cm}{0.4pt} \\
+    \end{tabular}}
+    \end{center}
+
+    \vspace{0.3cm}
+
+    \item There are $\binom{4}{2} = 6$ possible assignments. Fill in $\hat\tau(\omega)$ for each, then compute the two-sided p-value.
+
+    \begin{center}
+    {\renewcommand{\arraystretch}{1.6}
+    \begin{tabular}{c c c}
+    Treated units & $\hat\tau(\omega)$ \\
+    \hline
+    $\{1,2\}$ & \rule{1.5cm}{0.4pt} \\
+    $\{1,3\}$ & \rule{1.5cm}{0.4pt} \\
+    $\{1,4\}$ & \rule{1.5cm}{0.4pt} \\
+    $\{2,3\}$ & \rule{1.5cm}{0.4pt} \\
+    $\{2,4\}$ & \rule{1.5cm}{0.4pt} \\
+    $\{3,4\}$ & \rule{1.5cm}{0.4pt} \\
+    \end{tabular}}
+    \end{center}
+	
+	\vspace{0.5cm}
+
+    Two-sided p-value: \rule{3cm}{0.4pt}
+
+\end{enumerate}
+
+%\vspace{1cm}
+%
+%\item \textbf{BONUS only: Standard errors}
+%
+%We discussed the Neyman standard error for the DIM estimator:
+%\[
+%\widehat{SE} = \sqrt{\frac{\hat\sigma^2_{Y|D=1}}{N_1} + \frac{\hat\sigma^2_{Y|D=0}}{N_0}}
+%\]
+%
+%\begin{enumerate}[label=(\alph*)]
+%    \item This SE is exact for which quantity: SATE or PATE?
+%
+%    \vspace{0.8cm}
+%
+%    \item For the other quantity, is this SE conservative or anti-conservative? Why, intuitively?
+%
+%    \vspace{1.5cm}
+%\end{enumerate}
+
+
+\end{enumerate}
+
+\end{document}
