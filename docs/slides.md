@@ -18,7 +18,7 @@ title: Slides
 
 | Topic | PDF |
 |-------|-----|
-| Experiments | [PDF](pdf/activities/activity02_exp.pdf) |
+| Experiments | [PDF](pdf/activities/activity02_experiments.pdf) |
 
 <!-- Uncomment as the quarter progresses:
 | Selection on Observables | [PDF](pdf/slides/soo.pdf) | [PDF](pdf/slides/soo_handout.pdf) |
