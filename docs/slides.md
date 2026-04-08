@@ -12,7 +12,7 @@ title: Slides
 | Introduction | [PDF](pdf/slides/intro_handout.pdf) | |
 | Potential Outcomes Model | [PDF](pdf/slides/pom_handout.pdf) | |
 | Experiments I | [PDF](pdf/slides/exp_part1_handout.pdf) | [PDF](pdf/activities/activity02_experiments.pdf) |
-| Experiments II | [PDF](pdf/slides/exp_part2_handout.pdf) | |
+| Experiments II | [PDF](pdf/slides/exp_part2_handout.pdf) | [PDF](pdf/activities/activity03_experiments2.pdf) |
 
 <!-- Uncomment as the quarter progresses:
 | Selection on Observables | [PDF](pdf/slides/soo_handout.pdf) | |
