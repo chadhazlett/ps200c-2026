@@ -118,13 +118,11 @@
 \begin{itemize}
 \item Part I: random assignment makes the simple difference in means an
   unbiased estimator of the ATE. \medskip
-\item Part II: \textbf{unbiased is not enough.} The same experiment can be
-  run well or badly. Today is about what ``well'' means and how design
-  and analysis together deliver it.\medskip
+\item Part II: Be better than \textbf{unbiased}, be closer to correct in your sample, using design and analysis levers.\medskip
 \item Roadmap:
 \begin{enumerate}
 \footnotesize
-\item Why unbiasedness isn't the whole story (and balance as a hook)
+\item Why unbiasedness isn't the whole story
 \item Covariate adjustment (precision, not bias)
 \item Blocking (better-than-random balance by design)
 \item Non-independence: dependent residuals and clustered assignment
@@ -138,21 +136,22 @@
 \section{Design Matters: Unbiased Is Not Enough}
 % =====================================================================
 
-\begin{frame}{Diff-in-means is unbiased. So why do anything else?}
+\begin{frame}{Don't stop at unbiased}
 \begin{itemize}
 \item<1-> Under random assignment, $\hat\tau_{DIM} = \bar Y_{T} - \bar Y_{C}$
   is unbiased for the ATE. We proved this last time. \medskip
 \item<2-> But ``unbiased'' is a statement about \textit{averages over
   hypothetical repetitions}. In any \textit{single} experiment, $\hat\tau$
   can land far from $\tau$. \medskip
-\item<3-> What we actually care about is something like \textbf{root mean
+\item<3-> What we actually care about is how far you are from the truth in your experiment. 
+\medskip
+\item<4-> As a property of a procedure, we look at \textbf{root mean
   squared error}:
   \[
   \mathrm{RMSE}(\hat\tau) = \sqrt{\E[(\hat\tau - \tau)^2]}
   = \sqrt{\Var(\hat\tau) + \mathrm{Bias}(\hat\tau)^2}
   \]
-\item<4-> For an unbiased estimator, RMSE = SD. \textbf{Reducing variance is
-  the entire game.}
+\item<4-> For an unbiased estimator, RMSE = $\sqrt{\Var{\hat\tau}}= SD$, so the goal is to ``minmize variance''.
 \end{itemize}
 \end{frame}
 
@@ -162,24 +161,15 @@
 It is easy to conflate two distinct things, both called ``variance.''
 \begin{itemize}
 \item<1-> \textbf{Actual sampling variance.} $\Var(\hat\tau)$ across
-  hypothetical repetitions of the experiment. This is the width of the
-  histograms we will draw today. We want this to be small --- it's how
-  good our estimator is.
+  hypothetical repetitions of the experiment. This is real uncertainty and we want it to be small.
+  \bigskip
 \item<2-> \textbf{Estimated variance / standard error.} A number we
   compute from our \textit{one} dataset, hoping it accurately reflects
   the actual sampling variance. We need this to be roughly correct so
   that confidence intervals cover at the right rate.
 \end{itemize}
-\medskip
-\onslide<3->
-\begin{itemize}
-\item These can be very different things. A bad SE estimator can produce
-  tight intervals around a noisy estimate (under-coverage), or vice versa.
-\item Today: \textbf{HC2 (heteroskedasticity-robust)} SEs from \texttt{lm}
-  via the \texttt{sandwich} package are the practical default for
-  randomized experiments. We'll see they work well for individual
-  assignment --- and badly for clustered assignment.
-\end{itemize}
+\bigskip
+\onslide<3-> We care about both but for different reasons. \\
 \end{frame}
 
 
@@ -210,58 +200,57 @@ It is easy to conflate two distinct things, both called ``variance.''
 \begin{frame}{What does a single experiment look like? Check balance.}
 \small
 We randomly assign half the sample to treatment. Then look at the
-covariate means by treatment status:
+covariate means by treatment status (a ``balance table''):
 
 \bigskip
 \begin{center}
 \input{figures/balance_table.tex}
 \end{center}
-\bigskip
-
-\onslide<2->
+\onslide<2-> Randomization ensures:\\
 \begin{itemize}
-\item Random assignment guarantees balance \textit{in expectation}, not in
-  any one realized sample. Some chance imbalance is inevitable.
-\item<3-> Why we ``check balance'' in experiments isn't to detect bias ---
-  randomization handles bias. It's to see what kind of \textit{chance
-  variation} this realization generated, since that variation is what
-  inflates $\Var(\hat\tau)$.
-\item<4-> Imbalance on a strong predictor of $Y$ $\Rightarrow$ noisier
-  $\hat\tau$. Imbalance on an irrelevant variable $\Rightarrow$ doesn't
-  matter.
+\footnotesize
+\item<3-> Balance \textit{in expectation}, not in
+  your sample.
+\item<4-> There is a gap, $\tau - \hat\tau$, in your sample, even though $\E[\tau - \hat\tau] = 0$.
 \end{itemize}
+\small
+\onslide<5-> Imbalance on (prognostic) covariates surface reasons to worry about (and opportunities to reduce) this gap.
 \end{frame}
 
 
 \begin{frame}{Aside: $Y$ is binary. Can we use diff-in-means / OLS?}
 \small
 \begin{itemize}
-\item<1-> Yes. The ATE is a difference of two probabilities; diff-in-means
-  estimates it directly. \medskip
-\item<2-> \texttt{lm(Y \~{} D)} returns the same point estimate as the
-  difference in means. \medskip
-\item<3-> \texttt{lm(Y \~{} D + X)} (the linear probability model) is still
+\item<1-> Yes.  ATE is a difference of two probabilities, DIM estimates it. \medskip
+\item<2-> \texttt{lm(Y $\sim$ D)} returns the same point estimate as the
+  DIM. \medskip
+\item<3-> \texttt{lm(Y $\sim$ D + X)} (the linear probability model) is still
   unbiased for the ATE under random assignment. \medskip
 \item<4-> Logit/probit are fine too --- but their coefficients are
-  \textit{not} the ATE. You'd have to compute marginal effects to recover
-  the ATE. \medskip
-\item<5-> Punch line: don't let the binary outcome scare you off OLS.
-  We'll use it throughout the simulations today.
+  \textit{not} the ATE; require computing marginal effects to recover the ATE. \medskip
+\item<5-> So: Don't let the binary outcome scare you away from OLS.
 \end{itemize}
 \end{frame}
 
 
 \begin{frame}{Simulating the simple design}
 \small
-2{,}000 replications. Each one: assign $D$, draw $Y$, run
-\texttt{lm(Y \~{} D)} and grab the HC2 SE from \texttt{sandwich}.
+2000 replications. Each one: assign $D$, draw $Y$, run
+\texttt{lm(Y $\sim$ D)}.
+\vspace{-.2cm}
 \begin{center}
-\includegraphics[width=0.72\textwidth]{figures/sim_simple.pdf}
+\includegraphics[width=0.7\textwidth]{figures/sim_simple.pdf}
 \end{center}
 \footnotesize
-\textbf{Actual SD} of $\hat\tau$ across reps: 0.016.
-\textbf{Mean HC2 SE} from a single \texttt{lm}: 0.016.
-The estimator is wide, but the SE accurately knows it.
+\vspace{-.5cm}
+\begin{itemize}
+\item<2-> \textbf{Actual SD} of $\hat\tau$ across reps: 0.016.
+\item<3-> \textbf{Estimated SEs} get HC2 SE fro \texttt{sandwich}; on average 0.016.
+\end{itemize}
+\begin{center}
+\small
+\onslide<4-> We have real uncertainty, but the estimated SE knows it.
+\end{center}
 \end{frame}
 
 
@@ -272,32 +261,29 @@ The estimator is wide, but the SE accurately knows it.
 \begin{frame}{Covariate adjustment: motivation}
 \small
 \begin{itemize}
-\item<1-> A pre-treatment $X$ that predicts $Y$ also predicts $\hat\tau$'s
-  noise: when $T$ and $C$ groups happen to differ on $X$, $\hat\tau$ moves.
-\item<2-> ``Adjusting'' for $X$ removes that contribution to the variance
-  of $\hat\tau$. \medskip
-\item<3-> Crucially: we are \textit{not} adjusting to remove bias.
-  Randomization already handled bias. We are adjusting to \textbf{reduce
-  variance}.
-\item<4-> Rule of thumb: \textit{covariate adjustment helps to the extent
-  $X$ predicts $Y$, not to the extent $X$ ``is a variable you have.''}
-\item<5-> Strong predictors (\texttt{past\_turnout}) help a lot. Weak
-  predictors (\texttt{partisan strength}) barely help. There's no harm
-  in including both, in moderation.
+\item<1-> A pre-treatment $X$ that predicts $Y$ (``prognostic''), if imbalanced, influences $\tau-\hat\tau$. 
+  \smallskip
+\item<2-> ``Adjusting'' for this $X$ removes its contribution to this gap.
+  \smallskip
+\item<3-> Thus we are adjusting to reduce variance (gaps) \textit{not} bias.
+\smallskip
+\item<4-> Strong predictors (\texttt{past\_turnout}) help a lot. Weak
+ones (e.g. \texttt{partisan strength}) barely help, but if you have enough sample, okay.
 \end{itemize}
 \end{frame}
 
 
 \begin{frame}{Adjustment ``perfects'' the balance the regression sees}
 \small
+\onslide<1-> Why does OLS with $X$ work?\\
 \begin{itemize}
-\item<1-> Why does OLS with $X$ work? Loosely: it splits $D$ into the part
+\item<1-> One way to think of it: OLS splits $D$ into the part
   predicted by $X$ and the part orthogonal to $X$, and uses only the
   orthogonal part to estimate $\tau$. \medskip
-\item<2-> By construction, the ``effective'' treatment indicator the
-  regression uses is \textit{exactly balanced} on $X$. The chance
+\item<2-> Then the ``effective'' treatment indicator the
+  regression uses is \textit{exactly balanced} on $X$; the chance
   imbalance from the previous slide is gone. \medskip
-\item<3-> So whatever variance was being driven by that imbalance also
+\item<3-> So whatever variance was driven by that imbalance also
   goes away. \medskip
 \item<4-> (Formal version --- the Frisch-Waugh-Lovell theorem --- in the
   appendix.)
@@ -305,16 +291,16 @@ The estimator is wide, but the SE accurately knows it.
 \end{frame}
 
 
-\begin{frame}{The Lin estimator (one slide)}
+\begin{frame}{Better still: The Lin Estimator}
 \small
-The simplest covariate-adjusted estimator is just:
+\onslide<1-> The simplest covariate-adjusted estimator is just:\\
 \[
 Y_i = \alpha + \tau D_i + \be' X_i + \epsilon_i \qquad
 \text{(plain OLS, fine in large samples)}
 \]
 
 \medskip
-Lin (2013) showed a small modification is essentially always weakly better:
+\onslide<2-> Lin (2013) showed a small modification is better:\\
 \[
 Y_i = \alpha + \tau_{Lin} D_i + \be_1' (X_i - \bar X) +
 \be_2' \, D_i \cdot (X_i - \bar X) + \epsilon_i
@@ -324,26 +310,28 @@ Y_i = \alpha + \tau_{Lin} D_i + \be_1' (X_i - \bar X) +
 \item Demean $X$, then interact with $D$.
 \item $\tau_{Lin}$ is interpretable directly as an ATE.
 \item Removes a small ($O(1/N)$) bias from plain regression adjustment that
-  Freedman (2008) flagged.
-\item Treat this as your default. Pre-specify the covariates.
+  Freedman (2008) flagged; deals with "weird weights under heterogenous effects" 
+  we will get to later.
+\item Use as your default, pre-specify the covariates.
 \end{itemize}
 \medskip
-\onslide<2->
-(Detailed derivation, why demeaning matters, Freedman vs.\ Lin discussion:
-appendix.)
+\onslide<3->
+(See appendix for ample details)
 \end{frame}
 
 
 \begin{frame}{Simulation: + Lin-adjusted}
+\vspace{-1cm}
 \begin{center}
 \includegraphics[width=0.72\textwidth]{figures/sim_adjusted.pdf}
 \end{center}
 \footnotesize
-Same 2{,}000 experiments. The grey bars are the simple-DIM baseline. The
-orange curve is the Lin-adjusted estimator. Same center, $\sim$25\%
+\begin{itemize}
+\item The orange curve is the Lin-adjusted estimator. Same center, $\sim$25\%
 tighter. \\[0.4ex]
-\textbf{SD(actual)} = 0.012 \quad
-\textbf{Mean HC2 SE} = 0.012 \quad ($\Rightarrow$ HC2 still nails it)
+\item  SD(actual) = 0.012 (was 0.016 without adjustment)
+\item Mean HC2 SE = 0.012 (was 0.016 without adjustment)
+\end{itemize}
 \end{frame}
 
 
@@ -362,12 +350,11 @@ tighter. \\[0.4ex]
   \footnotesize
   \item Pre-stratify on a strong predictor (e.g., quartiles of
     \texttt{past\_turnout}).
-  \item Randomize within each stratum (block).
+  \item Randomize treatment \textit{within} each stratum (block)
+  \item Obtains perfect balance on that feature, in your sample.
   \end{itemize}
-\item<3-> The randomization is still doing its job --- it's still
-  balancing all the unobserved stuff in expectation. We're just not
-  asking it to do the work on the things we already measured. \medskip
-\item<4-> \textbf{Slogan:} block what you can, adjust for what you can't.
+\item<3-> The randomization is still doing its job balancing unobserved influences, in expectation. 
+  \item<4-> ``Block on what you can, adjust for what you can't.''
 \end{itemize}
 \end{frame}
 
@@ -375,7 +362,7 @@ tighter. \\[0.4ex]
 \begin{frame}{Blocking: the estimator}
 \small
 \onslide<1-> Within each block $j$, compute the block-specific
-diff-in-means $\hat\tau_j$. Then weight by block size:
+diff-in-means $\hat\tau_j$. Then weight by block size:\\
 \[
 \hat\tau_B = \sum_{j=1}^J \frac{N_j}{N}\, \hat\tau_j
 \]
@@ -386,64 +373,65 @@ block, we can run OLS with block fixed effects:
 \[
 Y_i = \alpha + \tau D_i + \sum_{j=2}^J \beta_j B_{j[i]} + \epsilon_i
 \]
-\onslide<3->
-\begin{itemize}
-\footnotesize
-\item Caveat: with unequal treatment probabilities across blocks, plain
-  block-FE OLS gives a (weighted) ATE that may not be what you want; use
-  the block-weighted form above. (Aside on ``weird weighting'' later in
-  the course.)
-\end{itemize}
+\onslide<3-> If treatment probability is not equal in all blocks, the Lin-style interacted regression, IPW, 
+and the block-DIM average all recover the ATE and are numerically identical (Shinkre \& Hazlett 2025).
 \end{frame}
 
 
-\begin{frame}{Simulation: + blocked}
+\begin{frame}{Simulation: + blocking}
+\small 
+\onslide<1-> A great choice for blocking: the pre-treatment outcome! 
+\begin{itemize}
+\item<2-> Here, block on quartiles of \texttt{past\_turnout}.
+\end{itemize}
+\onslide<3->
 \begin{center}
-\includegraphics[width=0.72\textwidth]{figures/sim_blocked.pdf}
+\includegraphics[width=0.7\textwidth]{figures/sim_blocked.pdf}
 \end{center}
 \footnotesize
-Add the green curve: blocking on \texttt{past\_turnout} quartiles. Lands
-essentially on top of the Lin-adjusted curve in this DGP. \\[0.4ex]
-\textbf{SD(actual)} = 0.012 \quad \textbf{Mean HC2 SE} = 0.012 \quad
-(also fine) \\
-Sometimes blocking strictly beats post-hoc adjustment; in well-behaved
-cases the two converge.
+\begin{itemize}
+\item Green = dist. of $\hat{\tau}$ from blocking
+\item Matches Lin here, not always the case.
+\item SD(actual) = 0.012; Mean HC2 SE = 0.012
+\end{itemize}
 \end{frame}
 
 
 \begin{frame}{When does blocking help most? Intuition}
 \begin{itemize}
-\item Blocking helps a lot when the blocking variable \textit{strongly
+\item<1-> Blocking helps a lot when the blocking variable \textit{strongly
   predicts $Y$}. Then within-block variation in $Y$ is small, so the
   diff-in-means within each block is sharp.
-\item Blocking on something unrelated to $Y$ is essentially free, but
-  also essentially useless.
-\item In our sim, we blocked on \texttt{past\_turnout}, which is the
-  dominant predictor of voting --- so we got a large gain.
-\item (Formal variance comparison in the appendix.)
+  \medskip
+\item<2-> Blocking on something unrelated to $Y$ is free except DoF cost, but useless.
+\medskip
+\item<3-> In our sim, strong gain because cor(post\_turnout,turnout) $\approx$ 0.8.
+\medskip
+\item<4-> Formal variance comparison in the appendix.
 \end{itemize}
 \end{frame}
 
 
-\begin{frame}{A canonical real example: Gerber, Green, \& Larimer (2008)}
+\begin{frame}{Canonical example: Gerber, Green, \& Larimer (2008)}
 \small
 \begin{itemize}
-\item Field experiment on social pressure and voter turnout (Michigan
-  primary, 2006).
-\item Several mailings, including one revealing each voter's past turnout
+\item<1-> Experiment on what can influence voter turnout
+\item<2-> Several mailings, including one revealing each voter's past turnout
   to their neighbors.
-\item \textbf{Design:}
+\item<3-> \textbf{Design:}
   \begin{itemize}
   \footnotesize
   \item Blocked on household composition and prior vote history.
-  \item Randomized at the \textit{household} level, not the individual
-    level. (Foreshadows the next section.)
   \end{itemize}
-\item \textbf{Result:} the ``neighbors'' treatment moved turnout by
+  \small
+\item<4-> \textbf{Result:} the ``neighbors'' treatment moved turnout by
   ${\approx}\,8$ percentage points --- enormous for a piece of mail.
-\item \textbf{Why we cite this design:} the blocking + household clustering
-  match the situation we're simulating today. Their estimator is precise
-  because the design earned it, not because the analysis fixed it.
+\item<5-> Relevance here:
+\footnotesize
+\begin{itemize}
+\item The blocking is powerful -- shows importance of good design.
+\item Randomization is clustered at household level -- we will talk about its implications next. 
+\end{itemize}
 \end{itemize}
 \end{frame}
 
@@ -452,147 +440,130 @@ cases the two converge.
 \section{Non-Independence and Clustering}
 % =====================================================================
 
-\begin{frame}{Two problems from non-independence}
+\begin{frame}{Clustering: Two problems from non-independence}
 \small
-So far we've assumed observations are (conditionally) independent. Real
-settings often violate this --- voters in the same precinct, students in
-the same classroom, repeated measures on the same person. \medskip
-
-Two distinct things can go wrong, and they need different fixes:
+\onslide<1-> So far we've quietly assumed observations are (conditionally) independent. \\
+\begin{itemize}
+\item<2-> Real settings often violate this --- voters in the same precinct, students in
+the same classroom, repeated measures on the same person.
+\end{itemize}
+\medskip
+\onslide<3-> Two different things called ``clustering'' can be trouble:\\\
 \begin{enumerate}
-\item \textbf{Clustered assignment.} Treatment is assigned at the group
-  level (precinct, village, school). The point estimate itself becomes
-  noisier --- the experiment is worse.
-\item \textbf{Dependent residuals.} Even with individual assignment,
-  residuals can be correlated within a group, and SEs that ignore this
-  can be wrong.
+\item<4-> \textbf{Clustered assignment/ cluster-randomization}. Sometimes necessary to assigne 
+treatment at group level (precinct, village, school). This is bad news for actual variance/noise and may mess up estimated SE relative to that. 
+\item<5-> \textbf{Dependent residuals within clusters}. Even with individual assignment,
+  residuals can be correlated within a group (e.g. panel data); estimated SEs that ignore this
+  can be wrong, usually too small.
 \end{enumerate}
 \end{frame}
 
 
 \begin{frame}{Simulation: cluster-randomize at the precinct level}
+Same DGP but now everyone in a precinct gets the same $D$.
 \begin{center}
 \includegraphics[width=0.72\textwidth]{figures/sim_clustered.pdf}
 \end{center}
 \footnotesize
-Same DGP, same $\tau$, but treatment is now assigned at the
-\textbf{precinct} level (everyone in a precinct gets the same $D$). The
-red curve is enormously wider than the individual-assignment baseline.
-Each precinct contributes essentially one ``decision'' --- with 100
-precincts, that's a much smaller experiment than $N = 4{,}000$ suggests.
+\medskip
+\onslide<2-> Eek! Red curve shows you get much bigger gaps (high variance)
 \end{frame}
 
 
-\begin{frame}{HC2 is wrong here. CR-SE fixes it.}
+\begin{frame}{And the (HC2) SE is wrong...but CR-SE fixes it.}
 \small
 \begin{center}
 \begin{tabular}{lccc}
 \toprule
 Estimator & SD(actual) & HC2 SE & CR-SE (precinct) \\
 \midrule
-Simple DIM (\texttt{lm(Y\~{}D)})       & 0.016 & \textbf{0.016} & 0.016 \\
-Lin-adjusted                            & 0.012 & \textbf{0.012} & --- \\
-Blocked (block FEs)                     & 0.012 & \textbf{0.012} & --- \\
-Cluster-randomized                      & \textbf{0.028} & 0.016 & \textbf{0.028} \\
+Simple DIM (\texttt{lm(Y $\sim$ D)})       & 0.016 & 0.016 & 0.016 \\
+Lin-adjusted                            & 0.012 & 0.012 & --- \\
+Blocked (block FEs)                     & 0.012 & 0.012 & --- \\
+Cluster-randomized                      & \textbf{0.028} & \textbf{0.016} & \textbf{0.028} \\
 \bottomrule
 \end{tabular}
 \end{center}
+\footnotesize
 \onslide<2->
 \begin{itemize}
-\item HC2 assumes independent observations. With cluster-level assignment
-  everyone in a precinct shares the same $D$ --- that assumption is
-  badly violated.
+\item HC2 assumes independent residuals but cluster-influences + cluster-assignment
+ badly violates this.
 \item Cluster-robust SE (clustered at the precinct level) recovers the
   actual sampling variance almost exactly. In R:\\
   \texttt{\quad sandwich::vcovCL(fit, cluster = precinct\_id)}.
-\item The CR-SE is not magic --- it estimates the actual within-cluster
-  residual covariance from the data, not the worst-case ``$N = $ number
-  of clusters.''
 \end{itemize}
 \end{frame}
 
 
 \begin{frame}{When do you actually need CR-SEs? The principle}
 \small
-\textbf{You need cluster-robust SEs when there is a source of common
-influence on outcomes within a cluster, \textit{and} that influence is
-not canceled out by treatment variation within the cluster.}
+You need cluster-robust SEs when there is (i) a source of common
+influence on outcomes within a cluster, \textit{and} (ii) that influence is
+not canceled out by treatment variation within the cluster.
 \medskip
-\onslide<2->
-Two ingredients are required:
 \begin{enumerate}
-\item A cluster-shared component in $Y$ (a precinct effect $u_c$, a
+\item<2-> A cluster-shared component in $Y$, call it $U_c$ -- a precinct effect, a
   school's teacher quality, a household's news diet, a person's baseline
   level in panel data).
-\item A failure of within-cluster $T/C$ variation to cancel that
+\item<3-> A failure of within-cluster $T/C$ variation to cancel that
   component out of the residuals.
 \end{enumerate}
 \medskip
 \onslide<3->
-Either ingredient \textit{alone} is harmless:
+Either ingredient \textit{alone} is harmless (for the SE \textit{estimation})
 \begin{itemize}
 \footnotesize
-\item No cluster-shared component $\Rightarrow$ residuals are iid
-  $\Rightarrow$ HC2 is fine. (Even cluster-randomized assignment has no
-  penalty --- we verified this in simulation.)
-\item Cluster-shared component, but balanced individual assignment within
-  cluster $\Rightarrow$ the diff-in-means cancels $u_c$ $\Rightarrow$
+\item<4-> No cluster-shared component $\Rightarrow$ residuals are iid
+  $\Rightarrow$ HC2 is fine, even if cluster-randomized. 
+\item<5-> Cluster-shared component, but treatment varies within
+  cluster  $\Rightarrow$ the diff-in-means cancels $u_c$ $\Rightarrow$
   HC2 is fine.
 \end{itemize}
 \medskip
-\onslide<4->
-\textbf{Both at once is the dangerous case.} Cluster-shared $u_c$
-\textit{and} no within-cluster treatment variation to break it up. That
-is exactly our cluster-randomized precinct example.
+\onslide<6->
+\textbf{Both at once is the dangerous case.} Cluster-level influences on $Y$ and cluster-assignment -- our case above.
 \end{frame}
-
 
 \begin{frame}{Where ``both at once'' shows up in practice}
 \small
 \begin{itemize}
 \item<1-> \textbf{Cluster-randomized treatment} (precincts, villages,
   schools, clinics). Same $D$ for the whole cluster; $u_c$ rides with $D$.
+  \smallskip
 \item<2-> \textbf{Repeated measures / panel data with unit-level
   treatment.} Same person observed many times, ``treated'' or ``control''
   the whole way through. The person plays the role of the cluster; their
   idiosyncratic level rides with $D$. Mechanically identical to
   cluster-randomized.
-\item<3-> \textbf{Spillovers within a group.} Treating one household
-  member effectively treats the rest, so the whole household shares one
-  effective $D$.
-\item<4-> \textbf{Treatment probabilities that differ by cluster.} Even
-  with individual assignment, asymmetric $T/C$ proportions stop $u_c$
-  from cancelling cleanly.
+  \smallskip
+\item<3-> \textbf{Treatment probabilities that differ by cluster.} Even
+  with individual assignment, asymmetric $T/C$ proportions correlated with $u_c$
+  prevent it from cancelling cleanly.
+  \smallskip
 \item<5-> \textbf{Heterogeneous treatment effects by cluster.} $\tau_c$
   varies across clusters; the residual carries a $\tau_c D_i$ piece that
   is cluster-correlated on the treated side and doesn't cancel.
 \end{itemize}
-\medskip
-\onslide<6->
-\textbf{Subtle but real:} ``students within schools'' with individual,
-balanced random assignment within school is \textit{not} automatically a
-case for CR-SEs. It usually is in practice --- because one of (1)--(5) is
-hiding in the design --- but not from the nesting alone.
 \end{frame}
 
 
 \begin{frame}{Catches with CR-SEs}
 \small
 \begin{itemize}
-\item<1-> \textbf{They are not free.} CR-SEs can be substantially
-  conservative when within-cluster residual correlation is weak ---
-  intervals widen, power drops, with no coverage gain.
-\item<2-> \textbf{Few clusters is a real problem.} The standard CR-SE
-  estimator (\texttt{vcovCL} / Liang--Zeger) is downward biased with
-  $C \lesssim 30$--$50$ clusters; rejection rates from the resulting
-  $t$-tests can be far above nominal.
+\item<1-> \textbf{They are not free.} CR-SEs can be 
+  conservative when--- intervals widen, power drops.
+\item<2-> \textbf{But it is not} as bad as ``having only $N_{cluster}$ observations'': CR-SE estimates within-cluster correlation. 
+\item<3-> \textbf{Few clusters is a real problem.} The standard CR-SE
+  estimator (\texttt{vcovCL}) is downward biased with fewer then (roughly!) 50 clusters.
 \item<3-> \textbf{Fixes for few clusters:}
   \begin{itemize}
   \footnotesize
-  \item Wild cluster bootstrap (Cameron, Gelbach \& Miller 2008):
-    \texttt{fwildclusterboot} in R, \texttt{boottest} in Stata.
+  \item ``Block boostrap'': Resample whole clusters with replacement. 
+  \item Wild cluster bootstrap 
+    \texttt{fwildclusterboot} in R.
   \item Randomization inference at the cluster level.
-  \item Aggregate to the cluster level and run the analysis there.
+  \item Aggregate to the cluster level and run the analysis there (extremely conservative)
   \end{itemize}
 \end{itemize}
 \end{frame}
@@ -602,37 +573,22 @@ hiding in the design --- but not from the nesting alone.
 \section{Wrap}
 % =====================================================================
 
-\begin{frame}{Same experiment, four designs and analyses}
-\begin{center}
-\includegraphics[width=0.78\textwidth]{figures/sim_combined.pdf}
-\end{center}
-\small
-Same DGP, same true $\tau = 0.05$. None of these estimators is biased ---
-they differ entirely in precision. Both \textit{design} (blocking,
-avoiding unnecessary clustering) and \textit{analysis} (covariate
-adjustment) deliver real gains.
-\end{frame}
-
-
 \begin{frame}{Takeaways}
 \begin{itemize}
 \item \textbf{Unbiasedness is not enough.} The same experiment can be run
   more or less precisely; that's what we're paying attention to today.
 \medskip
-\item \textbf{Adjustment works.} Covariate adjustment recovers real
+\item \textbf{Adjustment is good.} Covariate adjustment recovers real
   precision when $X$ predicts $Y$. Use Lin's interacted form, with HC2
-  SEs, and pre-specify the covariates.
+  SEs; pre-specify the covariates.
 \medskip
-\item \textbf{Design works too, often without paying anything for it.}
-  Block on what you can; adjust for what you can't. The two are
-  complements, not substitutes.
+\item \textbf{Design is paramount.} Block on what you can; adjust for what you can't. 
+The two are complements, not substitutes.
 \medskip
 \item \textbf{Cluster on the source of dependence in your residuals},
-  not on every group you can think of. Watch the few-clusters case and
-  reach for the wild bootstrap when needed.
+  not on every group you can think of. Watch out for too-few-clusters and use an appropriate alternative when needed.
 \medskip
-\item Next: what if we can't randomize at all?
-  \textbf{Selection on observables.}
+\item Next: what if we can't randomize at all? \textbf{Selection on observables.}
 \end{itemize}
 \end{frame}
 
