@@ -1,0 +1,5 @@
+Estimator       Mean       SD(actual)  Mean(HC2 SE)  RMSE
+simple         +0.0429    0.0155      0.0158        0.0170
+adjusted       +0.0429    0.0117      0.0119        0.0137
+blocked        +0.0429    0.0114      0.0117        0.0134
+clustered      +0.0423    0.0276      0.0159        0.0287
