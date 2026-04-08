@@ -1,0 +1,80 @@
+\documentclass[12pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+
+\newcommand\E{\mathbb{E}}
+
+\setlist{nosep}
+
+\begin{document}
+
+\noindent
+\textbf{Name:} \rule{3in}{0.4pt}
+
+\vspace{0.5cm}
+
+\begin{center}
+    {\Large \textbf{In-Class Activity: Experiments II}}\\[0.2cm]
+    {\large PS200C: Causal Inference in the Social Sciences}\\
+    {\large Spring 2026}
+\end{center}
+
+\vspace{0.5cm}
+
+\noindent
+\textbf{Scenario.} You are running a small GOTV experiment in a county.
+You have $N = 800$ registered voters, organized into 200 households of
+4 voters each. For each voter you observe \texttt{past\_turnout}, an
+index of voting in recent elections that is a strong predictor of
+whether they will vote next time. You will randomize a mailer treatment
+$D$ and measure $Y \in \{0,1\}$, whether each voter votes.
+
+\vspace{0.4cm}
+
+\begin{enumerate}
+
+\item \textbf{Variance, not bias.}
+A colleague says: ``Since random assignment makes the difference in
+means unbiased, we don't need to bother adjusting for
+\texttt{past\_turnout}.'' In one or two sentences, are they right?
+Why or why not?
+
+\vspace{2.5cm}
+
+\item \textbf{Block, adjust, or both?}
+Would also \emph{blocking} on quartiles of \texttt{past\_turnout}
+help, on top of regression adjustment? When does blocking add the
+most?
+
+\vspace{2.5cm}
+
+\item \textbf{Clustering.}
+Suppose for logistical reasons you have to send the mailer to whole
+households at a time --- everyone in a household either gets $D=1$ or
+everyone gets $D=0$.
+
+\begin{enumerate}[label=(\alph*)]
+    \item Should you cluster your standard errors? On what unit?
+
+    \vspace{2cm}
+
+    \item Why? Tie your answer to the principle from lecture.
+
+    \vspace{2.5cm}
+\end{enumerate}
+
+\clearpage
+
+\item \textbf{What does an SE actually tell you?}
+If a standard error is properly estimated, what real thing about
+your experiment and analysis is it telling you? (One or two
+sentences --- connect the SE to the distribution of $\hat\tau$ across
+hypothetical repetitions of the same experiment.)
+
+\vspace{3cm}
+
+\end{enumerate}
+
+\end{document}
