@@ -13,7 +13,7 @@ title: Slides
 | Potential Outcomes Model | [PDF](pdf/slides/pom_handout.pdf) | |
 | Experiments I | [PDF](pdf/slides/exp_part1_handout.pdf) | [PDF](pdf/activities/activity02_experiments.pdf) |
 | Experiments II | [PDF](pdf/slides/exp_part2_handout.pdf) | [PDF](pdf/activities/activity03_experiments2.pdf) |
-| Selection on Observables I | [PDF](pdf/slides/SOO_part1_2026_handout.pdf) | |
+| Selection on Observables I | [PDF](pdf/slides/SOO_part1_2026_handout.pdf) | [PDF](pdf/activities/activity04_soo.pdf) |
 
 <!-- Uncomment as the quarter progresses:
 | Selection on Observables II | [PDF](pdf/slides/soo_part2_handout.pdf) | |

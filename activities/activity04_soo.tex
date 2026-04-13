@@ -1,0 +1,110 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+\usepackage{booktabs}
+
+\newcommand{\indep}{{\bot\negthickspace\negthickspace\bot}}
+\DeclareMathOperator{\E}{\mathbb{E}}
+
+\pagestyle{plain}
+
+\begin{document}
+
+\begin{center}
+{\Large \textbf{PS200C: Quantitative Methods}} \\[6pt]
+{\large In-class Activity: Selection on Observables}
+\end{center}
+
+\vspace{4pt}
+\noindent\textbf{Name(s):} \hrulefill
+
+\vspace{14pt}
+
+%%% QUESTION 1 %%%
+\noindent\textbf{Question 1: The identification argument}
+
+\medskip
+\noindent Suppose you assume conditional ignorability: $\{Y_{1i}, Y_{0i}\} \indep D_i \mid X_i$.
+
+\begin{enumerate}[label=(\alph*)]
+\item In one sentence, what does this assumption say in plain English?
+
+\vspace{2cm}
+
+\item What are some other names for this assumption?
+
+\vspace{2cm}
+\end{enumerate}
+
+
+%%% QUESTION 2 %%%
+\noindent\textbf{Question 2: Evaluating SOO claims}
+
+\medskip
+\noindent For each study, state what the SOO/CI assumption would require, and whether you find it plausible.
+
+\begin{enumerate}[label=(\alph*)]
+\item A researcher estimates the effect of college attendance on earnings by comparing college-goers to non-goers, ``controlling for'' high school GPA, parental income, and state of residence.
+
+\vspace{2.5cm}
+
+\item Blattman \& Annan (2009) estimate the effect of abduction by the LRA on education, conditioning on village location and age, arguing that abduction was quasi-random conditional on these variables.
+
+\vspace{2.5cm}
+\end{enumerate}
+
+\newpage
+
+%%% QUESTION 3 %%%
+\noindent\textbf{Question 3: Post-treatment variables}
+
+\medskip
+\noindent A randomized job training program ($D$) aims to increase earnings ($Y$).  A researcher notices that some treated individuals dropped out of the program early, and restricts the analysis to ``completers'' vs.\ controls.
+
+\begin{enumerate}[label=(\alph*)]
+\item Is ``program completion'' a pre-treatment or post-treatment variable?
+
+\vspace{1cm}
+
+\item Why could restricting to completers bias the estimate, even though $D$ was randomly assigned?  (Think about what kinds of people complete vs.\ drop out.)
+
+\vspace{2.5cm}
+
+\end{enumerate}
+
+
+%%% QUESTION 4 %%%
+\noindent\textbf{Question 4: Subclassification}
+
+\medskip
+\noindent You have two strata defined by a covariate $X \in \{\text{low}, \text{high}\}$:
+
+\begin{center}
+\begin{tabular}{@{} l c c c @{}}
+\toprule
+Stratum & $\bar Y$ (treated) & $\bar Y$ (control) & $N_j$ (total) \\
+\midrule
+$X = \text{low}$  & 12 & 8 & 60 \\
+$X = \text{high}$ & 20 & 18 & 40 \\
+\midrule
+Total & & & 100 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[label=(\alph*)]
+\item Compute the subclassification estimate of the ATE.
+
+\vspace{2cm}
+
+\item Suppose the treated group is disproportionately in the ``high'' stratum.  Would you expect the unadjusted DIM to overestimate or underestimate the ATE?  Why?
+
+\vspace{2.5cm}
+
+\item Under what assumption is your answer to (a) a valid causal effect?
+
+\vspace{2cm}
+\end{enumerate}
+
+\end{document}
