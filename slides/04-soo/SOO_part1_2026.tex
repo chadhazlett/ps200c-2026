@@ -1,0 +1,472 @@
+\documentclass[xcolor=dvipsnames]{beamer}
+%\documentclass[handout,xcolor=dvipsnames]{beamer}
+
+% == Packages for beamer
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{fancybox}
+\usepackage{hyperref}
+\usepackage{amsmath,amssymb,amsfonts,bm}
+\usepackage{wasysym}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage[english]{babel}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{multirow}
+
+% == Other Packages
+\usepackage{rotating}
+\usepackage{latexsym}
+\usepackage{ulem}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta}
+
+% == theme & colors
+\usetheme{Warsaw}
+\usepackage{helvet}
+\definecolor{someblue}{rgb}{0,.1,0.8}
+\definecolor{dgreen}{rgb}{0,.6,0.8}
+\useoutertheme{infolines}
+
+% == New Commands
+\newcommand\spacingset[1]{\renewcommand{\baselinestretch}{#1}\small\normalsize}
+\renewcommand\r{\right}
+\renewcommand\l{\left}
+\newcommand\makegaps{\addtolength{\itemsep}{.25\baselineskip}}
+\newcommand\makebiggaps{\addtolength{\itemsep}{.5\baselineskip}}
+
+% = For stats & econometrics
+\renewcommand{\epsilon}{\varepsilon}
+\newcommand\E{\mathbb{E}}
+\newcommand\V{\mathbb{V}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand\indep{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\newtheorem{iass}{Identification Assumption}
+\newtheorem{ires}{Identification Result}
+
+\graphicspath{{figures/}{images/}}
+
+\title[]{Selection on Observables I: The Assumption}
+\subtitle[ ]{PS200C, Spring 2026}
+\author[Hazlett]{Chad Hazlett}
+\institute[UCLA]{UCLA\\[1ex]
+  \texttt{chazlett@ucla.edu}
+}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+
+%% =====================================================================
+\section{From Experiments to Observational Studies}
+%% =====================================================================
+
+\begin{frame}{What changes without randomization?}
+\small
+\onslide<1-> In an experiment, random assignment guarantees ignorability:
+$$\{Y_{1i}, Y_{0i}\} \indep D_i$$
+
+\onslide<2-> In an observational study, treatment is not randomly assigned.  Units may select into treatment in ways related to their potential outcomes.\\
+
+\medskip
+\onslide<3-> So: $\E[Y_i \mid D_i=1] - \E[Y_i \mid D_i=0]$ may not equal $\E[Y_{1i} - Y_{0i}]$.\\
+
+\bigskip
+\onslide<4-> \textbf{The question}: Can we recover causal effects anyway, by adjusting for observed covariates $X$?
+\end{frame}
+
+
+\begin{frame}{The First Commandment of Causal Inference}
+\small
+\onslide<1->
+\begin{center}
+\large \textit{No causal claim without a supporting}\\[4pt]
+\textit{causal assumption.}
+\end{center}
+
+\bigskip
+\onslide<2-> The assumption does the identifying work.  The estimator is secondary.\\
+
+\medskip
+\onslide<3-> Corollaries:
+\begin{itemize}
+\footnotesize
+\item<3-> ``We used matching'' is not a causal argument.
+\item<4-> ``We controlled for everything we could think of'' is not a causal argument.
+\item<5-> ``We used machine learning to select controls'' is not a causal argument.
+\end{itemize}
+
+\bigskip
+\onslide<6-> \small All of these are \textit{estimation} choices.  They serve a causal claim only if the underlying \textit{identification assumption} is credible.
+\end{frame}
+
+
+\begin{frame}{Setting}
+\small
+\onslide<1->
+\begin{itemize}
+\item Units: $i = 1, \ldots, N$
+\item Treatment: $D_i \in \{0,1\}$, \textbf{not} randomly assigned
+\item Potential outcomes: $Y_{0i}$, $Y_{1i}$
+\item Pre-treatment covariates: $X_i$ (a vector)
+\item Quantity of interest: $\tau_{ATE} = \E[Y_{1i} - Y_{0i}]$
+\end{itemize}
+
+\bigskip
+\onslide<2-> A covariate $X$ is a \textbf{confounder} if it is associated with both treatment $D$ and the potential outcomes $Y_d$.
+\end{frame}
+
+
+%% =====================================================================
+\section{Conditional Ignorability}
+%% =====================================================================
+
+\begin{frame}{The Assumption: Conditional Ignorability}
+\small
+\onslide<1->
+\begin{iass}[Conditional Ignorability / Selection on Observables]
+$$\{Y_{1i}, Y_{0i}\} \indep D_i \mid X_i$$
+\end{iass}
+
+\onslide<2-> This assumption has many names:
+\begin{itemize}
+\footnotesize
+\item Conditional ignorability (CI)
+\item Selection on observables (SOO)
+\item No unmeasured confounders
+\item Conditional exchangeability
+\item ``Backdoor criterion satisfied'' (in DAG language)
+\end{itemize}
+
+\bigskip
+\onslide<3-> Read it as: \textit{among units with the same $X$, treatment assignment is as good as random.}
+\end{frame}
+
+
+\begin{frame}{What would make CI true?}
+\small
+\onslide<1-> \textbf{By design}: a conditionally randomized experiment (e.g., block-randomized with different treatment probabilities per stratum).  Then CI holds by construction.\\
+
+\bigskip
+\onslide<2-> \textbf{In observational work}: you must \textit{argue} that $X$ captures all common causes of $D$ and $Y$.  This requires substantive knowledge, not statistical testing.\\
+
+\medskip
+\onslide<3->
+\begin{itemize}
+\footnotesize
+\item<3-> CI is \textbf{not verifiable from the data}.  You cannot check whether unobserved confounders exist by looking at observed balance.
+\item<4-> Good balance on $X$ should be achieved (or implied) by any decent estimator.  You should worry about \textit{unobserved} confounders remaining imbalanced.
+\item<5-> The credibility of CI depends on the \textit{story}: what determined treatment, and have you measured all of it?
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Common Support}
+\small
+\onslide<1-> CI alone is not enough.  We also need:
+\begin{iass}[Common Support / Overlap]
+$$0 < \Pr(D_i = 1 \mid X_i = x) < 1 \quad \text{for all } x$$
+\end{iass}
+
+\onslide<2-> Every type of unit (every value of $X$) must have a positive probability of receiving either treatment or control.\\
+
+\medskip
+\onslide<3-> This can pose trouble when the probability of treatment (or control) is very high or very low for some units --- there may be little or no information about the missing counterfactual in that region of $X$.
+\end{frame}
+
+
+\begin{frame}[t]{Identification of the ATE Under CI}
+\small
+\onslide<1-> \textcolor{Blue}{Quantity of Interest}: $\tau_{ATE} = \E[Y_{1i} - Y_{0i}]$\\[8pt]
+
+\onslide<2-> \textcolor{Blue}{Step 1}: Within each $X$ stratum, CI gives you an ``experiment'':
+\footnotesize
+\begin{align*}
+\E[Y_{1i} - Y_{0i} \mid X\!=\!x] &= \E[Y_i \mid D\!=\!1, X\!=\!x] - \E[Y_i \mid D\!=\!0, X\!=\!x]
+\end{align*}
+\small (by ignorability + consistency, just as in the experimental case)\\
+
+\bigskip
+\onslide<3-> \textcolor{Blue}{Step 2}: Put the strata back together:
+\footnotesize
+\begin{align*}
+\tau_{ATE} = \E[Y_{1i} - Y_{0i}] &= \sum_x \E[Y_{1i} - Y_{0i} \mid X\!=\!x]\;\Pr(X\!=\!x)\\
+&= \sum_x \big(\E[Y_i \mid D\!=\!1, X\!=\!x] - \E[Y_i \mid D\!=\!0, X\!=\!x]\big)\;\Pr(X\!=\!x)
+\end{align*}
+\small
+
+\onslide<4-> Within-stratum effects, averaged over the population distribution of $X$.  The RHS is all observable (by common support), so the ATE is identified.
+\end{frame}
+
+
+\begin{frame}{Don't Condition on Post-Treatment Variables}
+\small
+\onslide<1-> CI requires conditioning on \textit{pre-treatment} covariates.  Conditioning on a variable affected by treatment can \textbf{create} bias even if the original assignment was random.\\
+
+\bigskip
+\onslide<2-> \textbf{Example}: A city randomizes a community policing program across neighborhoods.  You want the effect on crime.\\
+\begin{itemize}
+\footnotesize
+\item<3-> Some neighborhoods gentrify after getting the program (post-treatment).
+\item<4-> You restrict analysis to ``neighborhoods that didn't gentrify.''
+\item<5-> But gentrification is driven by both the program (treatment) and pre-existing wealth (confounder).
+\item<6-> Restricting to non-gentrified neighborhoods has a different impact in treated vs.\ control units: the treated group will contain a larger proportion of less affluent neighborhoods than the control group.
+\item<7-> This ``breaks the randomization'' --- it creates a confounder that wasn't there before.
+\end{itemize}
+
+\bigskip
+\onslide<8-> \footnotesize This is \textit{collider bias} / \textit{post-treatment conditioning}.  DAGs make this transparent.
+\end{frame}
+
+
+%% =====================================================================
+\section{Subclassification: The Cochran Smoking Example}
+%% =====================================================================
+
+\begin{frame}{Estimation Under CI: The Idea}
+\small
+\onslide<1-> The identification result says: compute treatment effects \textit{within strata of $X$}, then average over the population distribution of $X$.\\
+
+\medskip
+\onslide<2-> \textbf{Subclassification} (stratification) does this literally when $X$ is discrete:
+\begin{enumerate}
+\footnotesize
+\item Divide units into strata defined by $X$
+\item Compute the within-stratum DIM: $\hat\tau_j = \bar Y_{1j} - \bar Y_{0j}$
+\item Average: $\hat\tau_{ATE} = \sum_{j=1}^J \frac{N_j}{N}\, \hat\tau_j$
+\end{enumerate}
+
+\bigskip
+\onslide<3-> This is transparent and requires no modeling.  But it breaks down with many covariates or continuous $X$ (curse of dimensionality).  That's where matching, weighting, and regression come in --- next time.
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Example: Smoking and Mortality (Cochran 1968)}
+\small
+Unadjusted death rates per 1,000 person-years:
+
+\begin{center}
+\begin{tabular}{@{} l c c c @{}}
+\toprule
+ & Canada & U.K. & U.S.\\
+\midrule
+Non-smokers     & 20.2 & 11.3 & 13.5 \\
+Cigarette only  & 20.5 & 14.1 & 13.5 \\
+Cigars/pipes    & 35.5 & 20.7 & 17.4 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\bigskip
+\onslide<2-> Pipe/cigar smokers die at much higher rates.  Causal effect of smoking?
+
+\onslide<3-> \medskip
+Or could something else explain this?
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{The Confounder: Age}
+\small
+Mean ages by smoking group:
+
+\begin{center}
+\begin{tabular}{@{} l c c c @{}}
+\toprule
+ & Canada & U.K. & U.S.\\
+\midrule
+Non-smokers     & 54.9 & 49.1 & 57.0 \\
+Cigarette only  & 50.5 & 49.8 & 53.2 \\
+Cigars/pipes    & 65.9 & 55.7 & 59.7 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\bigskip
+\onslide<2-> Pipe/cigar smokers are \textit{much older} on average.\\
+\medskip
+\onslide<3-> Age is associated with both smoking type and death rate --- it is a confounder.  Can we adjust for it?
+\end{frame}
+
+
+\begin{frame}{Subclassification Reveals the Effect}
+\small
+\onslide<1-> Fabricated data inspired by the U.S.\ figures (death rates per 1,000 person-years):
+
+\begin{center}
+\footnotesize
+\begin{tabular}{@{} l c c c c c @{}}
+\toprule
+Age group & Rate (Cig) & Rate (Non) & Effect & $N$ (Cig) & $N$ (Non) \\
+\midrule
+$<45$    & 5  & 3  & $+2$  & 40 & 10 \\
+$45$--$54$ & 10 & 5  & $+5$  & 30 & 20 \\
+$55$--$64$ & 20 & 10 & $+10$ & 20 & 30 \\
+$65+$    & 45 & 23 & $+22$ & 10 & 40 \\
+\midrule
+Pooled   & 13.5 & 13.5 & $0$ & 100 & 100 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\onslide<2-> Within every age group, smokers die at higher rates.  But the pooled difference is \textbf{zero} --- because smokers are younger.\\
+
+\medskip
+\onslide<3-> Subclassification (each group has $N_j = 50$):
+$$\hat\tau_{ATE} = \frac{1}{4}\big(2 + 5 + 10 + 22\big) = 9.75$$
+
+\onslide<4-> The confounding hid an effect of nearly 10 deaths per 1,000 person-years.
+\end{frame}
+
+
+\begin{frame}{The Most Important Slide}
+\small
+\onslide<1-> Pause and ask: \\
+\begin{itemize}
+\item<2-> What \textbf{assumptions} did we need to interpret the smoking--mortality estimates causally?
+\medskip
+\item<3-> State it as CI: $\{Y_{1i}, Y_{0i}\} \indep D_i \mid X_i$.  What is $X$ here?
+\medskip
+\item<4-> State the assumption in terms of ``unobserved confounders.''
+\medskip
+\item<5-> Do you believe it?  What unmeasured confounder could violate CI?
+\medskip
+\item<6-> Can you \textit{test} CI with data?  What can you test?
+\end{itemize}
+
+\bigskip
+\onslide<7-> \textbf{This} is the hard part --- not the estimator.
+\end{frame}
+
+
+%% =====================================================================
+\section{A Good Example: Blattman \& Annan (2009)}
+%% =====================================================================
+
+\begin{frame}{Example: Blattman \& Annan (2009)}
+\small
+\begin{quote}
+\footnotesize
+``The Consequences of Child Soldiering.'' \textit{Review of Economics and Statistics}.
+\end{quote}
+
+\medskip
+\onslide<2-> \textcolor{Blue}{Question}: What is the effect of abduction by the Lord's Resistance Army (LRA) on education and earnings?\\
+
+\bigskip
+\onslide<3-> \textcolor{Blue}{ID strategy}: Selection on observables.\\
+\footnotesize
+\begin{quote}
+``Abduction was large-scale and seemingly indiscriminate; 60,000 to 80,000 youth are estimated to have been abducted\ldots Youth were typically taken by roving groups of 10 to 20 rebels during night raids on rural homes. Adolescent males appear to have been the most pliable, reliable and effective forced recruits, and so were disproportionately targeted.''
+\end{quote}
+
+\small
+\onslide<4-> That's the key -- it is arguing that \textit{conditional on age and location}, abduction ``as is'' random; no other confounders. 
+\end{frame}
+
+
+\begin{frame}{Blattman \& Annan: Evaluating the SOO Claim}
+\small
+\onslide<1-> \textcolor{Blue}{Data}: panel survey of male youth in war-affected regions of Uganda.\\
+\footnotesize
+\begin{itemize}
+\item \texttt{abd}: abducted by LRA (the treatment)
+\item \texttt{c\_ach}, \ldots, \texttt{c\_pal}: location indicators
+\item \texttt{age}: age in years
+\item \texttt{fthr\_ed}, \texttt{mthr\_ed}: parental education
+\item \texttt{hh\_size96}: household size in 1996
+\item \texttt{educ}, \texttt{distress}, \texttt{logwage}: outcomes (post-treatment!)
+\end{itemize}
+
+\medskip
+\small
+\onslide<2-> \textbf{Which variables must you condition on} given the SOO argument?\\
+\onslide<3-> \footnotesize Age and location: required by ID strategy.\\
+
+\medskip
+\small
+\onslide<4-> \textbf{Should you see balance on other variables, after conditioning on these?}\\
+\onslide<5-> \footnotesize Yes roughly, if SOO is right. Gives falsification opportunity, not a ``test''.\\
+
+\medskip
+\small
+\onslide<6-> \textbf{Why not condition on} \texttt{educ}, \texttt{distress}, \texttt{logwage}?\\
+\onslide<7-> \footnotesize They are post-treatment. 
+\end{frame}
+
+
+\begin{frame}{Blattman \& Annan:  ``Adjusting'',  concretely}
+\small
+\onslide<1->  To be clear, ``adjusting for location and age'' means, 
+\footnotesize
+\begin{itemize}
+\item consider a given village and age group
+\item for youth in that group, compare the mean outcome for the abducted to the non-abducted. That gives you an estimated effect in one stratum of location $\times$ age
+\item then average these strata-wise effects across all location--age groups, weighted by their share of the sample:
+\[
+\hat\tau_{ATE} = \sum_{j=1}^{J} \frac{N_j}{N}\,\big(\bar Y_{1j} - \bar Y_{0j}\big)
+\]
+where $j$ indexes location--age strata.\\
+\medskip
+\end{itemize}
+\small
+\onslide<3-> Subclassification estimates (7 locations by 4 age bins, $N = 741$):
+\footnotesize
+\begin{itemize}
+\item Effect on years of education: $\hat\tau \approx -0.84$ \; (abduction reduces schooling)
+\item Effect on emotional distress index: $\hat\tau \approx +0.50$ \; (abduction increases distress)
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{What Makes This a Good SOO Study?}
+\small
+\onslide<1-> Remember it is not the procedure that would make these ATEs, it is believing the assumption of no unmeasured confounders beyond age and location.\\
+\medskip
+\onslide<2-> What is good is that the paper gives reason to believe it: \\
+\begin{itemize}
+\item<2-> A clear argument for why treatment was as-if random conditional on specific, named covariates.
+\medskip
+\item<3-> Grounded in knowledge of how the LRA operated, not just the data.
+%\medskip
+%\item<3-> Pre-treatment covariates that \textit{shouldn't} predict treatment (conditional on age/location) can be checked as a \textit{falsification test}.
+%\medskip
+%\item<4-> Post-treatment variables are clearly identified and not conditioned on.
+\end{itemize}
+
+\bigskip
+\onslide<4-> Contrast with: ``We ran a regression with 50 controls and the coefficient was significant.''  That is not an argument for SOO or any other ID strategy.
+\end{frame}
+
+
+%% =====================================================================
+\section{Wrap}
+%% =====================================================================
+
+\begin{frame}{Takeaways}
+\small
+\begin{itemize}
+\item<1-> \textbf{CI/SOO is an assumption, not a procedure.}  ``No unmeasured confounders'' is a strong, unverifiable claim about the world.
+\medskip
+\item<2-> \textbf{Credibility comes from the story}, not the data: what determined treatment, and have you measured all of it?
+\medskip
+\item<3-> \textbf{Balance checks are good but not sufficient}:  variables adjusted-for should easily be balanced; others hopefully get balanced but it is the unobservables we worry about. 
+\medskip
+\item<4-> \textbf{Don't condition on post-treatment variables.}
+\medskip
+\item<5-> \textbf{Once you believe CI}, the estimation question (matching, weighting, regression) is secondary.  We turn to that next.
+\medskip
+\item<6-> \textbf{If you don't fully believe CI} --- and you shouldn't --- do something else or use sensitivity analysis. We'll get there.
+\end{itemize}
+\end{frame}
+
+\end{document}
