@@ -162,9 +162,8 @@ $$\{Y_{1i}, Y_{0i}\} \indep D_i \mid X_i$$
 \onslide<3->
 \begin{itemize}
 \footnotesize
-\item<3-> CI is \textbf{not verifiable from the data}.  You cannot check whether unobserved confounders exist by looking at observed balance.
-\item<4-> Good balance on $X$ should be achieved (or implied) by any decent estimator.  You should worry about \textit{unobserved} confounders remaining imbalanced.
-\item<5-> The credibility of CI depends on the \textit{story}: what determined treatment, and have you measured all of it?
+\item<3-> CI is \textbf{not verifiable from the data}.  No amount of checking the observed covariates can rule out unobserved confounders.
+\item<4-> The credibility of CI depends on the \textit{story}: what determined treatment, and have you measured all of it?
 \end{itemize}
 \end{frame}
 
@@ -328,6 +327,29 @@ $$\hat\tau_{ATE} = \frac{1}{4}\big(2 + 5 + 10 + 22\big) = 9.75$$
 \end{frame}
 
 
+\begin{frame}{Balance Checking on Targeted $X$}
+\small
+\onslide<1-> A decent adjustment procedure should force the variables it targets to \textbf{balance} --- to have similar distributions in treatment and control.\\
+
+\medskip
+\onslide<2-> Check: run the same stratify-and-average recipe with \textit{age} in place of $Y$ (taking the bin midpoint as the representative age):
+
+\begin{center}
+\begin{tabular}{@{} l c c c @{}}
+\toprule
+Mean age & Smokers & Non-smokers & Diff \\
+\midrule
+Raw                     & 50 & 60 & $-10$ \\
+After subclassification & 55 & 55 & $\phantom{-}0$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+\onslide<3-> Variables we stratified on balance by construction.  The informative question is balance on variables we did \textit{not} target.
+\end{frame}
+
+
 \begin{frame}{The Most Important Slide}
 \small
 \onslide<1-> Pause and ask: \\
@@ -425,6 +447,45 @@ where $j$ indexes location--age strata.\\
 \item Effect on years of education: $\hat\tau \approx -0.84$ \; (abduction reduces schooling)
 \item Effect on emotional distress index: $\hat\tau \approx +0.50$ \; (abduction increases distress)
 \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Blattman \& Annan: Checking Balance}
+\small
+\onslide<1-> Apply the ``same adjustment on $X$'' procedure to every pre-treatment variable, before vs.\ after subclassifying on age $\times$ location:
+
+\vspace{-2pt}
+\begin{center}
+\includegraphics[width=0.92\linewidth]{figures/blattman_balance.pdf}
+\end{center}
+\vspace{-6pt}
+\footnotesize
+\onslide<2-> Open circles: pre-adjustment.  Filled: post-adjustment.  Blue = variables we stratified on; orange = variables we did not.
+\end{frame}
+
+
+\begin{frame}{Reading the Balance Plot}
+\footnotesize
+\onslide<1-> \textbf{Targeted variables (age, location)}: post-adjustment SMDs at or very near zero.  \textit{Expected} --- any variable used to define strata balances by construction.  Seeing these at zero only confirms the procedure ran.\\
+
+\medskip
+\onslide<2-> \textbf{Non-targeted variables}: these are the \textit{informative} checks.
+\begin{itemize}
+\footnotesize
+\item Orphan status and father-in-HH: close to balanced before \textit{and} after.  Consistent with the SOO story.
+\item Father's education, mother's education, HH size: imbalanced before, and \textit{still imbalanced} (slightly more so) after.  Conditional on age and location, abducted youth still come from smaller, less-educated households.
+\end{itemize}
+
+\medskip
+\onslide<3-> \textbf{What does this mean?}
+\begin{itemize}
+\footnotesize
+\item Either these variables also drove selection and should be included in $X$. We can add them to what we adjust for.
+\item Or (worse) an unobserved thing correlated with these variables is the problem. 
+\end{itemize}
+
+\medskip
+\onslide<4-> \textbf{Falsification, not a test.}  Poor balance on (untargeted)  observables can warn you there is a problem; cannot tell you there is no problem.
 \end{frame}
 
 
