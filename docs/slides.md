@@ -1,16 +1,16 @@
 ---
 layout: default
-title: Slides
+title: Slides and exercises
 ---
 
-# Slides
+# Slides and exercises
 
-*Slide decks will be posted here as the quarter progresses.*
+*Slide decks and in-class activities will be posted here as the quarter progresses.*
 
 | Topic | Slides | Activity |
 |-------|--------|----------|
 | Introduction | [PDF](pdf/slides/intro_handout.pdf) | |
-| Potential Outcomes Model | [PDF](pdf/slides/pom_handout.pdf) | |
+| Potential Outcomes Model | [PDF](pdf/slides/pom_handout.pdf) | [PDF](pdf/activities/activity01_pom.pdf) |
 | Experiments I | [PDF](pdf/slides/exp_part1_handout.pdf) | [PDF](pdf/activities/activity02_experiments.pdf) |
 | Experiments II | [PDF](pdf/slides/exp_part2_handout.pdf) | [PDF](pdf/activities/activity03_experiments2.pdf) |
 | Selection on Observables I | [PDF](pdf/slides/SOO_part1_2026_handout.pdf) | [PDF](pdf/activities/activity04_soo.pdf) |
