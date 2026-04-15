@@ -1,0 +1,120 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+\usepackage{booktabs}
+
+\newcommand{\indep}{{\bot\negthickspace\negthickspace\bot}}
+\DeclareMathOperator{\E}{\mathbb{E}}
+
+\pagestyle{plain}
+
+\begin{document}
+
+\begin{center}
+{\Large \textbf{PS200C: Quantitative Methods}} \\[6pt]
+{\large In-class Activity 5: Estimation under Selection on Observables}
+\end{center}
+
+\vspace{4pt}
+\noindent\textbf{Name:} \hrulefill
+
+\vspace{12pt}
+
+%%% QUESTION 1 %%%
+\noindent\textbf{Question 1: All roads lead to the same place}
+
+\medskip
+\noindent Under CI, every method we discussed is estimating
+$$\E_{X \sim F}\!\left[\mu_1(X) - \mu_0(X)\right], \qquad \mu_d(x) \equiv \E[Y(d) \mid X = x].$$
+
+\begin{enumerate}[label=(\alph*)]
+\item Which distribution $F$ corresponds to the ATE? The ATT? The ATC?
+
+\vspace{2.2cm}
+
+\item What is the key difference between any estimand of this kind and the simple difference in means? For a given choice of $F$, how does this differ from what you would get by comparing a group average for the treated vs. control? Why is this what we want to do when we are ``adjusting for X''?
+
+
+\vspace{2cm}
+\end{enumerate}
+
+
+%%% QUESTION 2 %%%
+\noindent\textbf{Question 2: IPW by hand}
+
+\medskip
+\noindent Recall that the (fitted) propensity score, $\hat{\pi}(X_i)$ is an estimate of the probability unit $i$ takes the treatment, based on its $X_i$, i.e. $Pr(D_i=1 \mid X_i=1)$. Four units, each with an estimated propensity score $\widehat{\pi}(X_i)$:
+
+\begin{center}
+\begin{tabular}{@{} c c c c @{}}
+\toprule
+Unit & $D_i$ & $\widehat{\pi}(X_i)$ & $Y_i$ \\
+\midrule
+1 & 1 & 0.80 & 10 \\
+2 & 1 & 0.20 & \phantom{0}6 \\
+3 & 0 & 0.80 & \phantom{0}8 \\
+4 & 0 & 0.20 & \phantom{0}4 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[label=(\alph*)]
+\item Compute the simple IPW weight $w_i = D_i/\widehat{\pi}(X_i) + (1-D_i)/(1-\widehat{\pi}(X_i))$ for each unit.
+
+\vspace{2.2cm}
+
+\item Which unit gets upweighted the most, and why does that make intuitive sense?
+
+\vspace{1.8cm}
+\end{enumerate}
+
+\newpage
+
+%%% QUESTION 3 %%%
+\noindent\textbf{Question 3: Matching the method to the problem}
+
+\medskip
+\noindent For each scenario, name one estimation approach you'd prefer and one you'd avoid, with a one-line reason. Some choices include sub-classification/stratification, matching on $X$, matching on the pscore, IPW, balancing weights, and regression.
+
+\begin{enumerate}[label=(\alph*)]
+
+\item Just 3 discrete covariates (sex, age bin, party ID), $n = 5000$, with plenty of both treated and control in every cell.
+
+\vspace{1.8cm}
+\item You have 10 covariates and $n = 300$.  Treated units are rare in some covariate combinations. However, you suspect (or hope) that not all variables really influence $Pr(D)$ much.
+
+
+
+\vspace{1.8cm}
+\end{enumerate}
+
+
+%%% QUESTION 4 %%%
+\noindent\textbf{Question 4: Regression as imputation}
+
+\medskip
+\noindent In the g-computation / regression-imputation view of regression:
+
+\begin{enumerate}[label=(\alph*)]
+\item What do you fit $\widehat{\mu}_1(x)$ on, and what does it estimate?  Same question for $\widehat{\mu}_0(x)$.
+
+
+\vspace{2cm}
+
+\item When treatment effects vary with $X$, why is fitting \emph{separate} linear models on treated and control (or equivalently, the Lin regression) preferable to pooled OLS with $Y \sim D + X$?
+
+\vspace{2cm}
+
+\end{enumerate}
+
+
+%%% QUESTION 5 %%%
+\noindent\textbf{Question 5: The big picture}
+
+\medskip
+\noindent Does using a more sophisticated adjustment technique, and/or having a larger sample, help reduce concerns about omitted confounders?  Why or why not?
+
+\vspace{2.5cm}
+
+\end{document}
