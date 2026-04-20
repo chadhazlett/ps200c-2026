@@ -15,7 +15,7 @@ title: Slides and exercises
 | Experiments II | [PDF](pdf/slides/exp_part2_handout.pdf) | [PDF](pdf/activities/activity03_experiments2.pdf) |
 | Selection on Observables I | [PDF](pdf/slides/SOO_part1_2026_handout.pdf) | [PDF](pdf/activities/activity04_soo.pdf) |
 | Selection on Observables II | [PDF](pdf/slides/SOO_part2_2026_handout.pdf) | [PDF](pdf/activities/activity05_soo2.pdf) |
-| Causal DAGs | [PDF](pdf/slides/DAGs_2026_handout.pdf) | |
+| Causal DAGs | [PDF](pdf/slides/DAGs_2026_handout.pdf) | [PDF](pdf/activities/activity06_dags.pdf) |
 
 <!-- Uncomment as the quarter progresses:
 | Sensitivity Analysis | [PDF](pdf/slides/sensitivity_handout.pdf) | |
