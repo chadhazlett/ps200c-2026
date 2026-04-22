@@ -5,6 +5,7 @@
 % == Packages for beamer
 \usepackage{xcolor}
 \usepackage{graphicx}
+\graphicspath{{figures/}{images/}}
 \usepackage{fancybox}
 \usepackage{hyperref}
 \usepackage{amsmath,amssymb,amsfonts,bm}
@@ -162,7 +163,7 @@
 %}
 
 \title[]{Differences in Differences}
-\subtitle[ ]{PS200C, Spring 2025}
+\subtitle[ ]{PS200C, Spring 2026}
 \author[Hazlett]{Chad Hazlett }
 \institute[UCLA]{UCLA\\[1ex]
   \texttt{chazlett@ucla.edu}
@@ -222,21 +223,18 @@
 \end{frame}
 
 
-\begin{frame}{Weakening or Avoiding Selection on Observables}
-\onslide<1-> SOO/CI has become the standard approach across many disciplines \\
-\footnotesize
+\begin{frame}{Soo you don't buy SOO/CI, what next?}
+\small
 \begin{itemize}
-\item<2-> The common formula even now in many fields: ``control for stuff'', say you know there may be confounders, but then treat the result as tentatively correct anyway.
+\item<1-> A (relatively small) number of identification strategies have gained popularity as alternatives: DID, IV, RDD, and some time-series approaches
+\item<2-> These identification strategies are often associated with the ``credibility revolution'', but they are not ``more causal'' than SOO/CI -- they just live on different assumptions. 
+\item<3-> For any of these, you'll find there is some degree of inappropriate faith in these techniques because of this association
+\item<4-> \textcolor{Red}{RESIST!} Understand and critique the assumptions. 
 \end{itemize}
-\normalsize
-\onslide<3->  Much of the focus on causal inference starts by noting the insufficiency of SOO/CI and looking for alternatives. \\
-\footnotesize
-\begin{itemize}
-\item<4-> A (relatively small) number of identification strategies have gained popularity as alternatives: DID, IV, RDD, and some time-series approaches
-\item<5-> These identification strategies are often associated with the ``credibility revolution'', but they are not ``more causal'' than SOO/CI -- they just live on different assumptions. 
-\item<6-> As with matching, you'll find there is some degree of inappropriate faith in these techniques because of this association
-\item<7-> Your job is to see that by understanding the assumptions on which these approaches rest. 
-\end{itemize}
+\large
+\begin{center}
+Today: Difference-in-Differences (DID)
+\end{center}
 \end{frame}
 
 \begin{frame}{DID in the Time of Cholera}
@@ -279,11 +277,11 @@ Two periods:
 \item $T=1$ Post-Treatment period
 \end{itemize}\medskip
 \small
-Potential outcomes $Y_{di}(t)$
+Potential outcomes $Y_{it}(d)$
 \footnotesize
 \begin{itemize}
-\item $Y_{1i}(t)$ potential outcome unit $i$ attains in period $t$ when treated between $t$ and $t-1$
-\item $Y_{0i}(t)$ potential outcome unit $i$ attains in period $t$ when non-treated
+\item $Y_{it}(1)$: outcome unit $i$ would attain in period $t$ if treated by then
+\item $Y_{it}(0)$: outcome unit $i$ would attain in period $t$ if not treated
 \end{itemize}
 \end{Definition}
 \end{frame}
@@ -293,27 +291,23 @@ Potential outcomes $Y_{di}(t)$
 \begin{Definition}
 Causal effect for unit $i$ at time $t$ is
 \footnotesize
-$$\tau_{it}=Y_{1i}(t)-Y_{0i}(t)$$
+$$\tau_{it}=Y_{it}(1)-Y_{it}(0)$$
 \small
 \medskip
-Observed outcomes $Y_i(t)$ are realized as
+Observed outcomes $Y_{it}$ are realized as
 \footnotesize
-$$Y_i(t)=Y_{1i}(t)\cdot (D_i*(t=1))+Y_{0i}(t)\cdot (1-(D_i*(t=1))$$
+$$Y_{it}=Y_{it}(1)\cdot (D_i\cdot (t=1))+Y_{it}(0)\cdot (1-D_i\cdot (t=1))$$
 \end{Definition}
-%\medskip
-%\onslide<2-> For $D$ that occurs after $t=0$, we have:
-%\small
-%$$Y_i(t)=Y_{1i}(t)\cdot D_i(t)+Y_{0i}(t)\cdot (1-D_i(t))$$
 \small
 \begin{estm}[ATT post-treatment]
-$$\tau_{ATT}=\E[Y_{1i}(1)-Y_{0i}(1)|D_i=1]$$
+$$\tau_{ATT}=\E[Y_{i1}(1)-Y_{i1}(0)\mid D_i=1]$$
 \end{estm}
 \end{frame}
 
 \begin{frame}
   \frametitle{Two Groups and Two Periods}  
   \begin{estm}[ATT]
-$$\tau_{ATT}=\E[Y_{1i}(1)|D_i=1]-\textcolor{Red}{\E[Y_{0i}(1)|D_i=1]}$$
+$$\tau_{ATT}=\E[Y_{i1}(1)|D_i=1]-\textcolor{Red}{\E[Y_{i1}(0)|D_i=1]}$$
 \end{estm}
 \onslide<2-> Observed Moments:
 \small
@@ -324,7 +318,7 @@ $$\tau_{ATT}=\E[Y_{1i}(1)|D_i=1]-\textcolor{Red}{\E[Y_{0i}(1)|D_i=1]}$$
 \multirow{2}{*}{Treated D=1}  & \multirow{2}{*}{$\E[Y_1(1)|D=1]$} & \multirow{2}{*}{$\E[Y_0(0)|D=1]$}  \\
  & &  \\
 \hline
-\multirow{2}{*}{Control D=0}  & \multirow{2}{*}{$\E[Y_0(1)|D=0]$} & \multirow{2}{*}{$\E[Y_0(0)|D=0]$}  \\
+\multirow{2}{*}{Control D=0}  & \multirow{2}{*}{$\E[Y_1(0)|D=0]$} & \multirow{2}{*}{$\E[Y_0(0)|D=0]$}  \\
  & &  \\
 \hline
 \end{tabular}
@@ -333,25 +327,25 @@ $$\tau_{ATT}=\E[Y_{1i}(1)|D_i=1]-\textcolor{Red}{\E[Y_{0i}(1)|D_i=1]}$$
 \onslide<3|handout:3>
 \begin{problem}
 \footnotesize
-Missing potential outcome: \textcolor{red}{$\E[Y_0(1)|D=1]$}, ie. what is the average non-treatment outcome in the post-treatment period, for the treated?
+Missing potential outcome: \textcolor{red}{$\E[Y_1(0)|D=1]$}, ie. what is the average non-treatment outcome in the post-treatment period, for the treated?
 \end{problem}
 \onslide<4|handout:4>
 ID Strategy 1 (not DID): Over-time (``Post-minus-Pre'') Comparison
 \begin{itemize}
 \item Estimand: $\E[Y_1(1)|D=1]-\E[Y_0(0)|D=1]$
-\item Works if: $\E[Y_0(0)|D=1]=\textcolor{red}{\E[Y_0(1)|D=1]}$
+\item Works if: $\E[Y_0(0)|D=1]=\textcolor{red}{\E[Y_1(0)|D=1]}$
 \item What does this assumption mean?
 \end{itemize}
 \onslide<5|handout:5>
 ID Strategy 2 (not DID): Cross-Sectional Comparison (in Post) \begin{itemize}
-\item Use: $\E[Y(1)|D=1]-\E[Y(1)|D=0]$
-\item Assumes: $\E[Y_0(1)|D=0]=\textcolor{red}{\E[Y_0(1)|D=1]}$
+\item Use: $\E[Y_1|D=1]-\E[Y_1|D=0]$
+\item Assumes: $\E[Y_1(0)|D=0]=\textcolor{red}{\E[Y_1(0)|D=1]}$
 \item What does this mean?
 \end{itemize}
 \onslide<6|handout:6>
 ID Strategy 3: Difference-in-Differences (DID)\begin{itemize}\small
-\item Use: \footnotesize $$\E[Y(1)-Y(0)|D=1]- \E[Y(1)-Y(0)|D=0]$$
-\item \small Assumes: \footnotesize $\E[\textcolor{Red}{Y_0(1)}-Y_0(0)|D=1]=\E[Y_0(1)-Y_0(0)|D=0]$
+\item Use: \footnotesize $$\E[Y_1-Y_0|D=1]- \E[Y_1-Y_0|D=0]$$
+\item \small Assumes: \footnotesize $\E[\textcolor{Red}{Y_1(0)}-Y_0(0)|D=1]=\E[Y_1(0)-Y_0(0)|D=0]$
 \begin{center}
 \small \textcolor{Blue}{``Parallel trends''} assumption
 \end{center}
@@ -383,19 +377,19 @@ ID Strategy 3: Difference-in-Differences (DID)\begin{itemize}\small
  \multiput(0,2)(0.2,0){5}{\line(1,0){0.1}}
  \multiput(0,1.663)(0.2,0){22}{\line(1,0){0.1}}
  \multiput(0,4.1)(0.2,0){22}{\line(1,0){0.1}}
- \put(-2.5,0.4){\small$\E[Y(0)|D=0]$}
- \put(-2.5,2){\small$\E[Y(0)|D=1]$}
- \put(-2.5,1.45){\small$\E[Y(1)|D=0]$}
- \put(-2.5,4){\small$\E[Y(1)|D=1]$}
+ \put(-2.5,0.4){\small$\E[Y_0|D=0]$}
+ \put(-2.5,2){\small$\E[Y_0|D=1]$}
+ \put(-2.5,1.45){\small$\E[Y_1|D=0]$}
+ \put(-2.5,4){\small$\E[Y_1|D=1]$}
  \onslide<2->\multiput(1,2)(0.6,0.2){6}{\line(3,1){0.4}}
  \put(4.5,3.163){\circle{0.1}}
  \onslide<3->
  \multiput(0,3.163)(0.2,0){22}{\line(1,0){0.1}}
- \put(-2.5,3.1){\small$\E[Y_0(1)|D=1]$}
+ \put(-2.5,3.1){\small$\E[Y_1(0)|D=1]$}
  \onslide<4-> \thicklines
  \put(4.5,3.25){\vector(0,1){0.8}}
  \put(4.5,4){\vector(0,-1){0.75}}
- \put(4.7,3.5){\small $\E[Y_1(1)-Y_0(1)|D=1]$}
+ \put(4.7,3.5){\small $\E[Y_1(1)-Y_1(0)|D=1]$}
 \end{picture} \\
 \end{frame}
 
@@ -405,10 +399,10 @@ ID Strategy 3: Difference-in-Differences (DID)\begin{itemize}\small
 \vspace{-.2in}
 \begin{iass}[Parallel Trends]
 Conventionally we write,
-$$\textcolor{Red}{\E[Y_0(1)-Y_0(0)|D=1]}=\textcolor{Blue}{\E[Y_0(1)-Y_0(0)|D=0]}$$
-But note that this is equivalent to:  
-\[ \Delta Y_0 \perp D   \]
-where $\Delta Y_0 \equiv \Y_0(1)-\Y_0(0)$
+$$\textcolor{Red}{\E[Y_1(0)-Y_0(0)|D=1]}=\textcolor{Blue}{\E[Y_1(0)-Y_0(0)|D=0]}$$
+But note that this is equivalent to:
+\[ \Delta Y(0) \perp D   \]
+where $\Delta Y(0) \equiv Y_1(0)-Y_0(0)$
 \end{iass}
 \bigskip
 \onslide<2>
@@ -416,8 +410,8 @@ where $\Delta Y_0 \equiv \Y_0(1)-\Y_0(0)$
 Under parallel trends, the ATT is identified by the DID estimator:
 \vspace{-.1in}
 \begin{align*}
-\tau_{DID} &=  \{\E[Y(1)|D=1]-\E[Y(0)|D=1]\}-\{\E[Y(1)|D=0]-\E[Y(0)|D=0]\} \\
-&=\E[Y_1(1)-Y_0(1)|D=1]=ATT
+\tau_{DID} &=  \{\E[Y_1|D=1]-\E[Y_0|D=1]\}-\{\E[Y_1|D=0]-\E[Y_0|D=0]\} \\
+&=\E[Y_1(1)-Y_1(0)|D=1]=ATT
 \end{align*}
 \end{ires}
 \end{frame}
@@ -425,10 +419,10 @@ Under parallel trends, the ATT is identified by the DID estimator:
 \begin{frame}{Proof}
 \footnotesize
 \begin{align*}
-\onslide<1->{\tau_{DID} &= \{\E[Y(1)|D=1]-\E[Y(0)|D=1]\}-\{\E[Y(1)|D=0]-\E[Y(0)|D=0]\}} \\
-\onslide<2->{&= \{\E[Y_1(1)|D=1]-\E[Y_0(0)|D=1]\}-\textcolor{Blue}{\{\E[Y_0(1)|D=0]-\E[Y_0(0)|D=0]\}}}\\
-\onslide<3->{&= \{\E[Y_1(1)|D=1]-\E[Y_0(0)|D=1]\}-\textcolor{Red}{\{\E[Y_0(1)|D=1]-\E[Y_0(0)|D=1]\}}}\\
-\onslide<4->{&= \E[Y_1(1)|D=1]-\textcolor{Red}{\E[Y_0(1)|D=1]}}\\
+\onslide<1->{\tau_{DID} &= \{\E[Y_1|D=1]-\E[Y_0|D=1]\}-\{\E[Y_1|D=0]-\E[Y_0|D=0]\}} \\
+\onslide<2->{&= \{\E[Y_1(1)|D=1]-\E[Y_0(0)|D=1]\}-\textcolor{Blue}{\{\E[Y_1(0)|D=0]-\E[Y_0(0)|D=0]\}}}\\
+\onslide<3->{&= \{\E[Y_1(1)|D=1]-\E[Y_0(0)|D=1]\}-\textcolor{Red}{\{\E[Y_1(0)|D=1]-\E[Y_0(0)|D=1]\}}}\\
+\onslide<4->{&= \E[Y_1(1)|D=1]-\textcolor{Red}{\E[Y_1(0)|D=1]}}\\
 \onslide<5->{&= ATT}
 \end{align*}
 \small \\
@@ -436,19 +430,82 @@ Under parallel trends, the ATT is identified by the DID estimator:
 \onslide<6-> Another view: additive effects
 \footnotesize
 \begin{itemize}
-\item<7-> Change in control unit's outcome, $\Delta Y_0$, is ``effect of time'', $\Delta Y_0=\delta_0$
-\item<8-> Change in treated unit's outcome is effect of time and treatment, $\Delta Y_1=\delta_1+\tau_{ATT}$
-\item<9-> We estimate $DID = \Delta Y_1-\Delta Y_0 = (\delta_1+ \tau_{ATT}) -\delta_0 $
-\item<10-> ...equals $\tau_{ATT}$ if $\delta_0=\delta_1$ 
+\item<7-> Control group's observed change, $\E[\Delta Y\mid D=0]$, is ``effect of time'', $\delta_0$.
+\item<8-> Treated group's observed change, $\E[\Delta Y\mid D=1]$, is effect of time plus treatment, $\delta_1+\tau_{ATT}$.
+\item<9-> DID $= \E[\Delta Y\mid D=1] - \E[\Delta Y\mid D=0] = (\delta_1+\tau_{ATT}) - \delta_0$.
+\item<10-> ...equals $\tau_{ATT}$ if $\delta_0=\delta_1$ (parallel trends).
 \end{itemize}
 \end{frame}
+
+% \begin{frame}{What are we actually assuming?}
+% \small
+% The DID ``assumption package''---all must hold for $\tau_{DID}=ATT$:
+% \medskip
+% \begin{enumerate}
+% \item<1-> \textbf{Parallel trends}: $\E[\Delta Y(0)|D=1]=\E[\Delta Y(0)|D=0]$.
+% \footnotesize \\ Treated and control would have trended the same absent treatment.
+% \smallskip
+% \small
+% \item<2-> \textbf{No anticipation}: treated units' pre-period outcome isn't already affected by the (future) treatment.
+% \footnotesize \\ Otherwise $\E[Y_0(0)|D=1]$ is contaminated.
+% \smallskip
+% \small
+% \item<3-> \textbf{Stable composition}: same units (or same population) in pre and post.
+% \footnotesize \\ Matters most with repeated cross-sections.
+% \smallskip
+% \small
+% \item<4-> \textbf{No spillovers / SUTVA}: control units' $Y(0)$ unaffected by treating others.
+% \smallskip
+% \small
+% \item<5-> \textbf{Scale / functional form}: parallel trends is not scale-invariant; results can flip across levels vs logs vs \%.
+% \end{enumerate}
+% \bigskip
+% \onslide<6-> Each threat-to-validity we discuss attacks one of these.
+% \end{frame}
+
+
+\begin{frame}{Why be skeptical of parallel trends?}
+\small
+If we're using DID, it's because we didn't trust the cross-sectional comparison:\\
+
+\[ Y(0) \not\indep D \]
+\bigskip
+\onslide<2->\textcolor{Red}{So why would we believe}\\
+
+\[ \Delta Y(0) \;\indep\; D \;\;?\]
+\bigskip
+\onslide<3-> Think of $\Delta Y(0)$ as a characteristic of each unit: how it would drift if untreated. Is that characteristic really uncorrelated with who ends up treated?\\
+
+\bigskip
+\onslide<4-> Parallel trends isn't a \textit{weaker} assumption---it's a \textit{different} one. You need a story for why treatment assignment and unit-level drift are unrelated.
+\end{frame}
+
+
+\begin{frame}{Ex ante reasons for hope or worry}
+\small
+\textbf{Hopeful settings.} Parallel trends is more plausible when the \textit{selection mechanism} is blind to $Y(0)$ dynamics:
+\begin{itemize}
+\footnotesize
+\item<1-> \textbf{Decision lag}: treatment was decided well before it kicked in, weakening the relationship between who is treated and the trend come treatment time. 
+\item<2-> \textbf{Exogenous trigger}: treatment assignment is tied to an abrupt external event (disaster, war, court ruling, sudden regulatory change), not to outcome trajectories. (Though it would have to still be related to $Y(0)$ to require DiD rather than straight cross-sectional comparison). 
+\item<3-> \textbf{Administrative rollout}: decision is made at one level, then order is driven by logistics (alphabetical, pilot location, ``who's ready first'')...though if these are plausibly related to $Y(0)$, might be tough to argue they are unrelated to $\Delta Y(0)$.
+\end{itemize}
+\bigskip
+\onslide<5-> \textbf{Worrisome settings.} Something \textit{changing abruptly} around treatment time that shapes \textit{both} who gets treated and the outcome:
+\begin{itemize}
+\footnotesize
+\item<6-> Treatment is a \textit{response} to a recent shock or drift (Ashenfelter dip; programs target recent decliners).
+\item<7-> Latent forces influence both treatment taking (timing) and how $Y(0)$ would change absent treatment.
+\end{itemize}
+\end{frame}
+
 
 \begin{frame}
   \frametitle{Difference-in-Differences: Estimators}
 \begin{estm}[DID]
 \footnotesize
 \begin{align*}
-\tau_{DID} &= \{\E[Y(1)|D=1]-\E[Y(1)|D=0]\}-\{\E[Y(0)|D=1]-\E[Y(0)|D=0]\}
+\tau_{DID} &= \{\E[Y_1|D=1]-\E[Y_1|D=0]\}-\{\E[Y_0|D=1]-\E[Y_0|D=0]\}
 \end{align*}
 \end{estm}
 \bigskip
@@ -461,8 +518,8 @@ Under parallel trends, the ATT is identified by the DID estimator:
 %\frac{1}{N_0}\sum_{D_i=0} Y_i(0)\right\}
 %\]
 \[
-\frac{1}{N_1}\sum_{D_i=1} \{Y_i(1)-Y_i(0)\} -
-\frac{1}{N_0}\sum_{D_i=0} \{Y_i(1)-Y_i(0)\},
+\frac{1}{N_1}\sum_{D_i=1} \{Y_{i1}-Y_{i0}\} -
+\frac{1}{N_0}\sum_{D_i=0} \{Y_{i1}-Y_{i0}\},
 \]
 where $N_1$ and $N_0$ are the number of treated and control units respectively.
 \end{esti}
@@ -564,28 +621,29 @@ Again, parallel trends: ``time-effect'' $\delta$ same for treated and controls
 \end{lstlisting}
 \end{frame}
 
+% \begin{frame}[fragile]
+%   \frametitle{Regression: Minimum wage laws and employment}
+
+% \footnotesize
+% \begin{lstlisting}[language=R, basicstyle=\ttfamily]
+% with(d,
+%  (
+%   mean(emptot[nj == 1 & postperiod == 1], na.rm = TRUE) -
+%   mean(emptot[nj == 1 & postperiod == 0], na.rm = TRUE)
+%   )  -
+%   (mean(emptot[nj == 0 & postperiod == 1], na.rm = TRUE) -
+%   mean(emptot[nj == 0 & postperiod == 0], na.rm = TRUE)
+%   )
+%  )
+% [1] 2.753606
+% \end{lstlisting}
+% \end{frame}
+
+
 \begin{frame}[fragile]
   \frametitle{Regression: Minimum wage laws and employment}
 
-\footnotesize
-\begin{lstlisting}[language=R, basicstyle=\ttfamily]
-with(d, 
- (
-  mean(emptot[nj == 1 & postperiod == 1], na.rm = TRUE) - 
-  mean(emptot[nj == 1 & postperiod == 0], na.rm = TRUE)
-  )  - 
-  (mean(emptot[nj == 0 & postperiod == 1], na.rm = TRUE) - 
-  mean(emptot[nj == 0 & postperiod == 0], na.rm = TRUE)
-  )
- )
-[1] 2.753606
-\end{lstlisting}
-\end{frame}
-
-
-\begin{frame}[fragile]
-  \frametitle{Regression: Minimum wage laws and employment}
-
+You can reproduce the mean-differences estimator with a regression:
 \footnotesize
 \begin{verbatim}
 
@@ -598,9 +656,27 @@ t test of coefficients:
 (Intercept)    23.3312     1.0719 21.7668  < 2e-16 ***
 postperiod     -2.1656     1.5159 -1.4286  0.15351    
 nj             -2.8918     1.1935 -2.4229  0.01562 *  
-postperiod:nj   2.7536     1.6884  1.6309  0.10331    
+postperiod:nj   2.7536     1.6884  1.6309  0.10331
 \end{verbatim}
 %Note: Should adjust standard errors to account for temporal dependence
+\end{frame}
+
+
+\begin{frame}{Three famous DiD studies: is parallel trends credible?}
+\footnotesize
+For each: imagine a \textit{time-varying} confounder. What might make $\Delta Y(0)$ differ between treated and control?
+\medskip
+\begin{enumerate}
+\item<1-> \textbf{Card \& Krueger (1994)}: NJ raises its minimum wage; PA doesn't.\\
+  $Y$ = fast-food employment. Compare NJ vs PA, before/after.
+\medskip
+\item<2-> \textbf{Ashenfelter (1978)}: federal job-training program (MDTA/CETA). Trainees enroll; non-enrollees serve as controls.\\
+  $Y$ = earnings. Compare trainees vs non-trainees, before vs after enrollment.
+\medskip
+\item<3-> \textbf{Autor (2003)}: US state courts recognized exceptions to the ``employment-at-will'' doctrine (make workers harder to fire) in different years. You look at whether there is more reliance on temporary workers (easier to fire). 
+\medskip
+\item<4-> Snow's cholera study: Lambeth (moves water works) vs. S\&V (does not move water works), look at cholera mortality. 
+\end{enumerate}
 \end{frame}
 
 %\begin{frame}
@@ -751,26 +827,18 @@ postperiod:nj   2.7536     1.6884  1.6309  0.10331
 
 %\subsection{Non-parallel dynamics}
 
-\begin{frame}
-  \frametitle{Difference-in-Differences: Threats to Validity}
-
+\begin{frame}{Some sneaky ways parallel trends can be violated}
+\small
 \begin{enumerate}
- \item<1-> \textbf{Non-parallel trends}: Often treatments/programs are targeted/selected-into based on pre-existing \textit{trend} in outcomes.\medskip
-
- \begin{itemize}
-  \footnotesize
-   \item<2-> ``Ashenfelter dip'' (more generally, regression to the mean): participants in training programs often treatment \textit{because} of a recent increase in their need for it, and at the same time might be likely to soon show improvement in their outcome even absent treatment just due to mean reversion. (I.e. $\Delta Y_0$ differs between groups).\medskip
-  \begin{itemize}
-   \item<4-> e.g. NGOs may target villages that experiences recent setback 
-   \item<5-> e.g. Recently unemployed folks more likely to join a job training program.
-   \end{itemize}
-   \medskip
-   \item<5-> Most directly: If we are here because you don't believe
-   \[ Y_0 \indep D \]
-...then what on makes you believe  
- \[ \Delta Y_0 \indep D \]
-   \item<6-> IOW, think of $\Delta Y_0$ as a characteristic of each unit, and ask if you think it could be associated with $D$. 
- \end{itemize}
+\footnotesize
+\item<1-> \textbf{Ashenfelter dip / mean reversion}: treatment is a response to a recent bad draw (people enroll in a training program \textit{because} earnings just dipped; NGOs target villages that had a setback). The treated group is poised to recover even without treatment---so $\Delta Y(0)$ differs.
+\medskip
+\item<2-> \textbf{Compositional change}: with repeated cross-sections, the treated and control samples aren't the same units over time. If treatment triggers migration or selective exit, the sampled pool shifts across periods and observed $\Delta Y$ no longer estimates $\Delta Y(0)$.
+\medskip
+\item<3-> \textbf{Short window vs long-run relevance}: parallel trends is much more plausible over short horizons. Over long ones, too much else happens---and short-term effects generally don't extrapolate to long-term ones.
+\medskip
+\item<4-> \textbf{Functional-form dependence}: differencing is not scale-invariant. If outcomes grow at rates that depend on their \textit{levels}, trends won't be parallel even with purely static confounding. Parallel in levels $\neq$ parallel in logs.
+\end{enumerate}
 
 % \begin{itemize}
 % \item Falsification Test: Under the parallel trends assumption during the periods $t=-1,0,1$, we have:
@@ -787,7 +855,6 @@ postperiod:nj   2.7536     1.6884  1.6309  0.10331
 %a shorter time-window. In the long-run, many other things may happen and confound the effect of the treatment.
 %\item Should be cautious to extrapolate short-term effects to long-term effects
 %\end{itemize}
-\end{enumerate}
 \end{frame}
 
 %\begin{frame}
@@ -829,7 +896,7 @@ postperiod:nj   2.7536     1.6884  1.6309  0.10331
  \begin{itemize}
 \item Given parallel trends during periods $t=-1,0,1$, we have:
        \[
-        \E[Y(0)-Y(-1)|D=1]- \E[Y(0)-Y(-1)|D=0]=0
+        \E[Y_0-Y_{-1}|D=1]- \E[Y_0-Y_{-1}|D=0]=0
        \]
 \item run placebo DID on data from $t=-1,0$. 
 \item what ``treatment effect'' should we get?
@@ -845,12 +912,20 @@ postperiod:nj   2.7536     1.6884  1.6309  0.10331
 \end{enumerate}
 \end{frame}
 
+\begin{frame}
+  \frametitle{Falsification test: Data for prior periods}
+  \vspace{-.2in}
+\begin{center}
+  \includegraphics[scale=.4]{KCfalsification1.pdf}
+\end{center}
+\end{frame}
+
 
 \begin{frame}
   \frametitle{Falsification test: Data for prior periods}
   \vspace{-.2in}
 \begin{center}
-  \includegraphics[height=3.2in,keepaspectratio=1]{KCfalsification1.pdf}
+  \includegraphics[scale=0.4]{KCfalsification2.pdf}
 \end{center}
 \end{frame}
 
@@ -858,25 +933,23 @@ postperiod:nj   2.7536     1.6884  1.6309  0.10331
   \frametitle{Falsification test: Data for prior periods}
   \vspace{-.2in}
 \begin{center}
-  \includegraphics[height=3.2in,keepaspectratio=1]{KCfalsification2.pdf}
+  \includegraphics[scale=0.4]{KCfalsification4.pdf} \\
+  Definitely bad.
 \end{center}
 \end{frame}
+
 
 \begin{frame}
   \frametitle{Falsification test: Data for prior periods}
   \vspace{-.2in}
 \begin{center}
-  \includegraphics[height=3.2in,keepaspectratio=1]{KCfalsification3.pdf}
+  \includegraphics[scale=0.35]{KCfalsification3.pdf}\\
+\onslide<2-> Not definitely bad, but why did they take treatment then? \\
+\onslide<3-> Parallel pre-trends $\neq$ parallel trends. \\
+\onslide<4-> You cannot test parallel trends.
 \end{center}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Falsification test: Data for prior periods}
-  \vspace{-.2in}
-\begin{center}
-  \includegraphics[height=3.2in,keepaspectratio=1]{KCfalsification4.pdf}
-\end{center}
-\end{frame}
 
 
 \begin{frame}{Other approaches to worrying about parallel trends}
@@ -884,15 +957,16 @@ postperiod:nj   2.7536     1.6884  1.6309  0.10331
 \item \textbf{Sensitivity/ partial ID}\bigskip
 \small
 \begin{itemize}
-\item Recently-best-known is perhaps Rambachan \& Roth (2023)
+\item Best-known is perhaps Rambachan \& Roth (2023)
 \item Suggests checking if the effect estimate can survive non-parallelness $k$ times larger than the non-parallelness in the prior trends. 
-\item A lot of papers don't even survive at $k=1$, which is clearly bad (Chiu, Lan, Liu, Xu, \textit{forthcoming APSR})
+\item A lot of papers don't even survive at $k=1$, which is clearly bad (Chiu, Lan, Liu, Xu, \textit{APSR} 2025)
 \item Of course there is no (convincing) rule for ``how big of a $k$ is big enough''
 \end{itemize}
 \bigskip
 
-\onslide<2-> There are other (partial) identification strategies that amount to logically arguing about quantities that correspond to the parallel trends assumption (beyond our scope here, but e.g. stability controlled quasi-experiment; using pre-treatment outcome as an imperfect placebo).
-
+\onslide<2-> We won't cover as much as I like but there are other ID opportunities for similar settings, and other sensitivity analyses depending on what you are prepared to reason about.\\
+\medskip
+\onslide<2-> Vote in the comments to affect the story.
 \end{enumerate}
 \end{frame}
 
@@ -1004,22 +1078,6 @@ postperiod:nj   2.7536     1.6884  1.6309  0.10331
 %\subsection{Long-term effects versus reliability}
 
 
-\begin{frame}
-  \frametitle{Difference-in-Differences: Further Threats to Validity}
-
-\begin{enumerate}\setcounter{enumi}{1}
-
-\item \textbf{Compositional differences}\bigskip
-\begin{itemize}
-  \item<1-> In repeated cross-sections, we do not want the composition of the sample to change between periods.\medskip
-\item<2->  Example:
-\begin{itemize}
-  \item Hong (2011) uses repeated cross-sectional data from Consumer Expenditure Survey (CEX) containing music expenditures and internet use for random samples of U.S. households\medskip
-   \item Exploits the emergence of Napster in June 1999 as a natural experiment, comparing internet users and internet non-users, before and after emergence of Napster
-\end{itemize}
-\end{itemize}
-\end{enumerate}
-\end{frame}
 %
 %\begin{frame}
 %  \frametitle{Compositional differences?}
@@ -1030,28 +1088,6 @@ postperiod:nj   2.7536     1.6884  1.6309  0.10331
 %\onslide<2-> You can check for DID effect on the demographic outcomes as a test for compositional differences
 %\end{frame}
 
-\begin{frame}
-  \frametitle{Difference-in-Differences:  Further Threats to Validity}
-
-\begin{enumerate}
-\setcounter{enumi}{2}
-\item \textbf{Long-term effects versus reliability}:
-\begin{itemize}\medskip
-\item Often you may want to know what happens over longer period of times (e.g. effect of polity shift, a conflict, adoption of a policy)
-\medskip
-  \item But parallel trends assumption is more viable over a short time-window. In the long-run, many other things may happen that could confound the effect of the treatment\medskip
-\item And short-term effects generally can't be ``extrapolated'' to estimate long-term effects
-\end{itemize}
-\end{enumerate}
-\end{frame}
-
-\begin{frame}
-  \frametitle{\small Effect of War on Tax Rates (Scheve \& Stasavage 2010)}
-  \vspace{-.06in}
-\begin{center}
-  \includegraphics[height=2.8in,keepaspectratio=1]{ken.pdf}
-\end{center}  \vspace{-.0in}
-\end{frame}
 
 %\begin{frame}
 % \frametitle{Political Rewards for Flood Aid}
@@ -1120,161 +1156,105 @@ postperiod:nj   2.7536     1.6884  1.6309  0.10331
 
 %\subsection{Functional form dependence}
 
-\begin{frame}
-  \frametitle{Difference-in-Differences: Further Threats to Validity}
-\begin{enumerate}
-\setcounter{enumi}{3}
- \item<1-> \textbf{Functional form dependence}:  The differencing is not-invariant to changes of scale. Magnitude or sign of the DID effect may be sensitive to this.
- \begin{itemize}
-   \item<2-> Higher risk when average outcomes for controls and treated are very different at baseline.
-   \medskip
-   
- \item<3-> Example: Cash transfers for refugees
- \begin{itemize}
-   \item<4-> income of those receiving vouchers rises from 5 to 10
-   \item<5-> over same time, income for comparably skilled group in host community (no vouchers) changes from 20 to 25
-   \item<6-> on original scale, $DID = (10 - 5) - (25 - 20) = 0\%$ effect of voucher \medskip \pause
-   \item<7-> but in terms of percentage changes or logs, \\
-   $[100]-[25]= 75$ percentage points \\
-   $[log(10) - log(5)] - [log(25) - log(20)] = log(2)- log(1.25)  = .47$
- \end{itemize}\bigskip
- \item<8-> In general, more similarity in original outcomes is better both for this reason and to make parallel trends assumption more believable
- \end{itemize}
-\end{enumerate}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Matching and difference-in-differences}
-\begin{itemize}
-\small
-\item<1-> Parallel trends is more plausible among units that are more similar (both on $X$ and pre-tx $Y$). One strategy: \onslide<2-> \textcolor{Blue}{combine matching (or weighting) and DID}\\
-\medskip
-\begin{itemize}
-  \item<3-> Match on pre-treatment covariates and (lagged) outcomes\medskip
-  \item<4-> Run difference-in-differences regression in matched data-set\medskip
-  \item<5-> Can also use inverse-propensity score weighting (Hirano, Imbens, and Ridder 2003; Imai and Kim 2012)\medskip
-  \item<6-> (If you match/weight so that the treated and control groups have equal means on pre-treatment Y, then DID is just Diff.) 
-\end{itemize}\bigskip
-%\item This strategy is more widely used now:\medskip
-%\begin{itemize}
-%\item Heckman, Ichimura, and Todd (1998). Matching as an econometric evaluation estimator, \emph{Review of Economic Studies} 65(2): 261-94.\medskip
-%%  \item Lenz and Ladd (2009). Exploiting a Rare Communication Shift to Document the Persuasive Power of the News Media, \emph{American Journal of Political Science}, 53(2): 394-410.
-%\end{itemize} \bigskip
-\item<6-> Randomized experiment, natural experiment, or a  discontinuity can improve parallel trends assumption by asserting ``$Y(0)$-trend'' is balanced. So DID can be used in combination.
-\item<7-> This is just to say you can use the change-score rather than level of $Y$ as your outcome in an experiment.\item<7-> With few treated units and/or many pre-treatment periods: synthetic control and related methods are applicable, but different assumptions.
-\end{itemize}
-\end{frame}
-
-
 \begin{frame}{``Modern'' DID?}
 \small
 \begin{itemize}
-\item<1-> Everything we've done here is to give you a foundation in ``classic'' DID, meaning two groups, two periods. 
-\item<2-> Sometimes you have different units moving into treatment at different times and you still want to imagine something like parallel trends.
-\item<3-> People long used ``two-way fixed effect'' models in these cases and unfortunately still called this DID (?!)
-\item<4-> Then they discovered TWFE does not have a straightforward interepretation akin to DID and is troubled by either biases or confusing interpretations due to:
+\item<1-> Classic DID above was two groups, two periods. Often you have units moving into treatment at different times (``staggered adoption''), and you'd still like to rely on something like parallel trends.
+\item<2-> People long used ``two-way fixed effect'' regressions in these cases and unfortunately called this DID.
+\item<3-> The trouble with TWFE is the combined result of:
 \begin{itemize}
 \footnotesize
-\item<5-> Treatment effect heterogeneity
-\item<6-> Already-treated as controls
-\item<7-> Event time misalignment	
-\item<8-> Global vs. local DID assumptions 
+\item<4-> \textbf{Already-treated units end up as ``controls''} for later cohorts' comparisons (mechanical; peculiar to staggered panels).
+\item<5-> \textbf{Effect heterogeneity} across cohorts or time-since-treatment.
 \end{itemize}
+\item<6-> Intuition: with homogeneous effects, TWFE implicitly ``adjusts'' the already-treated controls back to their counterfactual by subtracting the one constant $\tau$. Under heterogeneity, no single adjustment works---so contaminated ``controls'' bleed into the estimate.
 \end{itemize}
 \end{frame}
 
 
-\begin{frame}{What to do with staggered treatments etc.?}
+\begin{frame}{Staggered DID: the core idea}
 \small
-\onslide<1-> You can always run a series of separate well-constructed DID for each wave of treatment adoption, understand what each says, then average later.\\
+\textbf{It is simple at bottom:}
+\begin{itemize}
+\item<1-> You could imagine a DID at each relevant time point estimating the \textbf{cohort-time effect} $ATT(g,t)$: the ATT at time $t$ for the cohort first treated at time $g$.\medskip
+\item<2-> If these are well formed (choosing appropriate controls each time) then it's just a question of how to average up the $ATT(g,t)$'s.\medskip
+\item<3-> Modern DID just points out that you need to construct these then \textit{explicitly} weight them.
+\end{itemize}
 \bigskip
-\onslide<2-> See Chiu et al. paper cited above for a great review, including 6 estimators, and empirical impact, or the \texttt{fect} tutorial on 5 methods at \url{https://yiqingxu.org/packages/fect/05-panel.html} \\
-\bigskip
-\onslide<3-> An explosion of work has tried to offer different solutions. The main players you'll hear most about are...
-
+\onslide<4-> Simplest fallback: run a clean 2$\times$2 DID for each adoption wave, look at them, average however you want.
 \end{frame}
 
 
-\begin{frame}{Today's hits in place of TWFE}
+\begin{frame}{Estimators for Staggered DID}
+\small
+% \onslide<1-> See Chiu, Lan, Liu, Xu (\textit{APSR} 2025) for a great review of 6 estimators and their empirical impact, or the \texttt{fect} tutorial on 5 methods at \\
+% \url{https://yiqingxu.org/packages/fect/05-panel.html}
+% \par\bigskip
+\onslide<1-> The main approaches are:
 \scriptsize
-\begin{tabular}{|l|p{6cm}|}
+\begin{tabular}{|p{2.8cm}|p{7.5cm}|}
 \hline
-\textbf{Approach} & \textbf{What it solves and how} \\
+\textbf{Approach} & \textbf{What it does} \\
 \hline
-Sun \& Abraham (2021) & Avoids contamination by using cohort-specific event-time indicators; handles heterogeneity and staggered timing via proper reference groups.  \\
+Sun \& Abraham (2021) & Event-study estimator using cohort-specific relative-time indicators; avoids contamination from already-treated units; valid under heterogeneous effects and staggered timing. \\
 \hline
-Callaway \& Sant’Anna (2021) & Computes group-time-specific ATT($g$, $t$) with flexible, nonparametric aggregation; avoids negative weighting and uses only not-yet-treated units as controls. \\
+Callaway \& Sant'Anna (2021) & Estimates group-time $ATT(g,t)$ using only not-yet-treated units as controls; flexible aggregation; avoids negative weighting. \\
 \hline
-Goodman-Bacon (2021) & Decomposes TWFE into 2x2 DiD comparisons; shows that bias arises from contaminated comparisons and negative weights. \\
+Borusyak, Jaravel \& Spiess (2021); Liu, Wang \& Xu (2022) & Fits $Y(0)$ model with unit $+$ time FEs on \textit{untreated cells only}, impute $\hat Y_{it}(0)$ for treated cells, then aggregate effect estimates explicitly. Essentially g-computation with FE predictors. Implemented in \texttt{fect}. \\
 \hline
-de Chaisemartin \& D’Haultfœuille (2020) & Aggregates clean DiD comparisons using convex weights; produces interpretable estimates even under treatment effect heterogeneity. \\
+de Chaisemartin \& D'Haultfœuille (2020) & Reweights valid 2$\times$2 DID comparisons with convex weights; interpretable under heterogeneity. \\
 \hline
 \end{tabular}
 \smallskip
 \end{frame}
 
-\begin{frame}{But remember...}
-What's the first-order concern with any of these?
+
+\begin{frame}{Event-study design: single treatment time}
+\scriptsize
+\textbf{Setup.} DGP A: half the units treated at one time, rest never-treated. \textit{Parallel trends holds.} Post-treatment effect is positive, builds slowly.
+\medskip
+
+\textbf{Estimator.} TWFE with leads and lags; $k=-1$ omitted as reference:
+\vspace{-.3em}
+\[ Y_{it} = \alpha_i + \gamma_t + \sum_{k \neq -1} \beta_k \cdot \mathbf{1}\{t - E_i = k\} + \varepsilon_{it} \]
+\vspace{-1.2em}
+
+Use it to (a) visualize effect dynamics ($\beta_k$, $k\ge 0$); (b) check leads ($k<0$) $\approx 0$---a visual PT diagnostic.
+\begin{center}
+\includegraphics[width=0.68\linewidth]{event_study_clean.pdf}
+\end{center}
 \end{frame}
 
-\begin{frame}
-  \frametitle{ How do newspaper endorsement affect vote choice?}
-  \vspace{-.1in}
+
+\begin{frame}{Event-study design: staggered adoption}
+\scriptsize
+\textbf{Setup.} DGP B: three cohorts adopted at different times; effect heterogeneous across cohorts. \textit{Parallel trends still holds.} Effects still positive.
+\textbf{Same TWFE event-study regression} as before.
+\begin{center}
+\includegraphics[width=0.62\linewidth]{event_study_contaminated.pdf}
+\end{center}
+\vspace{-.7em}
+\begin{itemize}
+\footnotesize
+\item Leads appear strongly non-zero---a \textit{false} PT alarm (PT actually holds).
+\item Lags flip sign, even though every true cohort-time effect is positive.
+\item Pathology is entirely from the estimator, not the DGP.
+\item Modern methods (SA, CS, BJS / \texttt{fect}) give event-study plots without it.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{But remember two things:}
+\onslide<1-> Parallel trends is a strong assumption
 \small
-Lenz and Ladd (2009) consider effect of shift in newspaper endorsements to Tony Blair in the 1997 U.K. general election
-\begin{center}
-  \includegraphics[height=2in,keepaspectratio=1]{Blair.pdf}\\
- % \includegraphics[height=2.2in,keepaspectratio=1]{Kinnock.pdf}
-\emph{Sun}, 18 March 1997
-\end{center}
-\end{frame}
-
-\begin{frame}{Example of Matching-plus-DID: Ladd and Lenz (2009)}
-
-\small
-\begin{quote}
-Using panel data and matching techniques, we exploit a rare change in communication flows -- the endorsement switch to the Labour Party by several prominent British newspapers before the 1997 United Kingdom general election—to study the persuasive power of the news media. These unusual endorsement switches provide an opportunity to test for news media persuasion while avoiding methodological pitfalls that have plagued previous studies. By comparing readers of newspapers that switched endorsements to similar individuals who did not read these newspapers, we estimate that these
-papers persuaded a considerable share of their readers to vote for Labour. %Depending on the statistical approach, the point estimates vary from about 10\% to as high as 25\% of readers. These findings provide rare evidence that the news media exert a powerful influence on mass political behavior.
-\end{quote}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Difference-in-Differences Estimates}
-  \footnotesize
-  \begin{itemize}
-  \item<1-> The Sun switched endorsements. Find people who read the Sun; see if there is a change in their opinions. \\
-  \bigskip
-  \item<2-> Since those who read it could have changed anyway, compare change in this group to similar people (matching) who don't read it (DID):
-  \end{itemize}
-  \bigskip
-\onslide<3-> What is the ID assumption? Is it credible?
-\end{frame}
-
-\begin{frame}
-  \frametitle{Difference-in-Differences Estimates}
-  \footnotesize
-  \onslide<1->
-  \vspace{-.2in}
-\begin{center}
-  \includegraphics[height=2.8in,keepaspectratio=1]{Ladd1.pdf}\\
-\end{center}
-\end{frame}
-
-
-\begin{frame}
-  \frametitle{Matching on 1992 Characteristics}
-  \vspace{-.2in}
-\begin{center}
-  \includegraphics[height=2.6in,keepaspectratio=1]{Ladd2.pdf}\\
-\end{center}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Difference-in-Differences in Matched Data}
-  \vspace{-.2in}
-\begin{center}
-  \includegraphics[height=2.1in,keepaspectratio=1]{Ladd3.pdf}\\
-\end{center}
+\begin{itemize}
+\item If time-varying influences might lead to treatment and changes in ``growth'', i.e. $Y_t(0)-Y_{t-1}(0)$, then parallel trends is violated. 
+\medskip
+\item Modern DID methods don't touch this. 
+\medskip
+\item Parallel trends (in the relevant period) is never testable. Don't be fooled by pre-trend tests. \medskip
+\end{itemize} 
+\bigskip
 \end{frame}
 
 %\begin{frame}[c]\frametitle{How do Elections Affect Government Perfomance?}

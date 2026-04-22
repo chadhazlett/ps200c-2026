@@ -1,0 +1,87 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{framed}
+
+\newcommand{\indep}{{\bot\negthickspace\negthickspace\bot}}
+\DeclareMathOperator{\E}{\mathbb{E}}
+
+\pagestyle{plain}
+
+\begin{document}
+
+\begin{center}
+{\Large \textbf{PS200C: Quantitative Methods}} \\[6pt]
+{\large In-class Activity 7: Difference-in-Differences}
+\end{center}
+
+\vspace{4pt}
+\noindent\textbf{Name:} \hrulefill
+
+\vspace{12pt}
+
+%%% QUESTION 1 %%%
+\noindent\textbf{Question 1.}  Which of the following ``modern DID'' approaches can rescue your analysis if the \textbf{parallel trends} assumption is violated? (Circle all that apply.)
+
+\medskip
+\begin{enumerate}[label=(\alph*), itemsep=0.5em]
+\item Sun \& Abraham (2021) cohort-specific event study
+\item Callaway \& Sant'Anna (2021) group-time $ATT(g,t)$
+\item Borusyak, Jaravel \& Spiess (2021) / Liu, Wang \& Xu (2022) imputation (\texttt{fect})
+\item de Chaisemartin \& D'Haultf{\oe}uille (2020) convex-weighted clean 2$\times$2s
+\item None of the above
+\end{enumerate}
+
+ \vspace{0.5em}
+% \noindent What core problem do the modern DID approaches focus on?
+
+\vspace{1cm}
+
+%%% SETUP FOR Q2-Q4 %%%
+\begin{framed}
+\noindent\textbf{Setup for Q2--Q4.} In January 2018, Seattle imposed a sugary-drink tax.  Portland did not.  You have annual per-capita sales of sugary drinks (liters per person per year) in both cities, averaged over a short pre-window (2016--17) and a short post-window (2018--19):
+
+\medskip
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+            & \textbf{Pre-tax (2016--17)} & \textbf{Post-tax (2018--19)} \\
+\midrule
+Seattle     &  100 liters  &  85 liters \\
+Portland    &   95 liters  &  88 liters \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{framed}
+
+\vspace{6pt}
+
+%%% QUESTION 2 %%%
+\noindent\textbf{Question 2: Compute the DID.}  Using the four means above, compute the difference-in-differences estimate of the effect of the tax on Seattle's per-capita sugary-drink sales.  Show your work.
+
+\vspace{5cm}
+
+\newpage
+
+%%% QUESTION 3 %%%
+\noindent\textbf{Question 3: Where might parallel trends fail here?}
+
+\medskip
+\begin{enumerate}[label=(\alph*), itemsep=0em, topsep=0pt]
+\item Explain what parallel trends requires us to believe here.
+
+\vspace{3.5cm}
+
+\item Describe one concrete reason why parallel trends might fail.  \textit{Hint: think about something that could be changing during 2016--2019 that would influence both the sugary-drink-sales trend (absent the tax) and whether Seattle adopted the tax.}
+
+\vspace{6cm}
+\end{enumerate}
+
+%%% QUESTION 4 %%%
+\noindent\textbf{Question 4: Pre-trends check.}  Your collaborator plots five years of pre-tax data (2013--2017) and shows that Seattle and Portland's per-capita sales were declining at nearly the same rate over that window.  They conclude, ``Parallel trends is satisfied---we're good.''  Is that right? Why or why not?
+
+\vspace{8cm}
+
+\end{document}
