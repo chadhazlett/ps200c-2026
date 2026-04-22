@@ -9,7 +9,7 @@ title: Slides and exercises
 
 | Topic | Slides | Activity |
 |-------|--------|----------|
-| Introduction | [PDF](pdf/slides/intro_handout.pdf) | |
+| Introduction | [PDF](pdf/slides/intro_handout.pdf) | [Math/stats level-setting](pdf/activities/pset0_math_stats.pdf) |
 | Potential Outcomes Model | [PDF](pdf/slides/pom_handout.pdf) | [PDF](pdf/activities/activity01_pom.pdf) |
 | Experiments I | [PDF](pdf/slides/exp_part1_handout.pdf) | [PDF](pdf/activities/activity02_experiments.pdf) |
 | Experiments II | [PDF](pdf/slides/exp_part2_handout.pdf) | [PDF](pdf/activities/activity03_experiments2.pdf) |
