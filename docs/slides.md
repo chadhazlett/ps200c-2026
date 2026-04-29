@@ -17,7 +17,7 @@ title: Slides and exercises
 | Selection on Observables II | [PDF](pdf/slides/SOO_part2_2026_handout.pdf) | [PDF](pdf/activities/activity05_soo2.pdf) |
 | Causal DAGs | [PDF](pdf/slides/DAGs_2026_handout.pdf) | [PDF](pdf/activities/activity06_dags.pdf) |
 | Difference-in-Differences | [PDF](pdf/slides/DID_handout.pdf) | [PDF](pdf/activities/activity07_did.pdf) |
-| Instrumental Variables | [PDF](pdf/slides/IV_2026_handout.pdf) | |
+| Instrumental Variables | [PDF](pdf/slides/IV_2026_handout.pdf) | [PDF](pdf/activities/activity08_iv.pdf) |
 
 <!-- Uncomment as the quarter progresses:
 | Sensitivity Analysis | [PDF](pdf/slides/sensitivity_handout.pdf) | |
