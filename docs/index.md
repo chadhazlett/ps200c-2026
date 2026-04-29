@@ -11,7 +11,7 @@ title: Home
 </div>
 
 *Class:* MW 2:00–3:15 PM, Bunche 2160
-*Section:* Thursday 9:00–9:50 AM, on [Zoom](https://ucla.zoom.us/j/94794109684)
+*Section:* Friday 9:00–9:50 AM, on [Zoom](https://ucla.zoom.us/j/94794109684)
 
 **Professor:** Chad Hazlett — [chazlett@ucla.edu](mailto:chazlett@ucla.edu)
 *Office Hours:* Wednesday 3:30–4:45 PM and by appointment, Bunche 3264
