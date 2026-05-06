@@ -1,0 +1,98 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{framed}
+
+\newcommand{\indep}{{\bot\negthickspace\negthickspace\bot}}
+\DeclareMathOperator{\E}{\mathbb{E}}
+
+\pagestyle{plain}
+
+\begin{document}
+
+\begin{center}
+{\Large \textbf{PS200C: Quantitative Methods}} \\[6pt]
+{\large In-class Activity 8: Instrumental Variables}
+\end{center}
+
+\vspace{4pt}
+\noindent\textbf{Name:} \hrulefill
+
+\vspace{12pt}
+
+%%% SETUP for Q1--Q2 %%%
+\begin{framed}
+\noindent\textbf{Setup for Q1--Q2.}  Suppose a city is studying whether being incarcerated (vs.\ a non-custodial sentence) for a first offense affects re-arrest within five years.  In this jurisdiction there are two judges who hear first-offense cases: \textbf{Judge A} (relatively lenient) and \textbf{Judge B} (relatively stringent).  Defendants are assigned (essentially at random) to one of the two.
+
+\medskip
+The researcher proposes:
+\begin{itemize}[itemsep=0pt, topsep=2pt]
+\item $Z = 1$ if assigned to Judge B (stringent); $Z = 0$ if assigned to Judge A (lenient).
+\item $D = 1$ if incarcerated; $D = 0$ if non-custodial sentence.
+\item $Y = 1$ if re-arrested within five years.
+\end{itemize}
+\end{framed}
+
+\vspace{6pt}
+
+%%% QUESTION 1 %%%
+\noindent\textbf{Question 1: Who are the compliers?}  In one sentence, describe the compliers in this design --- the subgroup whose treatment status would be moved by the instrument.
+
+\vspace{4cm}
+
+%%% QUESTION 2 %%%
+\noindent\textbf{Question 2: State the exclusion restriction.}  In one sentence, write what the exclusion restriction \emph{requires} here.  Can you think of anything that might violate it in this setting?
+
+\vspace{6cm}
+
+\newpage
+
+%%% QUESTION 3 %%%
+\noindent\textbf{Question 3: Understanding the assumptions.}  A researcher proposes using \textit{distance to the nearest college} as an instrument for years of education, with adult earnings as the outcome.
+
+\begin{itemize}
+\item How might the ignorability assumption be violated here?
+\vspace{2.5cm}
+\item How might the exclusion restriction be violated here?
+\vspace{2.5cm}
+\end{itemize}
+
+%%% QUESTION 4 %%%
+\noindent\textbf{Question 4: Wald by hand.}  Suppose you have a randomized encouragement-design experiment.  $Z=1$ if assigned to receive a free flu-shot voucher; $D=1$ if the person actually got vaccinated; $Y$ is days of missed work that flu season.
+
+\medskip
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+            & \textbf{$Z=0$ (no voucher)} & \textbf{$Z=1$ (voucher)} \\
+\midrule
+$\bar D$    &   0.20    &   0.55    \\
+$\bar Y$    &   3.0 days  &  2.3 days \\
+\bottomrule
+\end{tabular}
+\end{center}
+\medskip
+
+\begin{enumerate}[label=(\alph*), itemsep=0.4em]
+\item Compute the ITT (effect of $Z$ on $Y$) and the first stage (effect of $Z$ on $D$).
+
+\vspace{2.5cm}
+
+\item Compute the Wald / IV estimate for the effect of vaccination on missed work.
+
+\vspace{2.5cm}
+
+\item For whom is this the treatment effect? (Describe in a sentence)
+
+\vspace{3cm}
+\end{enumerate}
+
+%\newpage
+% %%% QUESTION 5 %%%
+% \noindent\textbf{Question 5: Why doesn't IV identify the ATE?}  In a paragraph (3--5 sentences), explain why the Wald estimator recovers the LATE on compliers and not the average treatment effect on the whole population.  Make sure to use the words \textit{monotonicity}, \textit{compliers}, and \textit{always-takers / never-takers} somewhere in your answer.
+
+% \vspace{10cm}
+
+\end{document}

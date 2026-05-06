@@ -1211,7 +1211,7 @@ de Chaisemartin \& D'Haultfœuille (2020) & Reweights valid 2$\times$2 DID compa
 
 \begin{frame}{Event-study design: single treatment time}
 \scriptsize
-\textbf{Setup.} DGP A: half the units treated at one time, rest never-treated. \textit{Parallel trends holds.} Post-treatment effect is positive, builds slowly.
+\textbf{Setup.} DGP A: half the units treated at one time, others never-treated. \textit{Parallel trends holds.} Post-treatment effect is positive, builds slowly.
 \medskip
 
 \textbf{Estimator.} TWFE with leads and lags; $k=-1$ omitted as reference:
@@ -1219,7 +1219,7 @@ de Chaisemartin \& D'Haultfœuille (2020) & Reweights valid 2$\times$2 DID compa
 \[ Y_{it} = \alpha_i + \gamma_t + \sum_{k \neq -1} \beta_k \cdot \mathbf{1}\{t - E_i = k\} + \varepsilon_{it} \]
 \vspace{-1.2em}
 
-Use it to (a) visualize effect dynamics ($\beta_k$, $k\ge 0$); (b) check leads ($k<0$) $\approx 0$---a visual PT diagnostic.
+Use it to (a) visualize effect dynamics ($\beta_k$, $k\ge 0$); (b) check leads ($k<0$) $\approx 0$---a visual (pre)-PT/placebo diagnostic.
 \begin{center}
 \includegraphics[width=0.68\linewidth]{event_study_clean.pdf}
 \end{center}
@@ -1239,7 +1239,7 @@ Use it to (a) visualize effect dynamics ($\beta_k$, $k\ge 0$); (b) check leads (
 \item Leads appear strongly non-zero---a \textit{false} PT alarm (PT actually holds).
 \item Lags flip sign, even though every true cohort-time effect is positive.
 \item Pathology is entirely from the estimator, not the DGP.
-\item Modern methods (SA, CS, BJS / \texttt{fect}) give event-study plots without it.
+\item All ``modern'' methods (SA, CS, BJS / \texttt{fect}) give (correct) event-study plots.
 \end{itemize}
 \end{frame}
 
@@ -1248,11 +1248,11 @@ Use it to (a) visualize effect dynamics ($\beta_k$, $k\ge 0$); (b) check leads (
 \onslide<1-> Parallel trends is a strong assumption
 \small
 \begin{itemize}
-\item If time-varying influences might lead to treatment and changes in ``growth'', i.e. $Y_t(0)-Y_{t-1}(0)$, then parallel trends is violated. 
+\item<1-> If time-varying influences might lead to treatment and changes in ``growth'', i.e. $Y_t(0)-Y_{t-1}(0)$, then parallel trends is violated. 
 \medskip
-\item Modern DID methods don't touch this. 
+\item<2-> Modern DID methods don't touch this. 
 \medskip
-\item Parallel trends (in the relevant period) is never testable. Don't be fooled by pre-trend tests. \medskip
+\item<3-> Parallel trends (in the relevant period) is never testable. Don't be fooled by pre-trend tests. \medskip
 \end{itemize} 
 \bigskip
 \end{frame}
