@@ -42,36 +42,46 @@
 
 \newpage
 
-%%% QUESTION 3 %%%
-\noindent\textbf{Question 3: Reading a balance plot.}  Suppose you run an RD on Brazilian municipalities at the e-voting threshold (40,500 registered voters) and produce balance plots like the one we saw in lecture.  For each finding below, say in one sentence whether it \emph{supports} the design, \emph{threatens} the design, or is \emph{ambiguous}, and why.
+%%% QUESTION 3 (Fuzzy RD on Medicare) %%%
+\noindent\textbf{Question 3: A fuzzy twist on Medicare-at-65.}  Returning to the Medicare setting from Q1: in practice the age-65 cutoff doesn't \emph{determine} Medicare enrollment perfectly --- a few people are already on Medicare before 65 (via disability), and a few don't enroll right at 65.  Suppose the researcher finds:
+
+\medskip
+\begin{itemize}[itemsep=0.2em, topsep=2pt]
+\item Just \emph{above} age 65, hospital days per person per year are \textbf{0.45 days} higher than just below (the reduced-form / ITT effect of crossing the cutoff).
+\item At the same cutoff, Medicare enrollment jumps from \textbf{5\%} (just below) to \textbf{95\%} (just above).
+\end{itemize}
+
+\medskip
+\begin{enumerate}[label=(\alph*), itemsep=0.5em]
+\item Compute the fuzzy-RD estimate of the effect of \emph{being enrolled in Medicare} on hospital days per person per year.
+
+\vspace{1.8cm}
+
+\item For whom is this the treatment effect?  Describe the compliers in one sentence.
+
+\vspace{1.8cm}
+
+\item Why is the reduced-form effect (0.45 days) \emph{smaller} than the per-complier effect you computed in (a)?
+
+\vspace{1.8cm}
+\end{enumerate}
+
+%%% QUESTION 4 (was Q3) %%%
+\noindent\textbf{Question 4: Reading a balance plot.}  Suppose you run an RD on Brazilian municipalities at the e-voting threshold (40{,}500 registered voters) and produce balance plots like the one we saw in lecture.  For each finding below, say in one sentence whether it \emph{supports} the design, \emph{threatens} the design, or is \emph{ambiguous}, and why.
 
 \medskip
 \begin{enumerate}[label=(\alph*), itemsep=0.5em]
 \item Pre-1998 municipal income shows no jump at the cutoff.
 
-\vspace{2.2cm}
+\vspace{1.6cm}
 
 \item Pre-1998 literacy rate shows a small but statistically significant jump at the cutoff.
 
-\vspace{2.2cm}
+\vspace{1.6cm}
 
 \item \emph{Post-1998} federal social spending shows a jump at the cutoff.
 
-\vspace{2.2cm}
-\end{enumerate}
-
-%%% QUESTION 4 %%%
-\noindent\textbf{Question 4: Sharp vs.\ fuzzy.}  For each scenario below, say whether you'd treat it as a \textbf{sharp} or \textbf{fuzzy} RD, and -- if fuzzy -- what the estimand becomes (and for whom).
-
-\medskip
-\begin{enumerate}[label=(\alph*), itemsep=0.5em]
-\item French municipal elections: cities with population $\geq 3{,}500$ use proportional representation; below $3{,}500$ they use first-past-the-post.  Outcome: number of effective parties.
-
-\vspace{2.2cm}
-
-\item A scholarship program grants automatic offers to students scoring above an SAT threshold; students just below the threshold can still be considered, but the probability of an offer drops sharply.  Outcome: college completion.
-
-\vspace{2.2cm}
+\vspace{1.6cm}
 \end{enumerate}
 
 \end{document}
