@@ -19,7 +19,4 @@ title: Slides and exercises
 | Difference-in-Differences | [PDF](pdf/slides/DID_handout.pdf) | [PDF](pdf/activities/activity07_did.pdf) |
 | Instrumental Variables | [PDF](pdf/slides/IV_2026_handout.pdf) | [PDF](pdf/activities/activity08_iv.pdf) |
 | Regression Discontinuity | [PDF](pdf/slides/RDD_2026_handout.pdf) | [PDF](pdf/activities/activity09_rdd.pdf) |
-
-<!-- Uncomment as the quarter progresses:
-| Sensitivity Analysis | [PDF](pdf/slides/sensitivity_handout.pdf) | |
--->
+| Sensitivity Analysis | [PDF](pdf/slides/sensitivity_handout.pdf) | [PDF](pdf/activities/activity10_sensitivity.pdf) |
