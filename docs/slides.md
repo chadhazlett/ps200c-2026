@@ -20,3 +20,4 @@ title: Slides and exercises
 | Instrumental Variables | [PDF](pdf/slides/IV_2026_handout.pdf) | [PDF](pdf/activities/activity08_iv.pdf) |
 | Regression Discontinuity | [PDF](pdf/slides/RDD_2026_handout.pdf) | [PDF](pdf/activities/activity09_rdd.pdf) |
 | Sensitivity Analysis | [PDF](pdf/slides/sensitivity_handout.pdf) | [PDF](pdf/activities/activity10_sensitivity.pdf) |
+| Synthetic Control | [PDF](pdf/slides/Synth_handout.pdf) |  |
