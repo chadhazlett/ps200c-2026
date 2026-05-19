@@ -504,6 +504,149 @@ p_tpre <- ggplot(cmp_T_df, aes(factor, imbalance, fill = scenario)) +
 ggsave(file.path(figdir, "balance_short_T.pdf"), p_tpre,
        width = 7.5, height = 4.0)
 
+## ============================================================
+## EIV demo: N=49 synthetic donor pool for stable ||w||^2
+## ============================================================
+## Many donors -> ||w||^2 small and slowly-varying with T_pre. Donor u's
+## drawn IID Gaussian and intercepts drawn to match real-state spread;
+## CA keeps its real loadings/intercept. CA's u sits in the donor hull
+## with high probability, so the noiseless floor is tiny and what we see
+## is essentially the EIV / noise-averaging contribution.
+N_eiv <- 49
+sd_u <- 1.5    # wider than the real-state spread so the donor hull
+               # comfortably contains u_CA = (-1.2, -1.4, -1.3)
+
+## Seed search: find a draw where CA is well inside the donor hull in
+## every dimension, i.e., the noiseless QP achieves a small u-imbalance
+## in all three directions.
+best_seed <- NA_integer_; best_score <- Inf
+for (cand_seed in 1:300) {
+  set.seed(cand_seed)
+  U_try <- matrix(rnorm(N_eiv * 3, mean = 0, sd = sd_u), nrow = N_eiv)
+  a_try <- rnorm(N_eiv, mean = mean(alphas), sd = sd(alphas))
+  donor_sig_try <- matrix(NA_real_, nrow = T_pre, ncol = N_eiv)
+  for (i in seq_len(N_eiv)) {
+    donor_sig_try[, i] <- a_try[i] + beta_trend * trend_t[years <= 1988] +
+                          s_signal * as.numeric(Lambda[years <= 1988, ] %*% U_try[i, ])
+  }
+  w_try <- tryCatch(mean_balance_simplex(donor_sig_try, CA_signal_pre_placeholder <- (alphas["California"] + beta_trend * trend_t + s_signal * as.numeric(Lambda %*% u_CA))[years <= 1988]),
+                    error = function(e) rep(1/N_eiv, N_eiv))
+  imb_try <- u_CA - as.vector(t(U_try) %*% w_try)
+  score <- max(abs(imb_try))   # worst-dim floor
+  if (score < best_score) { best_score <- score; best_seed <- cand_seed }
+}
+cat(sprintf("\n[EIV pool seed-search] best seed = %d, worst-dim floor = %.3f\n",
+            best_seed, best_score))
+
+set.seed(best_seed)
+U_eiv <- matrix(rnorm(N_eiv * 3, mean = 0, sd = sd_u),
+                nrow = N_eiv, ncol = 3,
+                dimnames = list(paste0("d", sprintf("%02d", 1:N_eiv)),
+                                c("health", "antitob", "taxpolicy")))
+alpha_eiv <- rnorm(N_eiv, mean = mean(alphas), sd = sd(alphas))
+names(alpha_eiv) <- rownames(U_eiv)
+
+cat("\n--- 49-donor synthetic EIV pool (seed ", best_seed, ", sd_u = ", sd_u, ") ---\n", sep="")
+cat(sprintf("u_CA = (%.2f, %.2f, %.2f)\n", u_CA[1], u_CA[2], u_CA[3]))
+cat(sprintf("Donor u range:\n  health  [%.2f, %.2f]\n  antitob [%.2f, %.2f]\n  tax     [%.2f, %.2f]\n",
+            min(U_eiv[,1]), max(U_eiv[,1]),
+            min(U_eiv[,2]), max(U_eiv[,2]),
+            min(U_eiv[,3]), max(U_eiv[,3])))
+
+## Noiseless signals (deterministic): used both for resampling and the floor.
+CA_signal_full <- alphas["California"] + beta_trend * trend_t +
+                  s_signal * as.numeric(Lambda %*% u_CA)
+CA_signal_pre  <- CA_signal_full[years <= 1988]
+donor_signal_pre <- matrix(NA_real_, nrow = T_pre, ncol = N_eiv,
+                           dimnames = list(NULL, rownames(U_eiv)))
+for (i in seq_len(N_eiv)) {
+  donor_signal_pre[, i] <- alpha_eiv[i] + beta_trend * trend_t[years <= 1988] +
+                           s_signal * as.numeric(Lambda[years <= 1988, ] %*% U_eiv[i, ])
+}
+
+T_pre_grid <- 5:17
+set.seed(2026)
+n_reps <- 100
+records <- vector("list", n_reps * length(T_pre_grid))
+rec <- 0L
+for (r in seq_len(n_reps)) {
+  donor_Y_pre <- donor_signal_pre +
+                 matrix(rnorm(T_pre * N_eiv, sd = sigma_eps), nrow = T_pre)
+  CA_Y_pre    <- CA_signal_pre + rnorm(T_pre, sd = sigma_eps)
+  for (k in T_pre_grid) {
+    idx <- (T_pre - k + 1):T_pre
+    Y_pre_k <- donor_Y_pre[idx, , drop = FALSE]
+    x_CA_k  <- CA_Y_pre[idx]
+    w_k <- tryCatch(mean_balance_simplex(Y_pre_k, x_CA_k),
+                    error = function(e) rep(1/N_eiv, N_eiv))
+    imb_k <- u_CA - as.vector(t(U_eiv) %*% w_k)
+    rec <- rec + 1L
+    records[[rec]] <- data.frame(rep = r, T_pre = k,
+                                 health = imb_k[1],
+                                 antitob = imb_k[2],
+                                 tax = imb_k[3],
+                                 wnorm2 = sum(w_k^2))
+  }
+}
+eiv_results <- do.call(rbind, records)
+eiv_summary <- eiv_results |>
+  group_by(T_pre) |>
+  summarise(
+    health  = mean(abs(health)),
+    antitob = mean(abs(antitob)),
+    tax     = mean(abs(tax)),
+    wnorm2  = mean(wnorm2),
+    .groups = "drop"
+  )
+
+cat("\n--- EIV (N=49 synth donors): mean |u-imbalance| and mean ||w||^2 over ",
+    n_reps, " draws ---\n", sep = "")
+print(round(eiv_summary, 3))
+cat(sprintf("\nFor theoretical fits: sigma_eps = %.3f, s_signal = %.2f, N_eiv = %d\n",
+            sigma_eps, s_signal, N_eiv))
+
+## Pool across the 3 factor dimensions: single avg curve
+eiv_pooled <- eiv_summary |>
+  mutate(mean_abs_avg = (health + antitob + tax) / 3) |>
+  select(T_pre, mean_abs_avg)
+
+## ---- Noiseless QP floor (kept for the printed diagnostic; not plotted) ----
+w_floor    <- mean_balance_simplex(donor_signal_pre, CA_signal_pre)
+imbal_floor <- u_CA - as.vector(t(U_eiv) %*% w_floor)
+names(imbal_floor) <- c("Health consc.", "Anti-tobacco", "Tax policy")
+cat("\n--- Noiseless QP floor on |u-imbalance| (N=49) ---\n")
+print(round(abs(imbal_floor), 3))
+cat(sprintf("||w_floor||^2 = %.4f; top 5 weights:\n", sum(w_floor^2)))
+print(round(sort(w_floor, decreasing = TRUE)[1:5], 3))
+
+## ---- Best-fitting c / sqrt(T_pre) line ----
+fit <- lm(mean_abs_avg ~ 0 + I(1 / sqrt(T_pre)), data = eiv_pooled)
+c_hat <- coef(fit)[1]
+cat(sprintf("\nBest-fit c in c/sqrt(T_pre): c_hat = %.3f  (R^2 = %.3f)\n",
+            c_hat, summary(fit)$r.squared))
+
+fit_df <- data.frame(T_pre = T_pre_grid,
+                     mean_abs_avg = c_hat / sqrt(T_pre_grid))
+
+p_eiv_u <- ggplot(eiv_pooled, aes(T_pre, mean_abs_avg)) +
+  geom_line(colour = "#1f78b4", linewidth = 1.0) +
+  geom_point(colour = "#1f78b4", size = 1.9) +
+  geom_line(data = fit_df, linetype = "dashed",
+            colour = "black", linewidth = 0.8) +
+  annotate("text", x = max(T_pre_grid) - 0.3, y = c_hat / sqrt(max(T_pre_grid)) + 0.08,
+           label = sprintf("fit: %.2f / sqrt(T_pre)", c_hat),
+           hjust = 1, size = 4, colour = "black") +
+  scale_x_continuous(breaks = seq(min(T_pre_grid), max(T_pre_grid), 2)) +
+  expand_limits(y = 0) +
+  labs(x = expression(T[pre]),
+       y = "mean |u-imbalance| (avg of 3 dims)",
+       title = paste0("Mean |u-imbalance| (avg across 3 factor dims) vs T_pre")) +
+  theme_minimal(base_size = 13) +
+  theme(panel.grid.minor = element_blank())
+
+ggsave(file.path(figdir, "eiv_u_imbalance.pdf"), p_eiv_u,
+       width = 7.0, height = 3.6)
+
 ## Save numbers so the slide can pull them in
 writeLines(
   c(sprintf("imbalance_sg = %.3f", imbalance_4["Sleeping giant"]),
