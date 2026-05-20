@@ -21,3 +21,4 @@ title: Slides and exercises
 | Regression Discontinuity | [PDF](pdf/slides/RDD_2026_handout.pdf) | [PDF](pdf/activities/activity09_rdd.pdf) |
 | Sensitivity Analysis | [PDF](pdf/slides/sensitivity_handout.pdf) | [PDF](pdf/activities/activity10_sensitivity.pdf) |
 | Synthetic Control | [PDF](pdf/slides/Synth_handout.pdf) |  |
+| Safe Inference (SCQE) | [PDF](pdf/slides/SCQE_handout.pdf) |  |
