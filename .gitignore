@@ -22,3 +22,17 @@ slides/03-experiments/images/gerber.dta
 .DS_Store
 
 # Track compiled PDFs in pdf/ (don't ignore them)
+
+# Student-identifying material — NEVER commit (this repo is public)
+presentations/
+grades/
+*.xlsx
+*.xls
+~$*
+
+# Private working notes (every .rtf here is a personal note file)
+*.rtf
+
+# Distribution bundle (rebuilt on demand; not source)
+PS200c_2026_everything_share/
+PS200c_2026_everything_share.zip
